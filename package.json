@@ -1,12 +1,19 @@
 {
-  "name": "pricing-server",
-  "version": "1.0.0",
-  "description": "Online pricing server",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
   "dependencies": {
-    "express": "^5.1.0"
-  }
+    "cors": "^2.8.6",
+    "electron": "^41.3.0",
+    "express": "^5.2.1",
+    "node-telegram-bot-api": "^0.67.0"
+  },
+  "name": "tg-prices",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test"
+    "specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
