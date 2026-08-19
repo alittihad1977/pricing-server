@@ -10,7 +10,7 @@ app.use(express.text({ type: '*/*' }));
 const token = process.env.TELEGRAM_BOT_TOKEN;
 
 if (!token) {
-    console.error('8471621145:AAHKtyAoM4Jg_aYbUM_3yBSNpnjGpsRmWPQ');
+    console.error('TELEGRAM_BOT_TOKEN is missing');
     process.exit(1);
 }
 
@@ -52,8 +52,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log('Bot is running...');
-});
-
-    console.log(`Server running on port ${PORT}`);
-    console.log("Bot is running...");
 });
