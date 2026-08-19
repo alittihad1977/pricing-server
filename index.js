@@ -3,51 +3,81 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
+
+// السماح للوحة التسعير بالوصول إلى السيرفر
 app.use(cors());
+
+// استقبال النصوص
 app.use(express.text({ type: '*/*' }));
 
-const token = "8471621145:AAHKtyAoM4Jg_aYbUM_3yBSNpnjGpsRmWPQ";
-const bot = new TelegramBot(token, { polling: true });
+// ===============================
+// إعدادات البوت
+// ===============================
 
-const SERVER_URL = "https://pricing-server-yjam.onrender.com/msg";
+const token = process.env.TELEGRAM_BOT_TOKEN;
 
-// استقبال رسائل القناة
+if (!token) {
+    console.error("8471621145:AAHKtyAoM4Jg_aYbUM_3yBSNpnjGpsRmWPQ");
+    process.exit(1);
+}
+
+const bot = new TelegramBot(token, {
+    polling: true
+});
+
+// ===============================
+// تخزين آخر رسالة
+// ===============================
+
+let lastMessage = "";
+
+// ===============================
+// استقبال رسائل قناة Telegram
+// ===============================
+
 bot.on('channel_post', async (msg) => {
 
-    const lastMessage = msg.text || "";
+    const message = msg.text || "";
 
-    console.log("New message:", lastMessage);
+    console.log("تم استقبال رسالة جديدة:");
+    console.log(message);
 
-    if (!lastMessage) return;
+    if (!message) return;
 
-    try {
+    // حفظ آخر رسالة مباشرة
+    lastMessage = message;
 
-        const response = await fetch(SERVER_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "text/plain"
-            },
-            body: lastMessage
-        });
-
-        const result = await response.text();
-
-        console.log("تم إرسال الرسالة إلى Render:", result);
-
-    } catch (error) {
-
-        console.error("خطأ أثناء إرسال الرسالة إلى Render:", error);
-
-    }
+    console.log("تم حفظ الرسالة بنجاح");
 });
 
-// السيرفر المحلي يبقى شغال كما كان
+// ===============================
+// إرسال آخر رسالة للوحة التسعير
+// ===============================
+
 app.get('/msg', (req, res) => {
-    res.send("Bot is running");
+
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+
+    res.send(lastMessage);
 });
 
-app.listen(3000, () => {
-    console.log("Local server running on http://localhost:3000");
+// ===============================
+// فحص السيرفر
+// ===============================
+
+app.get('/', (req, res) => {
+    res.send("Pricing Server is running");
 });
 
-console.log("Bot is running...");
+// ===============================
+// تشغيل السيرفر
+// ===============================
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+
+    console.log(`Server running on port ${PORT}`);
+    console.log("Bot is running...");
+});
