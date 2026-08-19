@@ -14,8 +14,6 @@ app.use(cors({
     allowedHeaders: ['Content-Type']
 }));
 
-app.options('*', cors());
-
 // ===============================
 // Body
 // ===============================
@@ -44,7 +42,7 @@ const bot = new TelegramBot(token, {
 let lastMessage = '';
 
 // ===============================
-// استقبال رسالة Telegram
+// استقبال رسائل Telegram
 // ===============================
 
 bot.on('channel_post', (msg) => {
@@ -79,9 +77,7 @@ app.get('/msg', (req, res) => {
 // ===============================
 
 app.get('/', (req, res) => {
-
     res.send('Pricing Server is running');
-
 });
 
 // ===============================
@@ -91,8 +87,6 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-
     console.log(`Server running on port ${PORT}`);
     console.log('Bot is running...');
-
 });
