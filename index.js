@@ -55,11 +55,12 @@ bot.on('channel_post', async (msg) => {
 // ===============================
 
 app.get('/msg', (req, res) => {
-
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.header('Access-Control-Allow-Headers', '*');
+    res.type('text/plain');
     res.send(lastMessage);
+});
 });
 
 // ===============================
