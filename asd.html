@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>لوحة التسعير - الاتحاد</title>
+
+<style>
+*{ box-sizing:border-box; }
+
+html, body{
+    margin:0;
+    padding:0;
+    height:100%;
+    font-family:Arial,sans-serif;
+    direction:rtl;
+    color:white;
+    background:#0b1b3d;
+    overflow:hidden;
+}
+
+.screen{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100%;
+}
+
+.container{
+    width:100%;
+    max-width:1200px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.header{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:30px;
+    margin-bottom:30px;
+}
+
+.header img{
+    height:120px;
+    filter:drop-shadow(0 0 25px #f4c430);
+}
+
+.header h1{
+    font-size:4rem;
+    color:gold;
+    margin:0;
+}
+
+table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0 15px;
+}
+
+th, td{
+    padding:25px;
+    text-align:center;
+    border-radius:15px;
+}
+
+th{
+    background:linear-gradient(90deg,#1f3c88,#0d6efd);
+    color:white;
+    font-size:2.5rem;
+}
+
+td{
+    background:white;
+    color:#0b1b3d;
+    font-weight:bold;
+}
+
+.price-cell{
+    font-size:4rem;
+    border:3px solid gold;
+    border-radius:15px;
+    padding:15px;
+    background:white;
+    color:#0b1b3d;
+}
+
+.flag-svg{
+    width:70px;
+    height:40px;
+    filter:drop-shadow(0 0 7px rgba(255,255,255,0.35));
+}
+
+.up{
+    color:#00e676;
+    font-weight:bold;
+    font-size:3.5rem;
+    margin-left:10px;
+    display:inline-block;
+    animation:upMove 1s ease-in-out infinite;
+}
+
+.down{
+    color:#ff3d00;
+    font-weight:bold;
+    font-size:3.5rem;
+    margin-left:10px;
+    display:inline-block;
+    animation:downMove 1s ease-in-out infinite;
+}
+
+@keyframes upMove{
+    0%{ transform:translateY(0); }
+    50%{ transform:translateY(-6px); }
+    100%{ transform:translateY(0); }
+}
+
+@keyframes downMove{
+    0%{ transform:translateY(0); }
+    50%{ transform:translateY(6px); }
+    100%{ transform:translateY(0); }
+}
+
+.flash{
+    animation:flashAnim 0.4s ease;
+}
+
+@keyframes flashAnim{
+    0%{ background:rgba(255,255,255,0.1); }
+    100%{ background:transparent; }
+}
+
+#updateSystem{
+    display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="screen">
+<div class="container">
+
+<div class="header">
+<img src="https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png">
+<h1>شركة الاتحاد</h1>
+</div>
+
+<table>
+
+<tr>
+<th>الزوج</th>
+<th>شراء</th>
+<th>بيع</th>
+</tr>
+
+<!-- 1 الدولار / الليرة السورية -->
+<tr>
+<td>
+<svg class="flag-svg" viewBox="0 0 70 40">
+<image href="https://flagcdn.com/w80/us.png" width="70" height="40"/>
+</svg>
+/
+<svg class="flag-svg" viewBox="0 0 70 40">
+<image href="https://flagcdn.com/w80/sy.png" width="70" height="40"/>
+</svg>
+</td>
+
+<td class="price-cell" id="buy1">11800</td>
+<td class="price-cell" id="sell1">11900</td>
+</tr>
+
+<!-- 2 الليرة التركية / الليرة السورية -->
+<tr>
+<td>
+<svg class="flag-svg" viewBox="0 0 70 40">
+<image href="https://flagcdn.com/w80/tr.png" width="70" height="40"/>
+</svg>
+/
+<svg class="flag-svg" viewBox="0 0 70 40">
+<image href="https://flagcdn.com/w80/sy.png" width="70" height="40"/>
+</svg>
+</td>
+
+<td class="price-cell" id="buy2">268</td>
+<td class="price-cell" id="sell2">272</td>
+</tr>
+
+<!-- 3 اليورو / الليرة السورية -->
+<tr>
+<td>
+<svg class="flag-svg" viewBox="0 0 70 40">
+<image href="https://flagcdn.com/w80/eu.png" width="70" height="40"/>
+</svg>
+/
+<svg class="flag-svg" viewBox="0 0 70 40">
+<image href="https://flagcdn.com/w80/sy.png" width="70" height="40"/>
+</svg>
+</td>
+
+<td class="price-cell" id="buy3">13450</td>
+<td class="price-cell" id="sell3">13600</td>
+</tr>
+
+<!-- 4 الدولار / الليرة التركية -->
+<tr>
+<td>
+<svg class="flag-svg" viewBox="0 0 70 40">
+<image href="https://flagcdn.com/w80/us.png" width="70" height="40"/>
+</svg>
+/
+<svg class="flag-svg" viewBox="0 0 70 40">
+<image href="https://flagcdn.com/w80/tr.png" width="70" height="40"/>
+</svg>
+</td>
+
+<td class="price-cell" id="buy4">43.7</td>
+<td class="price-cell" id="sell4">44</td>
+</tr>
+
+<!-- 5 اليورو / الدولار -->
+<tr>
+<td>
+<svg class="flag-svg" viewBox="0 0 70 40">
+<image href="https://flagcdn.com/w80/eu.png" width="70" height="40"/>
+</svg>
+/
+<svg class="flag-svg" viewBox="0 0 70 40">
+<image href="https://flagcdn.com/w80/us.png" width="70" height="40"/>
+</svg>
+</td>
+
+<td class="price-cell" id="buy5">1.14</td>
+<td class="price-cell" id="sell5">1.16</td>
+</tr>
+
+</table>
+
+</div>
+</div>
+
+<div id="updateSystem">
+<textarea id="msg"></textarea>
+</div>
+
+<script>
+
+let oldPrices = {};
+let direction = {};
+
+let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let unlocked = false;
+
+document.addEventListener("click", () => {
+    audioCtx.resume().then(() => unlocked = true);
+}, {once:true});
+
+document.addEventListener("touchstart", () => {
+    audioCtx.resume().then(() => unlocked = true);
+}, {once:true});
+
+
+function playSound(){
+
+    if(!unlocked) return;
+
+    let o = audioCtx.createOscillator();
+    let g = audioCtx.createGain();
+
+    o.type = "sine";
+    o.frequency.value = 880;
+    g.gain.value = 0.15;
+
+    o.connect(g);
+    g.connect(audioCtx.destination);
+
+    o.start();
+    o.stop(audioCtx.currentTime + 0.12);
+}
+
+
+function updateCell(id,value){
+
+    let el = document.getElementById(id);
+
+    if(!el) return;
+
+    if(oldPrices[id] !== undefined){
+
+        if(Number(value) !== Number(oldPrices[id])){
+
+            if(Number(value) > Number(oldPrices[id])){
+                direction[id] = "up";
+            }else{
+                direction[id] = "down";
+            }
+
+            document.body.classList.add("flash");
+
+            setTimeout(() => {
+                document.body.classList.remove("flash");
+            },300);
+
+            playSound();
+        }
+    }
+
+    oldPrices[id] = value;
+
+    let arrow = "";
+
+    if(direction[id] === "up"){
+        arrow = "<span class='up'>▲</span>";
+    }
+
+    if(direction[id] === "down"){
+        arrow = "<span class='down'>▼</span>";
+    }
+
+    el.innerHTML = value + arrow;
+}
+
+
+function updatePrices(){
+
+    for(let i=1;i<=5;i++){
+
+        let buy = localStorage.getItem("buy"+i);
+        let sell = localStorage.getItem("sell"+i);
+
+        if(buy !== null){
+            updateCell("buy"+i,buy);
+        }
+
+        if(sell !== null){
+            updateCell("sell"+i,sell);
+        }
+    }
+}
+
+
+updatePrices();
+
+
+/* =====================================================
+   استقبال رسالة الأسعار
+   ===================================================== */
+
+let lastProcessed = "";
+
+function processMessage(){
+
+    let text = document.getElementById("msg").value;
+
+    if(!text.trim()) return;
+
+    /*
+       استخراج الشراء والمبيع
+       مثال:
+       الشراء:132.00
+       المبيع:133.00
+    */
+
+    let buys = [...text.matchAll(/الشراء\s*[:：]\s*([0-9]+(?:\.[0-9]+)?)/g)];
+    let sells = [...text.matchAll(/المبيع\s*[:：]\s*([0-9]+(?:\.[0-9]+)?)/g)];
+
+    console.log("عدد أسعار الشراء:", buys.length);
+    console.log("عدد أسعار المبيع:", sells.length);
+
+    for(let i=0;i<5;i++){
+
+        if(buys[i]){
+
+            let buy = buys[i][1];
+
+            localStorage.setItem("buy"+(i+1),buy);
+
+            console.log("buy"+(i+1),buy);
+        }
+
+        if(sells[i]){
+
+            let sell = sells[i][1];
+
+            localStorage.setItem("sell"+(i+1),sell);
+
+            console.log("sell"+(i+1),sell);
+        }
+    }
+
+    /*
+       الأهم:
+       تحديث اللوحة مباشرة بعد حفظ الأسعار
+    */
+
+    updatePrices();
+
+    document.getElementById("msg").value = "";
+
+    console.log("تم تحديث الأسعار بنجاح");
+}
+
+
+/* =====================================================
+   جلب آخر رسالة من Render
+   ===================================================== */
+
+async function fetchMessage(){
+
+    try{
+
+        const res = await fetch(
+            "https://pricing-server-1.onrender.com/msg",
+            {
+                cache: "no-store"
+            }
+        );
+
+        const data = await res.text();
+
+        if(data.trim() !== "" && data !== lastProcessed){
+
+            const textarea = document.getElementById("msg");
+
+            textarea.value = data;
+
+            processMessage();
+
+            lastProcessed = data;
+
+            console.log("تم استلام رسالة جديدة من Render");
+
+        }
+
+    }catch(e){
+
+        console.log("Error fetching message:",e);
+
+    }
+}
+
+
+/* =====================================================
+   فحص كل ثانية
+   ===================================================== */
+
+setInterval(fetchMessage,1000);
+
+</script>
+
+</body>
+</html>
