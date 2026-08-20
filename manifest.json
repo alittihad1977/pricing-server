@@ -1,0 +1,15 @@
+{
+  "name": "لوحة التسعير - الاتحاد",
+  "short_name": "الاتحاد",
+  "start_url": "./asd",
+  "display": "standalone",
+  "background_color": "#0b1b3d",
+  "theme_color": "#0b1b3d",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
