@@ -10,30 +10,49 @@ self.addEventListener("push", function(event) {
 
     } catch (error) {
 
-        data = {
-            title: "شركة الاتحاد 🔔",
-            body: "تم تحديث أسعار العملات 💰"
-        };
+        data = {};
 
     }
 
 
     const title =
         data.title ||
-        "شركة الاتحاد 🔔";
+        "شركة الاتحاد 💰";
+
+
+    const body =
+        data.body ||
+        "تم تحديث أسعار الصرف 🔔";
+
+
+    const notificationUrl =
+        (
+            data.data &&
+            data.data.url
+        )
+        ||
+        data.url
+        ||
+        "https://alittihad1977.github.io/pricing-server/asd.html";
 
 
     const options = {
 
-        body:
-            data.body ||
-            "تم تحديث أسعار العملات 💰",
+        body: body,
 
         icon:
             "https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png",
 
         badge:
             "https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png",
+
+        tag:
+            data.tag ||
+            "al-ittihad-prices",
+
+        renotify: true,
+
+        requireInteraction: false,
 
         vibrate: [
             200,
@@ -44,8 +63,7 @@ self.addEventListener("push", function(event) {
         data: {
 
             url:
-                data.url ||
-                "https://alittihad1977.github.io/pricing-server/asd.html"
+                notificationUrl
 
         }
 
@@ -64,6 +82,10 @@ self.addEventListener("push", function(event) {
 });
 
 
+/* =====================================================
+   الضغط على الإشعار
+   ===================================================== */
+
 self.addEventListener(
     "notificationclick",
     function(event) {
@@ -81,39 +103,41 @@ self.addEventListener(
         event.waitUntil(
 
             clients.matchAll({
+
                 type: "window",
+
                 includeUncontrolled: true
-            }).then(
-                function(clientList) {
 
-                    for (
-                        const client of clientList
-                    ) {
+            }).then(function(clientList) {
 
-                        if (
-                            client.url === url &&
-                            "focus" in client
-                        ) {
 
-                            return client.focus();
-
-                        }
-
-                    }
-
+                for (
+                    const client
+                    of clientList
+                ) {
 
                     if (
-                        clients.openWindow
+                        "focus" in client
                     ) {
 
-                        return clients.openWindow(
-                            url
-                        );
+                        return client.focus();
 
                     }
 
                 }
-            )
+
+
+                if (
+                    clients.openWindow
+                ) {
+
+                    return clients.openWindow(
+                        url
+                    );
+
+                }
+
+            })
 
         );
 
