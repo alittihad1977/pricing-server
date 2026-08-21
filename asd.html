@@ -73,7 +73,9 @@ html, body{
 }
 
 
-/* الوقت والتاريخ */
+/* =====================================================
+   الوقت والتاريخ
+   ===================================================== */
 
 .date-time{
     display:flex;
@@ -99,6 +101,10 @@ html, body{
     margin-top:5px;
 }
 
+
+/* =====================================================
+   جدول الأسعار
+   ===================================================== */
 
 table{
     width:100%;
@@ -140,6 +146,11 @@ td{
     filter:drop-shadow(0 0 7px rgba(255,255,255,0.35));
 }
 
+
+/* =====================================================
+   الأسهم
+   ===================================================== */
+
 .up{
     color:#00e676;
     font-weight:bold;
@@ -159,6 +170,7 @@ td{
 }
 
 @keyframes upMove{
+
     0%{
         transform:translateY(0);
     }
@@ -170,9 +182,11 @@ td{
     100%{
         transform:translateY(0);
     }
+
 }
 
 @keyframes downMove{
+
     0%{
         transform:translateY(0);
     }
@@ -184,13 +198,20 @@ td{
     100%{
         transform:translateY(0);
     }
+
 }
+
+
+/* =====================================================
+   وميض تغيير السعر
+   ===================================================== */
 
 .flash{
     animation:flashAnim 0.4s ease;
 }
 
 @keyframes flashAnim{
+
     0%{
         background:rgba(255,255,255,0.1);
     }
@@ -198,10 +219,93 @@ td{
     100%{
         background:transparent;
     }
+
 }
 
 #updateSystem{
     display:none;
+}
+
+
+/* =====================================================
+   مؤشر الاتصال
+   صغير وناعم
+   ===================================================== */
+
+.connection-status{
+
+    position:fixed;
+
+    top:8px;
+    left:10px;
+
+    display:flex;
+    align-items:center;
+    gap:5px;
+
+    padding:4px 8px;
+
+    border-radius:12px;
+
+    background:rgba(0,0,0,0.18);
+
+    font-size:0.70rem;
+
+    color:rgba(255,255,255,0.80);
+
+    z-index:2000;
+
+    direction:rtl;
+
+    transition:all 0.3s ease;
+
+}
+
+.connection-dot{
+
+    width:7px;
+    height:7px;
+
+    border-radius:50%;
+
+    display:block;
+
+    transition:all 0.3s ease;
+
+}
+
+.connection-status.online
+.connection-dot{
+
+    background:#00e676;
+
+    box-shadow:
+        0 0 5px rgba(0,230,118,0.7);
+
+}
+
+.connection-status.offline
+.connection-dot{
+
+    background:#ff3d00;
+
+    box-shadow:
+        0 0 5px rgba(255,61,0,0.7);
+
+}
+
+.connection-status.online
+.connection-text::after{
+
+    content:"متصل";
+
+}
+
+.connection-status.offline
+.connection-text::after{
+
+    content:"غير متصل";
+
 }
 
 
@@ -260,6 +364,8 @@ td{
 
     direction:rtl;
 
+    z-index:2;
+
 }
 
 .news-content{
@@ -274,9 +380,19 @@ td{
 
 }
 
-.news-track{
+.news-item{
 
     position:absolute;
+
+    top:0;
+
+    right:0;
+
+    height:100%;
+
+    display:flex;
+
+    align-items:center;
 
     white-space:nowrap;
 
@@ -288,50 +404,37 @@ td{
 
     line-height:30px;
 
-    right:0;
-
-    animation:newsMove 80s linear infinite;
-
     direction:rtl;
 
-}
+    transform:translateX(100%);
 
-
-/* الفاصل الذهبي بين الأخبار */
-
-.news-item{
-
-    display:inline-block;
-
-    margin-left:45px;
-
-    padding-left:45px;
-
-    position:relative;
+    will-change:transform;
 
 }
 
-.news-item::before{
+.news-item.active{
 
-    content:"◆";
+    animation:
+        newsSlide
+        14s
+        linear
+        forwards;
 
-    position:absolute;
+}
 
-    left:0;
-    top:0;
+.news-separator{
 
     color:gold;
 
     font-size:0.65rem;
 
-    line-height:30px;
+    margin-left:25px;
 
-    opacity:0.9;
+    margin-right:25px;
 
 }
 
-
-@keyframes newsMove{
+@keyframes newsSlide{
 
     from{
 
@@ -341,7 +444,9 @@ td{
 
     to{
 
-        transform:translateX(-100%);
+        transform:translateX(
+            calc(-100% - 20px)
+        );
 
     }
 
@@ -400,6 +505,20 @@ td{
     .flag-svg{
         width:65px;
         height:38px;
+    }
+
+    .news-bar{
+        height:34px;
+        bottom:7px;
+    }
+
+    .news-item{
+        font-size:1rem;
+        line-height:34px;
+    }
+
+    .news-separator{
+        font-size:0.7rem;
     }
 
 }
@@ -462,7 +581,28 @@ td{
     }
 
 
-    /* شريط الأخبار على الموبايل */
+    /* الاتصال */
+
+    .connection-status{
+
+        top:5px;
+        left:6px;
+
+        padding:3px 6px;
+
+        font-size:0.60rem;
+
+    }
+
+    .connection-dot{
+
+        width:6px;
+        height:6px;
+
+    }
+
+
+    /* الأخبار */
 
     .news-bar{
 
@@ -484,7 +624,7 @@ td{
 
     }
 
-    .news-track{
+    .news-item{
 
         font-size:0.70rem;
 
@@ -492,19 +632,13 @@ td{
 
     }
 
-    .news-item{
+    .news-separator{
 
-        margin-left:30px;
+        font-size:0.50rem;
 
-        padding-left:30px;
+        margin-left:18px;
 
-    }
-
-    .news-item::before{
-
-        font-size:0.5rem;
-
-        line-height:25px;
+        margin-right:18px;
 
     }
 
@@ -520,15 +654,40 @@ td{
 
 <body>
 
+
+<!-- =====================================================
+     مؤشر الاتصال
+     ===================================================== -->
+
+<div
+    id="connectionStatus"
+    class="connection-status offline"
+>
+
+    <span class="connection-dot"></span>
+
+    <span class="connection-text"></span>
+
+</div>
+
+
 <div class="screen">
 
 <div class="container">
+
+
+<!-- =====================================================
+     الرأس
+     ===================================================== -->
 
 <div class="header">
 
 <img src="https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png">
 
 <h1>شركة الاتحاد</h1>
+
+
+<!-- الوقت والتاريخ -->
 
 <div class="date-time">
 
@@ -545,12 +704,18 @@ td{
 </div>
 
 
+<!-- =====================================================
+     جدول الأسعار
+     ===================================================== -->
+
 <table>
 
 <tr>
 
 <th>الزوج</th>
+
 <th>شراء</th>
+
 <th>بيع</th>
 
 </tr>
@@ -584,9 +749,19 @@ height="40"/>
 
 </td>
 
-<td class="price-cell" id="buy1">11800</td>
+<td
+class="price-cell"
+id="buy1"
+>
+11800
+</td>
 
-<td class="price-cell" id="sell1">11900</td>
+<td
+class="price-cell"
+id="sell1"
+>
+11900
+</td>
 
 </tr>
 
@@ -619,9 +794,19 @@ height="40"/>
 
 </td>
 
-<td class="price-cell" id="buy2">268</td>
+<td
+class="price-cell"
+id="buy2"
+>
+268
+</td>
 
-<td class="price-cell" id="sell2">272</td>
+<td
+class="price-cell"
+id="sell2"
+>
+272
+</td>
 
 </tr>
 
@@ -654,9 +839,19 @@ height="40"/>
 
 </td>
 
-<td class="price-cell" id="buy3">13450</td>
+<td
+class="price-cell"
+id="buy3"
+>
+13450
+</td>
 
-<td class="price-cell" id="sell3">13600</td>
+<td
+class="price-cell"
+id="sell3"
+>
+13600
+</td>
 
 </tr>
 
@@ -689,9 +884,19 @@ height="40"/>
 
 </td>
 
-<td class="price-cell" id="buy4">43.7</td>
+<td
+class="price-cell"
+id="buy4"
+>
+43.7
+</td>
 
-<td class="price-cell" id="sell4">44</td>
+<td
+class="price-cell"
+id="sell4"
+>
+44
+</td>
 
 </tr>
 
@@ -724,9 +929,19 @@ height="40"/>
 
 </td>
 
-<td class="price-cell" id="buy5">1.14</td>
+<td
+class="price-cell"
+id="buy5"
+>
+1.14
+</td>
 
-<td class="price-cell" id="sell5">1.16</td>
+<td
+class="price-cell"
+id="sell5"
+>
+1.16
+</td>
 
 </tr>
 
@@ -747,20 +962,21 @@ height="40"/>
         📰 آخر الأخبار
     </div>
 
-    <div class="news-content">
+    <div
+        class="news-content"
+        id="newsContent"
+    >
 
         <div
-            class="news-track"
-            id="newsTrack">
-
-            جاري تحميل الأخبار...
-
-        </div>
+            id="newsTrack"
+        ></div>
 
     </div>
 
 </div>
 
+
+<!-- نظام استقبال الأسعار -->
 
 <div id="updateSystem">
 
@@ -780,6 +996,7 @@ function updateDateTime(){
 
     const now = new Date();
 
+
     const time =
         now.toLocaleTimeString(
             'ar-SY',
@@ -790,6 +1007,7 @@ function updateDateTime(){
                 hour12:false
             }
         );
+
 
     const date =
         now.toLocaleDateString(
@@ -802,13 +1020,21 @@ function updateDateTime(){
             }
         );
 
-    document.getElementById("liveTime").textContent = time;
 
-    document.getElementById("liveDate").textContent = date;
+    document.getElementById(
+        "liveTime"
+    ).textContent = time;
+
+
+    document.getElementById(
+        "liveDate"
+    ).textContent = date;
 
 }
 
+
 updateDateTime();
+
 
 setInterval(
     updateDateTime,
@@ -821,13 +1047,16 @@ setInterval(
    ===================================================== */
 
 let oldPrices = {};
+
 let direction = {};
+
 
 let audioCtx =
     new (
         window.AudioContext ||
         window.webkitAudioContext
     )();
+
 
 let unlocked = false;
 
@@ -870,25 +1099,34 @@ function playSound(){
 
     if(!unlocked) return;
 
+
     let o =
         audioCtx.createOscillator();
+
 
     let g =
         audioCtx.createGain();
 
+
     o.type = "sine";
+
 
     o.frequency.value = 880;
 
+
     g.gain.value = 0.15;
 
+
     o.connect(g);
+
 
     g.connect(
         audioCtx.destination
     );
 
+
     o.start();
+
 
     o.stop(
         audioCtx.currentTime + 0.12
@@ -902,10 +1140,13 @@ function updateCell(id,value){
     let el =
         document.getElementById(id);
 
+
     if(!el) return;
 
 
-    if(oldPrices[id] !== undefined){
+    if(
+        oldPrices[id] !== undefined
+    ){
 
         if(
             Number(value) !==
@@ -917,11 +1158,13 @@ function updateCell(id,value){
                 Number(oldPrices[id])
             ){
 
-                direction[id] = "up";
+                direction[id] =
+                    "up";
 
             }else{
 
-                direction[id] = "down";
+                direction[id] =
+                    "down";
 
             }
 
@@ -956,7 +1199,9 @@ function updateCell(id,value){
     let arrow = "";
 
 
-    if(direction[id] === "up"){
+    if(
+        direction[id] === "up"
+    ){
 
         arrow =
             "<span class='up'>▲</span>";
@@ -964,7 +1209,9 @@ function updateCell(id,value){
     }
 
 
-    if(direction[id] === "down"){
+    if(
+        direction[id] === "down"
+    ){
 
         arrow =
             "<span class='down'>▼</span>";
@@ -991,13 +1238,16 @@ function updatePrices(){
                 "buy"+i
             );
 
+
         let sell =
             localStorage.getItem(
                 "sell"+i
             );
 
 
-        if(buy !== null){
+        if(
+            buy !== null
+        ){
 
             updateCell(
                 "buy"+i,
@@ -1007,7 +1257,9 @@ function updatePrices(){
         }
 
 
-        if(sell !== null){
+        if(
+            sell !== null
+        ){
 
             updateCell(
                 "sell"+i,
@@ -1065,6 +1317,7 @@ function processMessage(){
         buys.length
     );
 
+
     console.log(
         "عدد أسعار المبيع:",
         sells.length
@@ -1077,15 +1330,19 @@ function processMessage(){
         i++
     ){
 
-        if(buys[i]){
+        if(
+            buys[i]
+        ){
 
             let buy =
                 buys[i][1];
+
 
             localStorage.setItem(
                 "buy"+(i+1),
                 buy
             );
+
 
             console.log(
                 "buy"+(i+1),
@@ -1095,15 +1352,19 @@ function processMessage(){
         }
 
 
-        if(sells[i]){
+        if(
+            sells[i]
+        ){
 
             let sell =
                 sells[i][1];
+
 
             localStorage.setItem(
                 "sell"+(i+1),
                 sell
             );
+
 
             console.log(
                 "sell"+(i+1),
@@ -1203,8 +1464,109 @@ setInterval(
 
 
 /* =====================================================
+   حالة الاتصال
+   ===================================================== */
+
+function setConnectionStatus(
+    online
+){
+
+    const status =
+        document.getElementById(
+            "connectionStatus"
+        );
+
+
+    if(online){
+
+        status.classList.remove(
+            "offline"
+        );
+
+        status.classList.add(
+            "online"
+        );
+
+    }else{
+
+        status.classList.remove(
+            "online"
+        );
+
+        status.classList.add(
+            "offline"
+        );
+
+    }
+
+}
+
+
+async function checkConnection(){
+
+    try{
+
+        const response =
+            await fetch(
+                "https://pricing-server-1.onrender.com/msg",
+                {
+                    method:"GET",
+                    cache:"no-store"
+                }
+            );
+
+
+        if(
+            response.ok
+        ){
+
+            setConnectionStatus(
+                true
+            );
+
+        }else{
+
+            setConnectionStatus(
+                false
+            );
+
+        }
+
+
+    }catch(error){
+
+        setConnectionStatus(
+            false
+        );
+
+    }
+
+}
+
+
+/* الفحص الأول */
+
+checkConnection();
+
+
+/* فحص الاتصال كل 5 ثوانٍ */
+
+setInterval(
+    checkConnection,
+    5000
+);
+
+
+/* =====================================================
    نظام الأخبار
    ===================================================== */
+
+let newsList = [];
+
+let currentNewsIndex = 0;
+
+let newsTimer = null;
+
 
 async function loadNews(){
 
@@ -1219,7 +1581,9 @@ async function loadNews(){
             );
 
 
-        if(!response.ok){
+        if(
+            !response.ok
+        ){
 
             throw new Error(
                 "News server error"
@@ -1232,39 +1596,40 @@ async function loadNews(){
             await response.json();
 
 
-        const track =
-            document.getElementById(
-                "newsTrack"
-            );
-
-
         if(
-            !news ||
+            !Array.isArray(news) ||
             news.length === 0
         ){
 
-            track.textContent =
-                "لا توجد أخبار حالياً";
+            newsList = [];
+
+            showNewsMessage(
+                "لا توجد أخبار حالياً"
+            );
 
             return;
 
         }
 
 
-        track.innerHTML =
-            news
-            .map(
+        newsList =
+            news.filter(
                 function(item){
 
-                    return `
-                        <span class="news-item">
-                            ${item.title}
-                        </span>
-                    `;
+                    return (
+                        item &&
+                        item.title &&
+                        item.title.trim()
+                    );
 
                 }
-            )
-            .join("");
+            );
+
+
+        currentNewsIndex = 0;
+
+
+        startNews();
 
 
     }catch(error){
@@ -1275,10 +1640,12 @@ async function loadNews(){
         );
 
 
-        document.getElementById(
-            "newsTrack"
-        ).textContent =
-            "الأخبار غير متاحة حالياً";
+        newsList = [];
+
+
+        showNewsMessage(
+            "الأخبار غير متاحة حالياً"
+        );
 
     }
 
@@ -1286,7 +1653,189 @@ async function loadNews(){
 
 
 /* =====================================================
-   تحميل الأخبار
+   عرض رسالة داخل شريط الأخبار
+   ===================================================== */
+
+function showNewsMessage(
+    message
+){
+
+    const track =
+        document.getElementById(
+            "newsTrack"
+        );
+
+
+    if(newsTimer){
+
+        clearTimeout(
+            newsTimer
+        );
+
+    }
+
+
+    track.innerHTML = "";
+
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.className =
+        "news-item active";
+
+
+    item.textContent =
+        message;
+
+
+    track.appendChild(
+        item
+    );
+
+}
+
+
+/* =====================================================
+   تشغيل الأخبار خبر بخبر
+   ===================================================== */
+
+function startNews(){
+
+    const track =
+        document.getElementById(
+            "newsTrack"
+        );
+
+
+    if(newsTimer){
+
+        clearTimeout(
+            newsTimer
+        );
+
+    }
+
+
+    track.innerHTML = "";
+
+
+    if(
+        !newsList.length
+    ){
+
+        showNewsMessage(
+            "لا توجد أخبار حالياً"
+        );
+
+        return;
+
+    }
+
+
+    showNextNews();
+
+}
+
+
+/* =====================================================
+   الخبر التالي
+   ===================================================== */
+
+function showNextNews(){
+
+    const track =
+        document.getElementById(
+            "newsTrack"
+        );
+
+
+    track.innerHTML = "";
+
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.className =
+        "news-item";
+
+
+    item.innerHTML =
+        newsList[currentNewsIndex].title;
+
+
+    const separator =
+        document.createElement(
+            "span"
+        );
+
+
+    separator.className =
+        "news-separator";
+
+
+    separator.textContent =
+        "◆";
+
+
+    item.appendChild(
+        separator
+    );
+
+
+    track.appendChild(
+        item
+    );
+
+
+    /*
+       إجبار المتصفح على تسجيل
+       الوضع الابتدائي قبل تشغيل الحركة
+    */
+
+    void item.offsetWidth;
+
+
+    item.classList.add(
+        "active"
+    );
+
+
+    currentNewsIndex++;
+
+
+    if(
+        currentNewsIndex >=
+        newsList.length
+    ){
+
+        currentNewsIndex = 0;
+
+    }
+
+
+    /*
+       كل خبر يأخذ 14 ثانية
+       ثم ينتقل للخبر التالي
+    */
+
+    newsTimer =
+        setTimeout(
+            showNextNews,
+            14000
+        );
+
+}
+
+
+/* =====================================================
+   تحميل الأخبار أول مرة
    ===================================================== */
 
 loadNews();
