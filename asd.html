@@ -288,31 +288,60 @@ td{
 
     line-height:30px;
 
-    animation:newsMove 55s linear infinite;
+    right:0;
+
+    animation:newsMove 80s linear infinite;
 
     direction:rtl;
 
 }
 
+
+/* الفاصل الذهبي بين الأخبار */
+
 .news-item{
 
     display:inline-block;
 
-    margin-left:60px;
+    margin-left:45px;
+
+    padding-left:45px;
+
+    position:relative;
 
 }
+
+.news-item::before{
+
+    content:"◆";
+
+    position:absolute;
+
+    left:0;
+    top:0;
+
+    color:gold;
+
+    font-size:0.65rem;
+
+    line-height:30px;
+
+    opacity:0.9;
+
+}
+
 
 @keyframes newsMove{
 
     from{
 
-        transform:translateX(0);
+        transform:translateX(100%);
 
     }
 
     to{
 
-        transform:translateX(100%);
+        transform:translateX(-100%);
 
     }
 
@@ -463,11 +492,27 @@ td{
 
     }
 
+    .news-item{
+
+        margin-left:30px;
+
+        padding-left:30px;
+
+    }
+
+    .news-item::before{
+
+        font-size:0.5rem;
+
+        line-height:25px;
+
+    }
+
 }
 
 
 /* =====================================================
-   نظام التحديث
+   نهاية التصميم
    ===================================================== */
 
 </style>
@@ -484,8 +529,6 @@ td{
 <img src="https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png">
 
 <h1>شركة الاتحاد</h1>
-
-<!-- الوقت والتاريخ -->
 
 <div class="date-time">
 
