@@ -1,10 +1,10 @@
 {
-  "name": "tg-prices",
+  "name": "pricing-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Al-Ittihad pricing server with Telegram and push notifications",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
   "dependencies": {
     "cors": "^2.8.6",
@@ -12,8 +12,5 @@
     "node-telegram-bot-api": "^0.67.0",
     "rss-parser": "^3.13.0",
     "web-push": "^3.6.7"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  }
 }
