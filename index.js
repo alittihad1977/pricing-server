@@ -47,15 +47,16 @@ let lastMessage = '';
 
 
 /* =====================================================
-   مفاتيح VAPID
+   رابط لوحة الأسعار
    ===================================================== */
 
-/*
-   تنظيف المفاتيح تلقائياً من:
-   - المسافات
-   - علامات الاقتباس
-   - علامة = الموجودة في النهاية
-*/
+const PRICING_PAGE =
+    'https://alittihad1977.github.io/pricing-server/asd.html';
+
+
+/* =====================================================
+   مفاتيح VAPID
+   ===================================================== */
 
 const VAPID_PUBLIC_KEY =
     (process.env.VAPID_PUBLIC_KEY || '')
@@ -126,7 +127,7 @@ let subscriptions = [];
 
 
 /* =====================================================
-   إرسال إشعار
+   إرسال الإشعار
    ===================================================== */
 
 async function sendPushNotification(message) {
@@ -184,7 +185,7 @@ async function sendPushNotification(message) {
         data: {
 
             url:
-                'https://pricing-server-1.onrender.com'
+                PRICING_PAGE
 
         }
 
@@ -232,11 +233,6 @@ async function sendPushNotification(message) {
             );
 
 
-            /*
-               إذا كان الجهاز لم يعد مسجلاً،
-               نحذفه من القائمة.
-            */
-
             if (
                 error.statusCode !== 404 &&
                 error.statusCode !== 410
@@ -282,11 +278,6 @@ bot.on(
         }
 
 
-        /*
-           منع إرسال إشعار لنفس الرسالة
-           أكثر من مرة.
-        */
-
         if (
             message === lastMessage
         ) {
@@ -308,10 +299,6 @@ bot.on(
             message
         );
 
-
-        /*
-           إرسال الإشعار للموبايلات
-        */
 
         await sendPushNotification(
             message
