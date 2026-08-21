@@ -103,6 +103,68 @@ html, body{
 }
 
 
+/* =====================================================
+   حالة الاتصال
+   ===================================================== */
+
+.connection-status{
+    position:fixed;
+    top:10px;
+    left:10px;
+    z-index:9999;
+
+    display:flex;
+    align-items:center;
+    gap:5px;
+
+    padding:4px 9px;
+
+    border-radius:20px;
+
+    font-size:12px;
+    font-weight:bold;
+
+    background:rgba(0,0,0,0.25);
+
+    transition:
+        background 0.3s ease,
+        color 0.3s ease,
+        opacity 0.3s ease;
+
+    opacity:0.75;
+
+    direction:rtl;
+}
+
+.connection-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    display:inline-block;
+}
+
+.connection-status.connected{
+    color:#69f0ae;
+}
+
+.connection-status.connected .connection-dot{
+    background:#00e676;
+    box-shadow:0 0 6px #00e676;
+}
+
+.connection-status.disconnected{
+    color:#ff8a80;
+}
+
+.connection-status.disconnected .connection-dot{
+    background:#ff3d00;
+    box-shadow:0 0 6px #ff3d00;
+}
+
+
+/* ===================================================== */
+
+
 table{
     width:100%;
     height:auto;
@@ -315,12 +377,40 @@ td{
     .down{
         font-size:1.8rem;
     }
+
+    .connection-status{
+        top:6px;
+        left:6px;
+        font-size:10px;
+        padding:3px 7px;
+    }
+
+    .connection-dot{
+        width:6px;
+        height:6px;
+    }
 }
 
 </style>
 </head>
 
 <body>
+
+
+<!-- =====================================================
+     مؤشر الاتصال
+     ===================================================== -->
+
+<div id="connectionStatus" class="connection-status disconnected">
+
+    <span class="connection-dot"></span>
+
+    <span id="connectionText">
+        غير متصل
+    </span>
+
+</div>
+
 
 <div class="screen">
 
@@ -827,6 +917,41 @@ function processMessage(){
 
 
 /* =====================================================
+   حالة الاتصال
+   ===================================================== */
+
+let lastSuccessfulConnection = Date.now();
+
+function setConnectionStatus(connected){
+
+    const status =
+        document.getElementById("connectionStatus");
+
+    const text =
+        document.getElementById("connectionText");
+
+    if(connected){
+
+        status.classList.remove("disconnected");
+
+        status.classList.add("connected");
+
+        text.textContent = "متصل";
+
+    }else{
+
+        status.classList.remove("connected");
+
+        status.classList.add("disconnected");
+
+        text.textContent = "غير متصل";
+
+    }
+
+}
+
+
+/* =====================================================
    جلب آخر رسالة من Render
    ===================================================== */
 
@@ -834,12 +959,42 @@ async function fetchMessage(){
 
     try{
 
+        const controller = new AbortController();
+
+        const timeout =
+            setTimeout(function(){
+
+                controller.abort();
+
+            },4000);
+
+
         const res = await fetch(
             "https://pricing-server-1.onrender.com/msg",
             {
-                cache:"no-store"
+                cache:"no-store",
+                signal:controller.signal
             }
         );
+
+
+        clearTimeout(timeout);
+
+
+        if(!res.ok){
+
+            throw new Error(
+                "Server response: " + res.status
+            );
+
+        }
+
+
+        /* الاتصال بالسيرفر ناجح */
+
+        lastSuccessfulConnection = Date.now();
+
+        setConnectionStatus(true);
 
 
         const data = await res.text();
@@ -879,6 +1034,17 @@ async function fetchMessage(){
 
     }
 
+
+    /* إذا مر أكثر من 5 ثوانٍ بدون اتصال ناجح */
+
+    if(
+        Date.now() - lastSuccessfulConnection > 5000
+    ){
+
+        setConnectionStatus(false);
+
+    }
+
 }
 
 
@@ -890,6 +1056,11 @@ setInterval(
     fetchMessage,
     1000
 );
+
+
+/* فحص أولي مباشرة */
+
+fetchMessage();
 
 </script>
 
