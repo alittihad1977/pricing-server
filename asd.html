@@ -72,11 +72,6 @@ html,body{
     margin:0;
 }
 
-
-/* =====================================================
-   الوقت والتاريخ
-   ===================================================== */
-
 .date-time{
     display:flex;
     flex-direction:column;
@@ -100,11 +95,6 @@ html,body{
     font-weight:bold;
     margin-top:5px;
 }
-
-
-/* =====================================================
-   جدول الأسعار
-   ===================================================== */
 
 table{
     width:100%;
@@ -146,11 +136,6 @@ td{
     filter:drop-shadow(0 0 7px rgba(255,255,255,0.35));
 }
 
-
-/* =====================================================
-   الأسهم
-   ===================================================== */
-
 .up{
     color:#00e676;
     font-weight:bold;
@@ -170,285 +155,175 @@ td{
 }
 
 @keyframes upMove{
-    0%{
-        transform:translateY(0);
-    }
-
-    50%{
-        transform:translateY(-5px);
-    }
-
-    100%{
-        transform:translateY(0);
-    }
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-5px);}
+    100%{transform:translateY(0);}
 }
 
 @keyframes downMove{
-    0%{
-        transform:translateY(0);
-    }
-
-    50%{
-        transform:translateY(5px);
-    }
-
-    100%{
-        transform:translateY(0);
-    }
+    0%{transform:translateY(0);}
+    50%{transform:translateY(5px);}
+    100%{transform:translateY(0);}
 }
-
-
-/* =====================================================
-   وميض تغيير السعر
-   ===================================================== */
 
 .flash{
     animation:flashAnim 0.4s ease;
 }
 
 @keyframes flashAnim{
-
-    0%{
-        background:rgba(255,255,255,0.1);
-    }
-
-    100%{
-        background:transparent;
-    }
-
+    0%{background:rgba(255,255,255,0.1);}
+    100%{background:transparent;}
 }
 
 #updateSystem{
     display:none;
 }
 
-
-/* =====================================================
-   مؤشر الاتصال
-   ===================================================== */
-
 .connection-status{
-
     position:fixed;
-
     top:8px;
     left:10px;
-
     display:flex;
     align-items:center;
-
     gap:5px;
-
     padding:4px 8px;
-
     border-radius:12px;
-
     background:rgba(0,0,0,0.18);
-
     font-size:0.70rem;
-
     color:rgba(255,255,255,0.80);
-
     z-index:2000;
-
     direction:rtl;
-
     transition:all 0.3s ease;
 }
 
 .connection-dot{
-
     width:7px;
     height:7px;
-
     border-radius:50%;
-
     display:block;
-
     transition:all 0.3s ease;
 }
 
 .connection-status.online .connection-dot{
-
     background:#00e676;
-
-    box-shadow:
-        0 0 5px rgba(0,230,118,0.7);
+    box-shadow:0 0 5px rgba(0,230,118,0.7);
 }
 
 .connection-status.offline .connection-dot{
-
     background:#ff3d00;
-
-    box-shadow:
-        0 0 5px rgba(255,61,0,0.7);
+    box-shadow:0 0 5px rgba(255,61,0,0.7);
 }
 
 .connection-status.online .connection-text::after{
-
     content:"متصل";
 }
 
 .connection-status.offline .connection-text::after{
-
     content:"غير متصل";
 }
 
-
-/* =====================================================
-   شريط الأخبار الثابت
-   ===================================================== */
-
 .news-bar{
-
     position:fixed;
-
     bottom:5px;
     left:2%;
-
     width:96%;
     height:30px;
-
     display:flex;
     align-items:center;
-
     background:rgba(255,255,255,0.055);
-
     border:1px solid rgba(244,196,48,0.30);
-
     border-radius:9px;
-
     overflow:hidden;
-
     z-index:1000;
-
     direction:rtl;
 }
 
 .news-title{
-
     flex:0 0 auto;
-
     height:100%;
-
     padding:0 10px;
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     background:rgba(244,196,48,0.10);
-
     color:gold;
-
     font-size:0.85rem;
-
     font-weight:bold;
-
     direction:rtl;
-
     z-index:2;
 }
 
 .news-content{
-
     flex:1;
-
     height:100%;
-
     overflow:hidden;
-
     position:relative;
-
     direction:rtl;
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
 }
 
 #newsTrack{
-
     width:100%;
     height:100%;
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     position:relative;
 }
 
 .news-item{
-
     width:100%;
     height:100%;
-
     display:flex;
-
     align-items:center;
-
     justify-content:center;
-
     text-align:center;
-
     white-space:nowrap;
-
     overflow:hidden;
-
     text-overflow:ellipsis;
-
     color:white;
-
     font-size:0.85rem;
-
     font-weight:bold;
-
     line-height:30px;
-
     direction:rtl;
-
     opacity:0;
-
     position:absolute;
-
     top:0;
     right:0;
-
     padding:0 15px;
-
-    transition:
-        opacity 0.8s ease;
+    transition:opacity 0.8s ease;
 }
 
 .news-item.active{
-
     opacity:1;
 }
 
 .news-separator{
-
     color:gold;
-
     font-size:0.65rem;
-
     margin-right:15px;
-
     margin-left:15px;
-
     flex-shrink:0;
 }
 
-
-/* =====================================================
-   الشاشات الكبيرة
-   ===================================================== */
+/* زر الإشعارات */
+#notificationButton{
+    position:fixed;
+    bottom:40px;
+    left:8px;
+    z-index:3000;
+    padding:4px 7px;
+    border:1px solid rgba(244,196,48,0.25);
+    border-radius:12px;
+    background:rgba(11,27,61,0.45);
+    color:rgba(255,215,0,0.65);
+    font-size:9px;
+    font-weight:bold;
+    cursor:pointer;
+    opacity:0.55;
+}
 
 @media screen and (min-width:1400px){
 
@@ -515,11 +390,6 @@ td{
     }
 }
 
-
-/* =====================================================
-   الشاشات الصغيرة
-   ===================================================== */
-
 @media screen and (max-width:900px){
 
     .container{
@@ -572,64 +442,49 @@ td{
         font-size:1.8rem;
     }
 
-
-    /* الاتصال */
-
     .connection-status{
-
         top:5px;
         left:6px;
-
         padding:3px 6px;
-
         font-size:0.60rem;
     }
 
     .connection-dot{
-
         width:6px;
         height:6px;
     }
 
-
-    /* الأخبار */
-
     .news-bar{
-
         bottom:3px;
-
         left:2.5%;
-
         width:95%;
-
         height:25px;
     }
 
     .news-title{
-
         padding:0 7px;
-
         font-size:0.70rem;
     }
 
     .news-item{
-
         font-size:0.70rem;
-
         line-height:25px;
-
         padding:0 8px;
     }
 
     .news-separator{
-
         font-size:0.50rem;
-
         margin-left:10px;
-
         margin-right:10px;
     }
 
+    #notificationButton{
+        bottom:32px;
+        left:5px;
+        font-size:8px;
+        padding:3px 5px;
+        opacity:0.45;
+    }
 }
 
 </style>
@@ -637,31 +492,14 @@ td{
 
 <body>
 
-
-<!-- =====================================================
-     مؤشر الاتصال
-     ===================================================== -->
-
-<div
-    id="connectionStatus"
-    class="connection-status offline"
->
-
+<div id="connectionStatus" class="connection-status offline">
     <span class="connection-dot"></span>
-
     <span class="connection-text"></span>
-
 </div>
-
 
 <div class="screen">
 
 <div class="container">
-
-
-<!-- =====================================================
-     الرأس
-     ===================================================== -->
 
 <div class="header">
 
@@ -683,213 +521,116 @@ td{
 
 </div>
 
-
-<!-- =====================================================
-     جدول الأسعار
-     ===================================================== -->
-
 <table>
 
 <tr>
-
 <th>الزوج</th>
 <th>شراء</th>
 <th>بيع</th>
-
 </tr>
-
-
-<!-- 1 الدولار / الليرة السورية -->
 
 <tr>
 
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/us.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/us.png" width="70" height="40"/>
 </svg>
 
 /
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/sy.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/sy.png" width="70" height="40"/>
 </svg>
 
 </td>
 
-<td class="price-cell" id="buy1">
-11800
-</td>
-
-<td class="price-cell" id="sell1">
-11900
-</td>
+<td class="price-cell" id="buy1">11800</td>
+<td class="price-cell" id="sell1">11900</td>
 
 </tr>
-
-
-<!-- 2 الليرة التركية / الليرة السورية -->
 
 <tr>
 
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/tr.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/tr.png" width="70" height="40"/>
 </svg>
 
 /
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/sy.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/sy.png" width="70" height="40"/>
 </svg>
 
 </td>
 
-<td class="price-cell" id="buy2">
-268
-</td>
-
-<td class="price-cell" id="sell2">
-272
-</td>
+<td class="price-cell" id="buy2">268</td>
+<td class="price-cell" id="sell2">272</td>
 
 </tr>
-
-
-<!-- 3 اليورو / الليرة السورية -->
 
 <tr>
 
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/eu.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/eu.png" width="70" height="40"/>
 </svg>
 
 /
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/sy.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/sy.png" width="70" height="40"/>
 </svg>
 
 </td>
 
-<td class="price-cell" id="buy3">
-13450
-</td>
-
-<td class="price-cell" id="sell3">
-13600
-</td>
+<td class="price-cell" id="buy3">13450</td>
+<td class="price-cell" id="sell3">13600</td>
 
 </tr>
-
-
-<!-- 4 الدولار / الليرة التركية -->
 
 <tr>
 
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/us.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/us.png" width="70" height="40"/>
 </svg>
 
 /
 
-<svg class="flag-svg" viewBox="0 70 40">
-
-<image
-href="https://flagcdn.com/w80/tr.png"
-width="70"
-height="40"/>
-
+<svg class="flag-svg" viewBox="0 0 70 40">
+<image href="https://flagcdn.com/w80/tr.png" width="70" height="40"/>
 </svg>
 
 </td>
 
-<td class="price-cell" id="buy4">
-43.7
-</td>
-
-<td class="price-cell" id="sell4">
-44
-</td>
+<td class="price-cell" id="buy4">43.7</td>
+<td class="price-cell" id="sell4">44</td>
 
 </tr>
-
-
-<!-- 5 اليورو / الدولار -->
 
 <tr>
 
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/eu.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/eu.png" width="70" height="40"/>
 </svg>
 
 /
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/us.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/us.png" width="70" height="40"/>
 </svg>
 
 </td>
 
-<td class="price-cell" id="buy5">
-1.14
-</td>
-
-<td class="price-cell" id="sell5">
-1.16
-</td>
+<td class="price-cell" id="buy5">1.14</td>
+<td class="price-cell" id="sell5">1.16</td>
 
 </tr>
 
@@ -898,38 +639,33 @@ height="40"/>
 </div>
 </div>
 
-
-<!-- =====================================================
-     شريط الأخبار
-     ===================================================== -->
-
 <div class="news-bar">
 
     <div class="news-title">
         📰 آخر الأخبار
     </div>
 
-    <div
-        class="news-content"
-        id="newsContent"
-    >
-
+    <div class="news-content" id="newsContent">
         <div id="newsTrack"></div>
-
     </div>
 
 </div>
 
-
 <div id="updateSystem">
-
 <textarea id="msg"></textarea>
-
 </div>
 
 
-<script>
+<!-- =====================================================
+     زر الإشعارات
+     ===================================================== -->
 
+<button id="notificationButton">
+🔔 تفعيل الإشعارات
+</button>
+
+
+<script>
 
 /* =====================================================
    الساعة والتاريخ
@@ -961,22 +697,15 @@ function updateDateTime(){
             }
         );
 
-    document.getElementById(
-        "liveTime"
-    ).textContent = time;
+    document.getElementById("liveTime").textContent = time;
 
-    document.getElementById(
-        "liveDate"
-    ).textContent = date;
+    document.getElementById("liveDate").textContent = date;
 
 }
 
 updateDateTime();
 
-setInterval(
-    updateDateTime,
-    1000
-);
+setInterval(updateDateTime,1000);
 
 
 /* =====================================================
@@ -984,7 +713,6 @@ setInterval(
    ===================================================== */
 
 let oldPrices = {};
-
 let direction = {};
 
 let audioCtx =
@@ -995,16 +723,13 @@ let audioCtx =
 
 let unlocked = false;
 
-
 document.addEventListener(
     "click",
     function(){
 
         audioCtx.resume().then(
             function(){
-
                 unlocked = true;
-
             }
         );
 
@@ -1012,16 +737,13 @@ document.addEventListener(
     {once:true}
 );
 
-
 document.addEventListener(
     "touchstart",
     function(){
 
         audioCtx.resume().then(
             function(){
-
                 unlocked = true;
-
             }
         );
 
@@ -1041,16 +763,11 @@ function playSound(){
         audioCtx.createGain();
 
     o.type = "sine";
-
     o.frequency.value = 880;
-
     g.gain.value = 0.15;
 
     o.connect(g);
-
-    g.connect(
-        audioCtx.destination
-    );
+    g.connect(audioCtx.destination);
 
     o.start();
 
@@ -1068,10 +785,7 @@ function updateCell(id,value){
 
     if(!el) return;
 
-
-    if(
-        oldPrices[id] !== undefined
-    ){
+    if(oldPrices[id] !== undefined){
 
         if(
             Number(value) !==
@@ -1083,33 +797,24 @@ function updateCell(id,value){
                 Number(oldPrices[id])
             ){
 
-                direction[id] =
-                    "up";
+                direction[id] = "up";
 
             }else{
 
-                direction[id] =
-                    "down";
+                direction[id] = "down";
 
             }
 
-
-            document.body.classList.add(
-                "flash"
-            );
-
+            document.body.classList.add("flash");
 
             setTimeout(
                 function(){
 
-                    document.body.classList.remove(
-                        "flash"
-                    );
+                    document.body.classList.remove("flash");
 
                 },
                 300
             );
-
 
             playSound();
 
@@ -1117,32 +822,19 @@ function updateCell(id,value){
 
     }
 
-
     oldPrices[id] = value;
-
 
     let arrow = "";
 
-
-    if(
-        direction[id] === "up"
-    ){
-
+    if(direction[id] === "up"){
         arrow =
             "<span class='up'>▲</span>";
-
     }
 
-
-    if(
-        direction[id] === "down"
-    ){
-
+    if(direction[id] === "down"){
         arrow =
             "<span class='down'>▼</span>";
-
     }
-
 
     el.innerHTML =
         value + arrow;
@@ -1152,50 +844,25 @@ function updateCell(id,value){
 
 function updatePrices(){
 
-    for(
-        let i=1;
-        i<=5;
-        i++
-    ){
+    for(let i=1;i<=5;i++){
 
         let buy =
-            localStorage.getItem(
-                "buy"+i
-            );
+            localStorage.getItem("buy"+i);
 
         let sell =
-            localStorage.getItem(
-                "sell"+i
-            );
+            localStorage.getItem("sell"+i);
 
-
-        if(
-            buy !== null
-        ){
-
-            updateCell(
-                "buy"+i,
-                buy
-            );
-
+        if(buy !== null){
+            updateCell("buy"+i,buy);
         }
 
-
-        if(
-            sell !== null
-        ){
-
-            updateCell(
-                "sell"+i,
-                sell
-            );
-
+        if(sell !== null){
+            updateCell("sell"+i,sell);
         }
 
     }
 
 }
-
 
 updatePrices();
 
@@ -1206,56 +873,28 @@ updatePrices();
 
 let lastProcessed = "";
 
-
 function processMessage(){
 
     let text =
-        document.getElementById(
-            "msg"
-        ).value;
-
+        document.getElementById("msg").value;
 
     if(!text.trim()) return;
 
-
     let buys = [
-
         ...text.matchAll(
             /الشراء\s*[:：]\s*([0-9]+(?:\.[0-9]+)?)/g
         )
-
     ];
 
-
     let sells = [
-
         ...text.matchAll(
             /المبيع\s*[:：]\s*([0-9]+(?:\.[0-9]+)?)/g
         )
-
     ];
 
+    for(let i=0;i<5;i++){
 
-    console.log(
-        "عدد أسعار الشراء:",
-        buys.length
-    );
-
-    console.log(
-        "عدد أسعار المبيع:",
-        sells.length
-    );
-
-
-    for(
-        let i=0;
-        i<5;
-        i++
-    ){
-
-        if(
-            buys[i]
-        ){
+        if(buys[i]){
 
             let buy =
                 buys[i][1];
@@ -1267,10 +906,7 @@ function processMessage(){
 
         }
 
-
-        if(
-            sells[i]
-        ){
+        if(sells[i]){
 
             let sell =
                 sells[i][1];
@@ -1284,12 +920,9 @@ function processMessage(){
 
     }
 
-
     updatePrices();
 
-    document.getElementById(
-        "msg"
-    ).value = "";
+    document.getElementById("msg").value = "";
 
 }
 
@@ -1306,10 +939,8 @@ async function fetchMessage(){
                 }
             );
 
-
         const data =
             await res.text();
-
 
         if(
             data.trim() !== "" &&
@@ -1317,20 +948,15 @@ async function fetchMessage(){
         ){
 
             const textarea =
-                document.getElementById(
-                    "msg"
-                );
+                document.getElementById("msg");
 
-            textarea.value =
-                data;
+            textarea.value = data;
 
             processMessage();
 
-            lastProcessed =
-                data;
+            lastProcessed = data;
 
         }
-
 
     }catch(e){
 
@@ -1343,46 +969,29 @@ async function fetchMessage(){
 
 }
 
-
-setInterval(
-    fetchMessage,
-    1000
-);
+setInterval(fetchMessage,1000);
 
 
 /* =====================================================
    حالة الاتصال
    ===================================================== */
 
-function setConnectionStatus(
-    online
-){
+function setConnectionStatus(online){
 
     const status =
         document.getElementById(
             "connectionStatus"
         );
 
-
     if(online){
 
-        status.classList.remove(
-            "offline"
-        );
-
-        status.classList.add(
-            "online"
-        );
+        status.classList.remove("offline");
+        status.classList.add("online");
 
     }else{
 
-        status.classList.remove(
-            "online"
-        );
-
-        status.classList.add(
-            "offline"
-        );
+        status.classList.remove("online");
+        status.classList.add("offline");
 
     }
 
@@ -1402,22 +1011,17 @@ async function checkConnection(){
                 }
             );
 
-
         setConnectionStatus(
             response.ok
         );
 
-
     }catch(error){
 
-        setConnectionStatus(
-            false
-        );
+        setConnectionStatus(false);
 
     }
 
 }
-
 
 checkConnection();
 
@@ -1428,7 +1032,7 @@ setInterval(
 
 
 /* =====================================================
-   نظام الأخبار - ثابت بدون حركة
+   نظام الأخبار
    ===================================================== */
 
 let newsList = [];
@@ -1437,13 +1041,8 @@ let currentNewsIndex = 0;
 
 let newsTimer = null;
 
-
-/* مدة ظهور الخبر */
-
 const NEWS_DISPLAY_TIME = 7000;
 
-
-/* تحميل الأخبار */
 
 async function loadNews(){
 
@@ -1457,7 +1056,6 @@ async function loadNews(){
                 }
             );
 
-
         if(!response.ok){
 
             throw new Error(
@@ -1466,10 +1064,8 @@ async function loadNews(){
 
         }
 
-
         const news =
             await response.json();
-
 
         if(
             !Array.isArray(news) ||
@@ -1486,7 +1082,6 @@ async function loadNews(){
 
         }
 
-
         newsList =
             news.filter(
                 function(item){
@@ -1500,10 +1095,7 @@ async function loadNews(){
                 }
             );
 
-
-        if(
-            newsList.length === 0
-        ){
+        if(newsList.length === 0){
 
             showNewsMessage(
                 "لا توجد أخبار حالياً"
@@ -1513,11 +1105,9 @@ async function loadNews(){
 
         }
 
-
         currentNewsIndex = 0;
 
         startNews();
-
 
     }catch(error){
 
@@ -1525,7 +1115,6 @@ async function loadNews(){
             "News Error:",
             error
         );
-
 
         newsList = [];
 
@@ -1538,66 +1127,39 @@ async function loadNews(){
 }
 
 
-/* =====================================================
-   عرض رسالة
-   ===================================================== */
-
-function showNewsMessage(
-    message
-){
+function showNewsMessage(message){
 
     const track =
         document.getElementById(
             "newsTrack"
         );
 
-
     if(newsTimer){
-
-        clearTimeout(
-            newsTimer
-        );
-
+        clearTimeout(newsTimer);
     }
-
 
     track.innerHTML = "";
 
-
     const item =
-        document.createElement(
-            "div"
-        );
-
+        document.createElement("div");
 
     item.className =
         "news-item";
 
-
     item.textContent =
         message;
 
-
-    track.appendChild(
-        item
-    );
-
+    track.appendChild(item);
 
     void item.offsetWidth;
 
-
-    item.classList.add(
-        "active"
-    );
-
+    item.classList.add("active");
 
     newsTimer =
         setTimeout(
             function(){
 
-                showNewsMessage(
-                    message
-                );
+                showNewsMessage(message);
 
             },
             NEWS_DISPLAY_TIME
@@ -1606,20 +1168,11 @@ function showNewsMessage(
 }
 
 
-/* =====================================================
-   بدء الأخبار
-   ===================================================== */
-
 function startNews(){
 
     if(newsTimer){
-
-        clearTimeout(
-            newsTimer
-        );
-
+        clearTimeout(newsTimer);
     }
-
 
     currentNewsIndex = 0;
 
@@ -1628,10 +1181,6 @@ function startNews(){
 }
 
 
-/* =====================================================
-   الخبر التالي
-   ===================================================== */
-
 function showNextNews(){
 
     const track =
@@ -1639,13 +1188,9 @@ function showNextNews(){
             "newsTrack"
         );
 
-
     track.innerHTML = "";
 
-
-    if(
-        newsList.length === 0
-    ){
+    if(newsList.length === 0){
 
         showNewsMessage(
             "لا توجد أخبار حالياً"
@@ -1655,89 +1200,39 @@ function showNextNews(){
 
     }
 
-
     const item =
-        document.createElement(
-            "div"
-        );
-
+        document.createElement("div");
 
     item.className =
         "news-item";
-
-
-    /*
-       يظهر الخبر ثابتاً
-       بدون أي حركة
-    */
 
     item.textContent =
         newsList[
             currentNewsIndex
         ].title;
 
-
-    /*
-       الفاصل الذهبي
-    */
-
     const separator =
-        document.createElement(
-            "span"
-        );
-
+        document.createElement("span");
 
     separator.className =
         "news-separator";
 
-
     separator.textContent =
         "◆";
 
+    item.appendChild(separator);
 
-    item.appendChild(
-        separator
-    );
-
-
-    track.appendChild(
-        item
-    );
-
-
-    /*
-       إظهار تدريجي
-    */
+    track.appendChild(item);
 
     void item.offsetWidth;
 
-    item.classList.add(
-        "active"
-    );
-
-
-    /*
-       الانتقال للخبر التالي
-       بعد 7 ثواني
-    */
+    item.classList.add("active");
 
     newsTimer =
         setTimeout(
             function(){
 
-                /*
-                   إخفاء الخبر الحالي
-                */
-
-                item.classList.remove(
-                    "active"
-                );
-
-
-                /*
-                   بعد انتهاء تأثير الاختفاء
-                   يظهر الخبر التالي
-                */
+                item.classList.remove("active");
 
                 setTimeout(
                     function(){
@@ -1753,7 +1248,6 @@ function showNextNews(){
 
                         }
 
-
                         showNextNews();
 
                     },
@@ -1767,214 +1261,23 @@ function showNextNews(){
 }
 
 
-/* =====================================================
-   تشغيل الأخبار
-   ===================================================== */
-
 loadNews();
-
-
-/* =====================================================
-   تحديث الأخبار كل 5 دقائق
-   ===================================================== */
 
 setInterval(
     loadNews,
     5 * 60 * 1000
 );
 
-</script>
-
-</body>
-    <script>
 
 /* =====================================================
-   🔔 نظام إشعارات الأسعار
+   🔔 نظام الإشعارات
    ===================================================== */
 
 const PUSH_SERVER =
     "https://pricing-server-1.onrender.com";
 
 
-/* -----------------------------------------------------
-   زر تفعيل الإشعارات
-   ----------------------------------------------------- */
-
-function createNotificationButton(){
-
-    if(
-        document.getElementById(
-            "notificationButton"
-        )
-    ){
-
-        return;
-
-    }
-
-
-    const button =
-        document.createElement("button");
-
-
-    button.id =
-        "notificationButton";
-
-
-    button.innerHTML =
-        "🔔 تفعيل إشعارات الأسعار";
-
-
-    button.style.position =
-        "fixed";
-
-    button.style.bottom =
-        "42px";
-
-    button.style.left =
-        "10px";
-
-    button.style.zIndex =
-        "3000";
-
-    button.style.padding =
-        "6px 10px";
-
-    button.style.border =
-        "1px solid rgba(244,196,48,0.45)";
-
-    button.style.borderRadius =
-        "14px";
-
-    button.style.background =
-        "rgba(11,27,61,0.75)";
-
-    button.style.color =
-        "gold";
-
-    button.style.fontSize =
-        "11px";
-
-    button.style.fontWeight =
-        "bold";
-
-    button.style.cursor =
-        "pointer";
-
-
-    button.onclick =
-        enableNotifications;
-
-
-    document.body.appendChild(
-        button
-    );
-
-}
-
-
-/* -----------------------------------------------------
-   تسجيل Service Worker
-   ----------------------------------------------------- */
-
-async function registerServiceWorker(){
-
-    if(
-        !("serviceWorker" in navigator)
-    ){
-
-        console.log(
-            "Service Worker غير مدعوم"
-        );
-
-        return null;
-
-    }
-
-
-    try{
-
-        const registration =
-            await navigator.serviceWorker.register(
-                "./sw.js"
-            );
-
-
-        console.log(
-            "Service Worker جاهز"
-        );
-
-
-        return registration;
-
-
-    }catch(error){
-
-        console.error(
-            "Service Worker Error:",
-            error
-        );
-
-
-        return null;
-
-    }
-
-}
-
-
-/* -----------------------------------------------------
-   جلب المفتاح العام
-   ----------------------------------------------------- */
-
-async function getVapidPublicKey(){
-
-    const response =
-        await fetch(
-            PUSH_SERVER +
-            "/vapidPublicKey",
-            {
-                cache:"no-store"
-            }
-        );
-
-
-    if(!response.ok){
-
-        throw new Error(
-            "تعذر جلب مفتاح الإشعارات"
-        );
-
-    }
-
-
-    const data =
-        await response.json();
-
-
-    if(
-        !data.publicKey
-    ){
-
-        throw new Error(
-            "مفتاح الإشعارات غير موجود"
-        );
-
-    }
-
-
-    return data.publicKey;
-
-}
-
-
-/* -----------------------------------------------------
-   تحويل المفتاح إلى Uint8Array
-   ----------------------------------------------------- */
-
-function urlBase64ToUint8Array(
-    base64String
-){
+function urlBase64ToUint8Array(base64String){
 
     const padding =
         "=".repeat(
@@ -1983,37 +1286,25 @@ function urlBase64ToUint8Array(
             ) % 4
         );
 
-
     const base64 =
         (
             base64String +
             padding
         )
-        .replace(
-            /-/g,
-            "+"
-        )
-        .replace(
-            /_/g,
-            "/"
-        );
-
+        .replace(/-/g,"+")
+        .replace(/_/g,"/");
 
     const rawData =
-        window.atob(
-            base64
-        );
-
+        window.atob(base64);
 
     const outputArray =
         new Uint8Array(
             rawData.length
         );
 
-
     for(
-        let i = 0;
-        i < rawData.length;
+        let i=0;
+        i<rawData.length;
         ++i
     ){
 
@@ -2022,67 +1313,87 @@ function urlBase64ToUint8Array(
 
     }
 
-
     return outputArray;
 
 }
 
 
-/* -----------------------------------------------------
-   تفعيل الإشعارات
-   ----------------------------------------------------- */
-
 async function enableNotifications(){
+
+    const button =
+        document.getElementById(
+            "notificationButton"
+        );
 
     try{
 
         if(
-            !("Notification" in window)
+            !("serviceWorker" in navigator) ||
+            !("PushManager" in window)
         ){
 
-            alert(
-                "هذا الجهاز لا يدعم الإشعارات."
+            throw new Error(
+                "المتصفح لا يدعم Push Notifications"
             );
-
-            return;
 
         }
 
 
         const registration =
-            await registerServiceWorker();
-
-
-        if(!registration){
-
-            alert(
-                "تعذر تشغيل نظام الإشعارات."
+            await navigator.serviceWorker.register(
+                "./sw.js",
+                {
+                    scope:"./"
+                }
             );
 
-            return;
 
-        }
+        await navigator.serviceWorker.ready;
 
 
         const permission =
             await Notification.requestPermission();
 
 
-        if(
-            permission !== "granted"
-        ){
+        if(permission !== "granted"){
 
-            alert(
-                "لم يتم السماح بالإشعارات."
+            throw new Error(
+                "لم يتم السماح بالإشعارات"
             );
-
-            return;
 
         }
 
 
-        const publicKey =
-            await getVapidPublicKey();
+        const response =
+            await fetch(
+                PUSH_SERVER +
+                "/vapidPublicKey",
+                {
+                    cache:"no-store"
+                }
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "تعذر الاتصال بخادم الإشعارات"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if(!data.publicKey){
+
+            throw new Error(
+                "مفتاح الإشعارات غير موجود في السيرفر"
+            );
+
+        }
 
 
         let subscription =
@@ -2098,7 +1409,7 @@ async function enableNotifications(){
 
                     applicationServerKey:
                         urlBase64ToUint8Array(
-                            publicKey
+                            data.publicKey
                         )
 
                 });
@@ -2106,7 +1417,7 @@ async function enableNotifications(){
         }
 
 
-        const response =
+        const subscribeResponse =
             await fetch(
                 PUSH_SERVER +
                 "/subscribe",
@@ -2128,34 +1439,26 @@ async function enableNotifications(){
             );
 
 
-        if(!response.ok){
+        if(!subscribeResponse.ok){
 
             throw new Error(
-                "تعذر تسجيل الجهاز"
+                "تعذر تسجيل هذا الجهاز في السيرفر"
             );
 
         }
 
 
-        const button =
-            document.getElementById(
-                "notificationButton"
-            );
+        /*
+           نجاح كامل
+           نخفي الزر نهائياً
+        */
+
+        button.style.display =
+            "none";
 
 
-        if(button){
-
-            button.innerHTML =
-                "🔔 الإشعارات مفعّلة";
-
-            button.style.color =
-                "#00e676";
-
-        }
-
-
-        alert(
-            "تم تفعيل إشعارات الأسعار بنجاح 🔔"
+        console.log(
+            "تم تفعيل إشعارات الأسعار بنجاح"
         );
 
 
@@ -2168,7 +1471,8 @@ async function enableNotifications(){
 
 
         alert(
-            "حدث خطأ أثناء تفعيل الإشعارات."
+            "تعذر تفعيل الإشعارات:\n\n" +
+            error.message
         );
 
     }
@@ -2176,18 +1480,71 @@ async function enableNotifications(){
 }
 
 
-/* -----------------------------------------------------
-   تشغيل النظام
-   ----------------------------------------------------- */
+document
+    .getElementById(
+        "notificationButton"
+    )
+    .addEventListener(
+        "click",
+        enableNotifications
+    );
 
-window.addEventListener(
-    "load",
-    function(){
 
-        createNotificationButton();
+/*
+   إذا كان الجهاز مفعّل مسبقاً،
+   نخفي الزر تلقائياً.
+*/
+
+(async function(){
+
+    try{
+
+        if(
+            !("serviceWorker" in navigator)
+        ){
+
+            return;
+
+        }
+
+        const registration =
+            await navigator.serviceWorker.getRegistration(
+                "./"
+            );
+
+        if(!registration){
+
+            return;
+
+        }
+
+        const subscription =
+            await registration.pushManager.getSubscription();
+
+        if(
+            subscription &&
+            Notification.permission === "granted"
+        ){
+
+            document.getElementById(
+                "notificationButton"
+            ).style.display =
+                "none";
+
+        }
+
+    }catch(error){
+
+        console.log(
+            "Notification status check:",
+            error
+        );
 
     }
-);
 
-    </script>
+})();
+
+</script>
+
+</body>
 </html>
