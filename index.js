@@ -47,48 +47,46 @@ let lastMessage = '';
 
 
 /* =====================================================
-   VAPID
+   مفاتيح VAPID
    ===================================================== */
 
+/*
+   تنظيف المفاتيح تلقائياً من:
+   - المسافات
+   - علامات الاقتباس
+   - علامة = الموجودة في النهاية
+*/
+
 const VAPID_PUBLIC_KEY =
-    process.env.VAPID_PUBLIC_KEY;
+    (process.env.VAPID_PUBLIC_KEY || '')
+        .trim()
+        .replace(/^["']|["']$/g, '')
+        .replace(/=+$/g, '');
 
 const VAPID_PRIVATE_KEY =
-    process.env.VAPID_PRIVATE_KEY;
+    (process.env.VAPID_PRIVATE_KEY || '')
+        .trim()
+        .replace(/^["']|["']$/g, '')
+        .replace(/=+$/g, '');
 
 
-if (!VAPID_PUBLIC_KEY) {
+console.log(
+    'VAPID_PUBLIC_KEY:',
+    VAPID_PUBLIC_KEY
+        ? 'موجود ✅'
+        : 'غير موجود ❌'
+);
 
-    console.error(
-        'VAPID_PUBLIC_KEY is missing'
-    );
-
-} else {
-
-    console.log(
-        'VAPID_PUBLIC_KEY: موجود ✅'
-    );
-
-}
-
-
-if (!VAPID_PRIVATE_KEY) {
-
-    console.error(
-        'VAPID_PRIVATE_KEY is missing'
-    );
-
-} else {
-
-    console.log(
-        'VAPID_PRIVATE_KEY: موجود ✅'
-    );
-
-}
+console.log(
+    'VAPID_PRIVATE_KEY:',
+    VAPID_PRIVATE_KEY
+        ? 'موجود ✅'
+        : 'غير موجود ❌'
+);
 
 
 /* =====================================================
-   إعداد Web Push
+   Web Push
    ===================================================== */
 
 if (
@@ -96,15 +94,26 @@ if (
     VAPID_PRIVATE_KEY
 ) {
 
-    webpush.setVapidDetails(
-        'https://pricing-server-1.onrender.com',
-        VAPID_PUBLIC_KEY,
-        VAPID_PRIVATE_KEY
-    );
+    try {
 
-    console.log(
-        'Web Push جاهز 🔔'
-    );
+        webpush.setVapidDetails(
+            'mailto:admin@pricing-server.com',
+            VAPID_PUBLIC_KEY,
+            VAPID_PRIVATE_KEY
+        );
+
+        console.log(
+            'Web Push جاهز 🔔'
+        );
+
+    } catch (error) {
+
+        console.error(
+            'VAPID Error:',
+            error.message
+        );
+
+    }
 
 }
 
@@ -117,12 +126,10 @@ let subscriptions = [];
 
 
 /* =====================================================
-   إرسال إشعار لكل الأجهزة
+   إرسال إشعار
    ===================================================== */
 
-async function sendPushNotification(
-    message
-) {
+async function sendPushNotification(message) {
 
     if (
         !VAPID_PUBLIC_KEY ||
@@ -153,7 +160,8 @@ async function sendPushNotification(
 
     const notificationData = {
 
-        title: 'شركة الاتحاد 💰',
+        title:
+            'شركة الاتحاد 💰',
 
         body:
             'تم تحديث أسعار الصرف 🔔',
@@ -225,8 +233,8 @@ async function sendPushNotification(
 
 
             /*
-               404 أو 410 يعني أن الجهاز
-               لم يعد مسجلاً
+               إذا كان الجهاز لم يعد مسجلاً،
+               نحذفه من القائمة.
             */
 
             if (
@@ -248,6 +256,12 @@ async function sendPushNotification(
     subscriptions =
         activeSubscriptions;
 
+
+    console.log(
+        'عدد الأجهزة المسجلة حالياً:',
+        subscriptions.length
+    );
+
 }
 
 
@@ -262,11 +276,15 @@ bot.on(
         const message =
             msg.text || '';
 
-        if (!message) return;
+
+        if (!message) {
+            return;
+        }
 
 
         /*
-           لا نكرر نفس الرسالة
+           منع إرسال إشعار لنفس الرسالة
+           أكثر من مرة.
         */
 
         if (
@@ -292,7 +310,7 @@ bot.on(
 
 
         /*
-           إرسال إشعار للموبايلات
+           إرسال الإشعار للموبايلات
         */
 
         await sendPushNotification(
@@ -304,7 +322,7 @@ bot.on(
 
 
 /* =====================================================
-   الأسعار
+   نظام الأسعار
    ===================================================== */
 
 app.get(
@@ -363,7 +381,8 @@ app.get(
 
             return res.status(500).json({
 
-                publicKey: null,
+                publicKey:
+                    null,
 
                 error:
                     'VAPID_PUBLIC_KEY is missing'
@@ -405,7 +424,8 @@ app.post(
 
                 return res.status(400).json({
 
-                    success: false,
+                    success:
+                        false,
 
                     error:
                         'Invalid subscription'
@@ -450,7 +470,8 @@ app.post(
 
             res.json({
 
-                success: true,
+                success:
+                    true,
 
                 devices:
                     subscriptions.length
@@ -468,7 +489,8 @@ app.post(
 
             res.status(500).json({
 
-                success: false,
+                success:
+                    false,
 
                 error:
                     'Subscribe failed'
