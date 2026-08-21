@@ -500,39 +500,96 @@ app.get(
 
         try {
 
-            const feed =
-                await parser.parseURL(
-                    'https://feeds.bbci.co.uk/arabic/rss.xml'
+            const feeds = [
+
+                // BBC Arabic
+                'https://feeds.bbci.co.uk/arabic/rss.xml',
+
+                // العربية - أسواق
+                'https://www.alarabiya.net/feed/rss2/ar/aswaq.xml',
+
+                // العربية - رياضة
+                'https://www.alarabiya.net/feed/rss2/ar/sport.xml',
+
+                // العربية - العرب والعالم
+                'https://www.alarabiya.net/feed/rss2/ar/arab-and-world.xml'
+
+            ];
+
+
+            const results =
+                await Promise.allSettled(
+                    feeds.map(
+                        url =>
+                            parser.parseURL(url)
+                    )
                 );
 
 
-            const news =
-                feed.items
-                    .slice(0, 10)
-                    .map(
-                        item => ({
+            let news = [];
 
-                            title:
-                                item.title || '',
 
-                            link:
-                                item.link || '',
+            results.forEach(
+                result => {
 
-                            date:
-                                item.pubDate || ''
+                    if (
+                        result.status === 'fulfilled'
+                    ) {
 
-                        })
-                    );
+                        const items =
+                            result.value.items
+                                .slice(0, 10)
+                                .map(
+                                    item => ({
+
+                                        title:
+                                            item.title || '',
+
+                                        link:
+                                            item.link || '',
+
+                                        date:
+                                            item.pubDate || ''
+
+                                    })
+                                );
+
+                        news.push(
+                            ...items
+                        );
+
+                    }
+
+                }
+            );
+
+
+            // إزالة الأخبار المكررة
+            const uniqueNews =
+                news.filter(
+                    (item, index, self) =>
+                        index ===
+                        self.findIndex(
+                            x =>
+                                x.title ===
+                                item.title
+                        )
+                );
+
+
+            // أول 30 خبراً
+            const finalNews =
+                uniqueNews.slice(0, 30);
 
 
             res.setHeader(
                 'Cache-Control',
-                'no-store'
+                'no-store, no-cache, must-revalidate'
             );
 
 
             res.json(
-                news
+                finalNews
             );
 
 
