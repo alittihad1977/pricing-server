@@ -75,6 +75,34 @@ html, body{
     margin:0;
 }
 
+
+/* الوقت والتاريخ */
+
+.date-time{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    margin-right:15px;
+    min-width:180px;
+}
+
+.time{
+    font-size:2rem;
+    font-weight:bold;
+    color:gold;
+    direction:ltr;
+    line-height:1.1;
+}
+
+.date{
+    font-size:1.1rem;
+    color:white;
+    font-weight:bold;
+    margin-top:5px;
+}
+
+
 table{
     width:100%;
     height:auto;
@@ -201,6 +229,18 @@ td{
         font-size:4rem;
     }
 
+    .date-time{
+        min-width:220px;
+    }
+
+    .time{
+        font-size:2.5rem;
+    }
+
+    .date{
+        font-size:1.3rem;
+    }
+
     th{
         font-size:2.4rem;
         padding:16px;
@@ -236,6 +276,20 @@ td{
 
     .header h1{
         font-size:2.5rem;
+    }
+
+    .date-time{
+        min-width:120px;
+        margin-right:5px;
+    }
+
+    .time{
+        font-size:1.4rem;
+    }
+
+    .date{
+        font-size:0.8rem;
+        margin-top:3px;
     }
 
     th{
@@ -277,6 +331,19 @@ td{
 <img src="https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png">
 
 <h1>شركة الاتحاد</h1>
+
+<!-- الوقت والتاريخ -->
+<div class="date-time">
+
+<div class="time" id="liveTime">
+00:00:00
+</div>
+
+<div class="date" id="liveDate">
+التاريخ
+</div>
+
+</div>
 
 </div>
 
@@ -481,6 +548,55 @@ height="40"/>
 
 <script>
 
+
+/* =====================================================
+   الساعة والتاريخ
+   ===================================================== */
+
+function updateDateTime(){
+
+    const now = new Date();
+
+    const time =
+        now.toLocaleTimeString(
+            'ar-SY',
+            {
+                hour:'2-digit',
+                minute:'2-digit',
+                second:'2-digit',
+                hour12:false
+            }
+        );
+
+    const date =
+        now.toLocaleDateString(
+            'ar-SY',
+            {
+                weekday:'long',
+                year:'numeric',
+                month:'long',
+                day:'numeric'
+            }
+        );
+
+    document.getElementById("liveTime").textContent = time;
+
+    document.getElementById("liveDate").textContent = date;
+
+}
+
+updateDateTime();
+
+setInterval(
+    updateDateTime,
+    1000
+);
+
+
+/* =====================================================
+   نظام الأسعار
+   ===================================================== */
+
 let oldPrices = {};
 let direction = {};
 
@@ -596,6 +712,7 @@ function updateCell(id,value){
 
 
     el.innerHTML = value + arrow;
+
 
 }
 
