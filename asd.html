@@ -207,6 +207,7 @@ td{
 }
 
 @keyframes flashAnim{
+
     0%{
         background:rgba(255,255,255,0.1);
     }
@@ -214,6 +215,7 @@ td{
     100%{
         background:transparent;
     }
+
 }
 
 #updateSystem{
@@ -294,7 +296,7 @@ td{
 
 
 /* =====================================================
-   شريط الأخبار
+   شريط الأخبار الثابت
    ===================================================== */
 
 .news-bar{
@@ -320,7 +322,7 @@ td{
 
     z-index:1000;
 
-    direction:ltr;
+    direction:rtl;
 }
 
 .news-title{
@@ -361,34 +363,46 @@ td{
     position:relative;
 
     direction:rtl;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
 }
 
 #newsTrack{
 
-    position:absolute;
-
-    top:0;
-    right:0;
-
     width:100%;
-    height:100%;
-}
-
-.news-item{
-
-    position:absolute;
-
-    top:0;
-
-    right:0;
-
     height:100%;
 
     display:flex;
 
     align-items:center;
 
+    justify-content:center;
+
+    position:relative;
+}
+
+.news-item{
+
+    width:100%;
+    height:100%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
     white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
 
     color:white;
 
@@ -400,20 +414,22 @@ td{
 
     direction:rtl;
 
-    unicode-bidi:plaintext;
+    opacity:0;
 
-    transform:translateX(100%);
+    position:absolute;
 
-    will-change:transform;
+    top:0;
+    right:0;
+
+    padding:0 15px;
+
+    transition:
+        opacity 0.8s ease;
 }
 
 .news-item.active{
 
-    animation:
-        newsSlide
-        14s
-        linear
-        forwards;
+    opacity:1;
 }
 
 .news-separator{
@@ -422,28 +438,11 @@ td{
 
     font-size:0.65rem;
 
-    margin-left:25px;
+    margin-right:15px;
 
-    margin-right:25px;
+    margin-left:15px;
 
     flex-shrink:0;
-}
-
-@keyframes newsSlide{
-
-    from{
-
-        transform:translateX(100%);
-
-    }
-
-    to{
-
-        transform:translateX(
-            calc(-100% - 20px)
-        );
-
-    }
 }
 
 
@@ -618,16 +617,19 @@ td{
         font-size:0.70rem;
 
         line-height:25px;
+
+        padding:0 8px;
     }
 
     .news-separator{
 
         font-size:0.50rem;
 
-        margin-left:18px;
+        margin-left:10px;
 
-        margin-right:18px;
+        margin-right:10px;
     }
+
 }
 
 </style>
@@ -725,17 +727,11 @@ height="40"/>
 
 </td>
 
-<td
-class="price-cell"
-id="buy1"
->
+<td class="price-cell" id="buy1">
 11800
 </td>
 
-<td
-class="price-cell"
-id="sell1"
->
+<td class="price-cell" id="sell1">
 11900
 </td>
 
@@ -770,17 +766,11 @@ height="40"/>
 
 </td>
 
-<td
-class="price-cell"
-id="buy2"
->
+<td class="price-cell" id="buy2">
 268
 </td>
 
-<td
-class="price-cell"
-id="sell2"
->
+<td class="price-cell" id="sell2">
 272
 </td>
 
@@ -815,17 +805,11 @@ height="40"/>
 
 </td>
 
-<td
-class="price-cell"
-id="buy3"
->
+<td class="price-cell" id="buy3">
 13450
 </td>
 
-<td
-class="price-cell"
-id="sell3"
->
+<td class="price-cell" id="sell3">
 13600
 </td>
 
@@ -849,7 +833,7 @@ height="40"/>
 
 /
 
-<svg class="flag-svg" viewBox="0 0 70 40">
+<svg class="flag-svg" viewBox="0 70 40">
 
 <image
 href="https://flagcdn.com/w80/tr.png"
@@ -860,17 +844,11 @@ height="40"/>
 
 </td>
 
-<td
-class="price-cell"
-id="buy4"
->
+<td class="price-cell" id="buy4">
 43.7
 </td>
 
-<td
-class="price-cell"
-id="sell4"
->
+<td class="price-cell" id="sell4">
 44
 </td>
 
@@ -905,17 +883,11 @@ height="40"/>
 
 </td>
 
-<td
-class="price-cell"
-id="buy5"
->
+<td class="price-cell" id="buy5">
 1.14
 </td>
 
-<td
-class="price-cell"
-id="sell5"
->
+<td class="price-cell" id="sell5">
 1.16
 </td>
 
@@ -924,7 +896,6 @@ id="sell5"
 </table>
 
 </div>
-
 </div>
 
 
@@ -1457,7 +1428,7 @@ setInterval(
 
 
 /* =====================================================
-   نظام الأخبار
+   نظام الأخبار - ثابت بدون حركة
    ===================================================== */
 
 let newsList = [];
@@ -1466,6 +1437,13 @@ let currentNewsIndex = 0;
 
 let newsTimer = null;
 
+
+/* مدة ظهور الخبر */
+
+const NEWS_DISPLAY_TIME = 7000;
+
+
+/* تحميل الأخبار */
 
 async function loadNews(){
 
@@ -1523,6 +1501,19 @@ async function loadNews(){
             );
 
 
+        if(
+            newsList.length === 0
+        ){
+
+            showNewsMessage(
+                "لا توجد أخبار حالياً"
+            );
+
+            return;
+
+        }
+
+
         currentNewsIndex = 0;
 
         startNews();
@@ -1548,7 +1539,7 @@ async function loadNews(){
 
 
 /* =====================================================
-   رسالة الأخبار
+   عرض رسالة
    ===================================================== */
 
 function showNewsMessage(
@@ -1609,14 +1600,14 @@ function showNewsMessage(
                 );
 
             },
-            14000
+            NEWS_DISPLAY_TIME
         );
 
 }
 
 
 /* =====================================================
-   تشغيل الأخبار
+   بدء الأخبار
    ===================================================== */
 
 function startNews(){
@@ -1638,7 +1629,7 @@ function startNews(){
 
 
 /* =====================================================
-   عرض الخبر التالي
+   الخبر التالي
    ===================================================== */
 
 function showNextNews(){
@@ -1676,14 +1667,19 @@ function showNextNews(){
 
 
     /*
-       مهم:
-       textContent يحافظ على
-       ترتيب النص العربي الطبيعي
+       يظهر الخبر ثابتاً
+       بدون أي حركة
     */
 
     item.textContent =
-        newsList[currentNewsIndex].title;
+        newsList[
+            currentNewsIndex
+        ].title;
 
+
+    /*
+       الفاصل الذهبي
+    */
 
     const separator =
         document.createElement(
@@ -1710,39 +1706,62 @@ function showNextNews(){
 
 
     /*
-       إجبار المتصفح على تسجيل
-       موضع البداية
+       إظهار تدريجي
     */
 
     void item.offsetWidth;
-
 
     item.classList.add(
         "active"
     );
 
 
-    currentNewsIndex++;
-
-
-    if(
-        currentNewsIndex >=
-        newsList.length
-    ){
-
-        currentNewsIndex = 0;
-
-    }
-
-
     /*
-       وقت كل خبر
+       الانتقال للخبر التالي
+       بعد 7 ثواني
     */
 
     newsTimer =
         setTimeout(
-            showNextNews,
-            14000
+            function(){
+
+                /*
+                   إخفاء الخبر الحالي
+                */
+
+                item.classList.remove(
+                    "active"
+                );
+
+
+                /*
+                   بعد انتهاء تأثير الاختفاء
+                   يظهر الخبر التالي
+                */
+
+                setTimeout(
+                    function(){
+
+                        currentNewsIndex++;
+
+                        if(
+                            currentNewsIndex >=
+                            newsList.length
+                        ){
+
+                            currentNewsIndex = 0;
+
+                        }
+
+
+                        showNextNews();
+
+                    },
+                    800
+                );
+
+            },
+            NEWS_DISPLAY_TIME
         );
 
 }
