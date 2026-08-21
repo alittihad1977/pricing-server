@@ -498,117 +498,227 @@ app.get(
     '/news',
     async (req, res) => {
 
-        try {
-
-            const feeds = [
-
-                // BBC Arabic
-                'https://feeds.bbci.co.uk/arabic/rss.xml',
-
-                // العربية - أسواق
-                'https://www.alarabiya.net/feed/rss2/ar/aswaq.xml',
-
-                // العربية - رياضة
-                'https://www.alarabiya.net/feed/rss2/ar/sport.xml',
-
-                // العربية - العرب والعالم
-                'https://www.alarabiya.net/feed/rss2/ar/arab-and-world.xml'
-
-            ];
+        console.log('');
+        console.log('======================================');
+        console.log('📰 بدء فحص جميع مصادر الأخبار');
+        console.log('======================================');
 
 
-            const results =
-                await Promise.allSettled(
-                    feeds.map(
-                        url =>
-                            parser.parseURL(url)
-                    )
+        const feeds = [
+
+            {
+                name:
+                    'BBC Arabic',
+
+                url:
+                    'https://feeds.bbci.co.uk/arabic/rss.xml'
+            },
+
+            {
+                name:
+                    'العربية - أسواق',
+
+                url:
+                    'https://www.alarabiya.net/feed/rss2/ar/aswaq.xml'
+            },
+
+            {
+                name:
+                    'العربية - رياضة',
+
+                url:
+                    'https://www.alarabiya.net/feed/rss2/ar/sport.xml'
+            },
+
+            {
+                name:
+                    'العربية - العرب والعالم',
+
+                url:
+                    'https://www.alarabiya.net/feed/rss2/ar/arab-and-world.xml'
+            }
+
+        ];
+
+
+        const allNews = [];
+
+
+        for (
+            const feed
+            of feeds
+        ) {
+
+            console.log('');
+            console.log(
+                '🔎 المصدر:',
+                feed.name
+            );
+
+            console.log(
+                '🔗 الرابط:',
+                feed.url
+            );
+
+
+            try {
+
+                const result =
+                    await parser.parseURL(
+                        feed.url
+                    );
+
+
+                const items =
+                    result.items || [];
+
+
+                console.log(
+                    '✅ نجح المصدر:',
+                    feed.name
+                );
+
+                console.log(
+                    '📰 عدد الأخبار:',
+                    items.length
                 );
 
 
-            let news = [];
+                const sourceNews =
+                    items
+                        .slice(0, 10)
+                        .map(
+                            item => ({
 
+                                title:
+                                    item.title || '',
 
-            results.forEach(
-                result => {
+                                link:
+                                    item.link || '',
 
-                    if (
-                        result.status === 'fulfilled'
-                    ) {
+                                date:
+                                    item.pubDate || '',
 
-                        const items =
-                            result.value.items
-                                .slice(0, 10)
-                                .map(
-                                    item => ({
+                                source:
+                                    feed.name
 
-                                        title:
-                                            item.title || '',
-
-                                        link:
-                                            item.link || '',
-
-                                        date:
-                                            item.pubDate || ''
-
-                                    })
-                                );
-
-                        news.push(
-                            ...items
+                            })
                         );
 
-                    }
 
-                }
-            );
-
-
-            // إزالة الأخبار المكررة
-            const uniqueNews =
-                news.filter(
-                    (item, index, self) =>
-                        index ===
-                        self.findIndex(
-                            x =>
-                                x.title ===
-                                item.title
-                        )
+                allNews.push(
+                    ...sourceNews
                 );
 
 
-            // أول 30 خبراً
-            const finalNews =
-                uniqueNews.slice(0, 30);
+            } catch (error) {
 
+                console.error(
+                    '❌ فشل المصدر:',
+                    feed.name
+                );
 
-            res.setHeader(
-                'Cache-Control',
-                'no-store, no-cache, must-revalidate'
-            );
+                console.error(
+                    'الخطأ:',
+                    error.message
+                );
 
-
-            res.json(
-                finalNews
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                'News RSS Error:',
-                error
-            );
-
-
-            res.status(500).json({
-
-                error:
-                    'News unavailable'
-
-            });
+            }
 
         }
+
+
+        console.log('');
+        console.log(
+            '📊 مجموع الأخبار قبل إزالة التكرار:',
+            allNews.length
+        );
+
+
+        /* =================================================
+           إزالة الأخبار المكررة
+           ================================================= */
+
+        const uniqueNews =
+            allNews.filter(
+                (item, index, self) =>
+                    index ===
+                    self.findIndex(
+                        other =>
+                            other.title ===
+                            item.title
+                    )
+            );
+
+
+        console.log(
+            '📊 مجموع الأخبار بعد إزالة التكرار:',
+            uniqueNews.length
+        );
+
+
+        /* =================================================
+           ترتيب الأخبار من الأحدث إلى الأقدم
+           ================================================= */
+
+        uniqueNews.sort(
+            (a, b) => {
+
+                const dateA =
+                    new Date(
+                        a.date || 0
+                    ).getTime();
+
+                const dateB =
+                    new Date(
+                        b.date || 0
+                    ).getTime();
+
+                return dateB - dateA;
+
+            }
+        );
+
+
+        /* =================================================
+           إرسال أول 30 خبراً
+           ================================================= */
+
+        const finalNews =
+            uniqueNews.slice(
+                0,
+                30
+            );
+
+
+        console.log(
+            '📤 الأخبار المرسلة للوحة:',
+            finalNews.length
+        );
+
+
+        console.log(
+            '======================================'
+        );
+
+        console.log(
+            '📰 انتهى فحص الأخبار'
+        );
+
+        console.log(
+            '======================================'
+        );
+
+
+        res.setHeader(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate'
+        );
+
+
+        res.json(
+            finalNews
+        );
 
     }
 );
