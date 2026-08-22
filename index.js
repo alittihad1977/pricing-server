@@ -494,17 +494,6 @@ app.post(
    🌤️ نظام الطقس
    ===================================================== */
 
-/*
-   حلب
-   Latitude:
-   36.2021
-
-   Longitude:
-   37.1343
-
-   لا يحتاج API Key.
-*/
-
 let weatherCache = null;
 
 let weatherCacheTime = 0;
@@ -789,104 +778,154 @@ async function fetchAleppoWeather() {
         '🌤️ جاري جلب طقس حلب...'
     );
 
-
-    const response =
-        await fetch(
-            url,
-            {
-                headers: {
-                    'User-Agent':
-                        'Al-Ittihad Pricing Server'
-                }
-            }
-        );
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            'Weather API HTTP ' +
-            response.status
-        );
-
-    }
-
-
-    const data =
-        await response.json();
-
-
-    if (
-        !data ||
-        !data.current
-    ) {
-
-        throw new Error(
-            'Weather data missing'
-        );
-
-    }
-
-
-    const temperature =
-        Math.round(
-            Number(
-                data.current.temperature_2m
-            )
-        );
-
-
-    const isDay =
-        Number(
-            data.current.is_day
-        ) === 1;
-
-
-    const weatherCode =
-        Number(
-            data.current.weather_code
-        );
-
-
-    const weatherInfo =
-        getWeatherInfo(
-            weatherCode,
-            isDay
-        );
-
-
-    const result = {
-
-        city:
-            'حلب',
-
-        temperature:
-            temperature,
-
-        icon:
-            weatherInfo.icon,
-
-        description:
-            weatherInfo.description,
-
-        isDay:
-            isDay,
-
-        updated:
-            data.current.time || ''
-
-    };
-
-
     console.log(
-        '🌤️ طقس حلب:',
-        temperature + '°',
-        weatherInfo.icon,
-        weatherInfo.description
+        '🌐 Weather URL:',
+        url
     );
 
 
-    return result;
+    try {
+
+        const response =
+            await fetch(
+                url
+            );
+
+
+        console.log(
+            '🌤️ Weather HTTP Status:',
+            response.status
+        );
+
+
+        const text =
+            await response.text();
+
+
+        console.log(
+            '🌤️ Weather Response:',
+            text
+        );
+
+
+        if (
+            !response.ok
+        ) {
+
+            throw new Error(
+                'Weather API HTTP ' +
+                response.status +
+                ' - ' +
+                text
+            );
+
+        }
+
+
+        const data =
+            JSON.parse(
+                text
+            );
+
+
+        if (
+            !data ||
+            !data.current
+        ) {
+
+            throw new Error(
+                'Weather data missing: ' +
+                JSON.stringify(data)
+            );
+
+        }
+
+
+        const temperature =
+            Math.round(
+                Number(
+                    data.current.temperature_2m
+                )
+            );
+
+
+        const isDay =
+            Number(
+                data.current.is_day
+            ) === 1;
+
+
+        const weatherCode =
+            Number(
+                data.current.weather_code
+            );
+
+
+        const weatherInfo =
+            getWeatherInfo(
+                weatherCode,
+                isDay
+            );
+
+
+        const result = {
+
+            city:
+                'حلب',
+
+            temperature:
+                temperature,
+
+            icon:
+                weatherInfo.icon,
+
+            description:
+                weatherInfo.description,
+
+            isDay:
+                isDay,
+
+            updated:
+                data.current.time || ''
+
+        };
+
+
+        console.log(
+            '🌤️ طقس حلب:',
+            temperature + '°',
+            weatherInfo.icon,
+            weatherInfo.description
+        );
+
+
+        return result;
+
+    } catch (error) {
+
+        console.error(
+            '❌❌❌ WEATHER FETCH ERROR ❌❌❌'
+        );
+
+        console.error(
+            'Name:',
+            error.name
+        );
+
+        console.error(
+            'Message:',
+            error.message
+        );
+
+        console.error(
+            'Stack:',
+            error.stack
+        );
+
+
+        throw error;
+
+    }
 
 }
 
@@ -920,11 +959,6 @@ app.get(
             const now =
                 Date.now();
 
-
-            /*
-               استخدام البيانات المخزنة
-               لمدة 10 دقائق
-            */
 
             if (
                 weatherCache &&
@@ -972,11 +1006,6 @@ app.get(
             );
 
 
-            /*
-               إذا فشل الاتصال بالمصدر،
-               نعيد آخر بيانات صحيحة إن وجدت.
-            */
-
             if (
                 weatherCache
             ) {
@@ -991,7 +1020,10 @@ app.get(
             res.status(503).json({
 
                 error:
-                    'Weather unavailable'
+                    'Weather unavailable',
+
+                details:
+                    error.message
 
             });
 
@@ -1152,10 +1184,6 @@ app.get(
         );
 
 
-        /* =================================================
-           إزالة الأخبار المكررة
-           ================================================= */
-
         const uniqueNews =
             allNews.filter(
                 (item, index, self) =>
@@ -1173,10 +1201,6 @@ app.get(
             uniqueNews.length
         );
 
-
-        /* =================================================
-           ترتيب الأخبار من الأحدث إلى الأقدم
-           ================================================= */
 
         uniqueNews.sort(
             (a, b) => {
@@ -1196,10 +1220,6 @@ app.get(
             }
         );
 
-
-        /* =================================================
-           إرسال أول 30 خبراً
-           ================================================= */
 
         const finalNews =
             uniqueNews.slice(
