@@ -669,16 +669,11 @@ app.get(
                 results.flat();
 
 
-            console.log('');
             console.log(
                 '📊 مجموع الأخبار قبل إزالة التكرار:',
                 allNews.length
             );
 
-
-            /* =========================================
-               إزالة الأخبار المكررة
-               ========================================= */
 
             const uniqueNews = [];
 
@@ -723,10 +718,6 @@ app.get(
             );
 
 
-            /* =========================================
-               ترتيب الأخبار من الأحدث إلى الأقدم
-               ========================================= */
-
             uniqueNews.sort(
                 (a, b) => {
 
@@ -746,10 +737,6 @@ app.get(
                 }
             );
 
-
-            /* =========================================
-               إرسال أول 30 خبراً
-               ========================================= */
 
             const finalNews =
                 uniqueNews.slice(
@@ -817,6 +804,269 @@ app.get(
 
 
 /* =====================================================
+   🌤️ الطقس - حلب
+   ===================================================== */
+
+app.get(
+    '/weather',
+    async (req, res) => {
+
+        console.log('');
+        console.log('🌤️ بدء جلب طقس حلب...');
+
+
+        try {
+
+            const latitude =
+                36.2021;
+
+            const longitude =
+                37.1343;
+
+
+            const weatherURL =
+                'https://api.open-meteo.com/v1/forecast' +
+                '?latitude=' + latitude +
+                '&longitude=' + longitude +
+                '&current=temperature_2m,weather_code,is_day' +
+                '&timezone=Asia%2FDamascus';
+
+
+            const response =
+                await fetch(
+                    weatherURL
+                );
+
+
+            if (
+                !response.ok
+            ) {
+
+                throw new Error(
+                    'Weather API HTTP ' +
+                    response.status
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                !data.current
+            ) {
+
+                throw new Error(
+                    'Current weather data missing'
+                );
+
+            }
+
+
+            const current =
+                data.current;
+
+
+            const temperature =
+                Math.round(
+                    current.temperature_2m
+                );
+
+
+            const weatherCode =
+                current.weather_code;
+
+
+            const isDay =
+                current.is_day === 1;
+
+
+            let icon =
+                '🌤️';
+
+            let description =
+                'غائم جزئياً';
+
+
+            if (
+                weatherCode === 0
+            ) {
+
+                icon =
+                    isDay
+                        ? '☀️'
+                        : '🌙';
+
+                description =
+                    'صافٍ';
+
+            }
+
+            else if (
+                weatherCode === 1 ||
+                weatherCode === 2
+            ) {
+
+                icon =
+                    isDay
+                        ? '🌤️'
+                        : '☁️';
+
+                description =
+                    'غائم جزئياً';
+
+            }
+
+            else if (
+                weatherCode === 3
+            ) {
+
+                icon =
+                    '☁️';
+
+                description =
+                    'غائم';
+
+            }
+
+            else if (
+                weatherCode === 45 ||
+                weatherCode === 48
+            ) {
+
+                icon =
+                    '🌫️';
+
+                description =
+                    'ضباب';
+
+            }
+
+            else if (
+                weatherCode >= 51 &&
+                weatherCode <= 67
+            ) {
+
+                icon =
+                    '🌧️';
+
+                description =
+                    'ممطر';
+
+            }
+
+            else if (
+                weatherCode >= 71 &&
+                weatherCode <= 77
+            ) {
+
+                icon =
+                    '🌨️';
+
+                description =
+                    'ثلوج';
+
+            }
+
+            else if (
+                weatherCode >= 80 &&
+                weatherCode <= 82
+            ) {
+
+                icon =
+                    '🌦️';
+
+                description =
+                    'زخات مطر';
+
+            }
+
+            else if (
+                weatherCode >= 95
+            ) {
+
+                icon =
+                    '⛈️';
+
+                description =
+                    'عواصف رعدية';
+
+            }
+
+
+            console.log(
+                '🌡️ الحرارة:',
+                temperature + '°'
+            );
+
+            console.log(
+                '🌤️ الحالة:',
+                description
+            );
+
+            console.log(
+                '✅ تم جلب الطقس بنجاح'
+            );
+
+
+            res.setHeader(
+                'Cache-Control',
+                'no-store, no-cache, must-revalidate'
+            );
+
+            res.setHeader(
+                'Content-Type',
+                'application/json; charset=utf-8'
+            );
+
+
+            res.json({
+
+                city:
+                    'حلب',
+
+                temperature:
+                    temperature,
+
+                icon:
+                    icon,
+
+                description:
+                    description,
+
+                isDay:
+                    isDay,
+
+                updated:
+                    current.time
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                '❌ Weather Error:',
+                error.message
+            );
+
+
+            res.status(500).json({
+
+                error:
+                    'Weather unavailable'
+
+            });
+
+        }
+
+    }
+);
+
+
+/* =====================================================
    الصفحة الرئيسية
    ===================================================== */
 
@@ -854,6 +1104,10 @@ app.listen(
 
         console.log(
             'News system is ready...'
+        );
+
+        console.log(
+            'Weather system is ready 🌤️'
         );
 
         console.log(
