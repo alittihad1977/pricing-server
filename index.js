@@ -36,13 +36,7 @@ const bot = new TelegramBot(token, {
    RSS
    ===================================================== */
 
-const parser = new Parser({
-    timeout: 15000,
-    headers: {
-        'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36'
-    }
-});
+const parser = new Parser();
 
 
 /* =====================================================
@@ -497,144 +491,514 @@ app.post(
 
 
 /* =====================================================
-   مصادر الأخبار
+   🌤️ نظام الطقس
    ===================================================== */
 
-const NEWS_FEEDS = [
+/*
+   حلب
+   Latitude:
+   36.2021
 
-    {
-        name:
-            'BBC Arabic',
+   Longitude:
+   37.1343
 
-        url:
-            'https://feeds.bbci.co.uk/arabic/rss.xml'
-    },
+   لا يحتاج API Key.
+*/
 
-    {
-        name:
-            'الشرق الأوسط - كل الأخبار',
+let weatherCache = null;
 
-        url:
-            'https://aawsat.com/feed/news'
-    },
+let weatherCacheTime = 0;
 
-    {
-        name:
-            'الشرق الأوسط - الاقتصاد',
-
-        url:
-            'https://aawsat.com/feed/economy'
-    },
-
-    {
-        name:
-            'الشرق الأوسط - الرياضة',
-
-        url:
-            'https://aawsat.com/feed/sport'
-    }
-
-];
+const WEATHER_CACHE_TIME =
+    10 * 60 * 1000;
 
 
 /* =====================================================
-   جلب الأخبار من مصدر واحد
+   تحويل حالة الطقس إلى وصف وأيقونة
    ===================================================== */
 
-async function fetchNewsFeed(feed) {
+function getWeatherInfo(
+    weatherCode,
+    isDay
+) {
 
-    console.log('');
-    console.log('--------------------------------------');
-
-    console.log(
-        '🔎 المصدر:',
-        feed.name
-    );
-
-    console.log(
-        '🔗 الرابط:',
-        feed.url
-    );
+    const code =
+        Number(weatherCode);
 
 
-    try {
+    if (code === 0) {
 
-        const result =
-            await parser.parseURL(
-                feed.url
-            );
+        return {
 
+            icon:
+                isDay ? '☀️' : '🌙',
 
-        const items =
-            result.items || [];
+            description:
+                isDay ? 'صافٍ' : 'سماء صافية'
 
-
-        console.log(
-            '✅ نجح المصدر:',
-            feed.name
-        );
-
-        console.log(
-            '📰 عدد الأخبار:',
-            items.length
-        );
-
-
-        const news =
-            items
-                .slice(0, 10)
-                .map(
-                    item => ({
-
-                        title:
-                            (item.title || '').trim(),
-
-                        link:
-                            item.link || '',
-
-                        date:
-                            item.pubDate ||
-                            item.isoDate ||
-                            '',
-
-                        source:
-                            feed.name
-
-                    })
-                )
-                .filter(
-                    item =>
-                        item.title
-                );
-
-
-        console.log(
-            '📥 الأخبار المقبولة:',
-            news.length
-        );
-
-
-        return news;
-
-
-    } catch (error) {
-
-        console.error(
-            '❌ فشل المصدر:',
-            feed.name
-        );
-
-        console.error(
-            '❌ الخطأ:',
-            error.message
-        );
-
-
-        return [];
+        };
 
     }
 
+
+    if (
+        code === 1 ||
+        code === 2
+    ) {
+
+        return {
+
+            icon:
+                isDay ? '🌤️' : '☁️',
+
+            description:
+                'غائم جزئياً'
+
+        };
+
+    }
+
+
+    if (code === 3) {
+
+        return {
+
+            icon:
+                '☁️',
+
+            description:
+                'غائم'
+
+        };
+
+    }
+
+
+    if (
+        code === 45 ||
+        code === 48
+    ) {
+
+        return {
+
+            icon:
+                '🌫️',
+
+            description:
+                'ضباب'
+
+        };
+
+    }
+
+
+    if (
+        code === 51 ||
+        code === 53 ||
+        code === 55
+    ) {
+
+        return {
+
+            icon:
+                '🌦️',
+
+            description:
+                'رذاذ'
+
+        };
+
+    }
+
+
+    if (
+        code === 56 ||
+        code === 57
+    ) {
+
+        return {
+
+            icon:
+                '🌧️',
+
+            description:
+                'رذاذ متجمد'
+
+        };
+
+    }
+
+
+    if (
+        code === 61 ||
+        code === 63 ||
+        code === 65
+    ) {
+
+        return {
+
+            icon:
+                '🌧️',
+
+            description:
+                'مطر'
+
+        };
+
+    }
+
+
+    if (
+        code === 66 ||
+        code === 67
+    ) {
+
+        return {
+
+            icon:
+                '🌧️',
+
+            description:
+                'مطر متجمد'
+
+        };
+
+    }
+
+
+    if (
+        code === 71 ||
+        code === 73 ||
+        code === 75 ||
+        code === 77
+    ) {
+
+        return {
+
+            icon:
+                '❄️',
+
+            description:
+                'ثلوج'
+
+        };
+
+    }
+
+
+    if (
+        code === 80 ||
+        code === 81 ||
+        code === 82
+    ) {
+
+        return {
+
+            icon:
+                '🌦️',
+
+            description:
+                'زخات مطر'
+
+        };
+
+    }
+
+
+    if (
+        code === 85 ||
+        code === 86
+    ) {
+
+        return {
+
+            icon:
+                '🌨️',
+
+            description:
+                'زخات ثلج'
+
+        };
+
+    }
+
+
+    if (
+        code === 95
+    ) {
+
+        return {
+
+            icon:
+                '⛈️',
+
+            description:
+                'عاصفة رعدية'
+
+        };
+
+    }
+
+
+    if (
+        code === 96 ||
+        code === 99
+    ) {
+
+        return {
+
+            icon:
+                '⛈️',
+
+            description:
+                'عاصفة رعدية وبَرَد'
+
+        };
+
+    }
+
+
+    return {
+
+        icon:
+            isDay ? '🌤️' : '🌙',
+
+        description:
+            'غير محدد'
+
+    };
+
 }
+
+
+/* =====================================================
+   جلب طقس حلب
+   ===================================================== */
+
+async function fetchAleppoWeather() {
+
+    const url =
+        'https://api.open-meteo.com/v1/forecast' +
+        '?latitude=36.2021' +
+        '&longitude=37.1343' +
+        '&current=temperature_2m,is_day,weather_code' +
+        '&timezone=Asia%2FDamascus';
+
+
+    console.log(
+        '🌤️ جاري جلب طقس حلب...'
+    );
+
+
+    const response =
+        await fetch(
+            url,
+            {
+                headers: {
+                    'User-Agent':
+                        'Al-Ittihad Pricing Server'
+                }
+            }
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            'Weather API HTTP ' +
+            response.status
+        );
+
+    }
+
+
+    const data =
+        await response.json();
+
+
+    if (
+        !data ||
+        !data.current
+    ) {
+
+        throw new Error(
+            'Weather data missing'
+        );
+
+    }
+
+
+    const temperature =
+        Math.round(
+            Number(
+                data.current.temperature_2m
+            )
+        );
+
+
+    const isDay =
+        Number(
+            data.current.is_day
+        ) === 1;
+
+
+    const weatherCode =
+        Number(
+            data.current.weather_code
+        );
+
+
+    const weatherInfo =
+        getWeatherInfo(
+            weatherCode,
+            isDay
+        );
+
+
+    const result = {
+
+        city:
+            'حلب',
+
+        temperature:
+            temperature,
+
+        icon:
+            weatherInfo.icon,
+
+        description:
+            weatherInfo.description,
+
+        isDay:
+            isDay,
+
+        updated:
+            data.current.time || ''
+
+    };
+
+
+    console.log(
+        '🌤️ طقس حلب:',
+        temperature + '°',
+        weatherInfo.icon,
+        weatherInfo.description
+    );
+
+
+    return result;
+
+}
+
+
+/* =====================================================
+   API الطقس
+   ===================================================== */
+
+app.get(
+    '/weather',
+    async (req, res) => {
+
+        res.setHeader(
+            'Access-Control-Allow-Origin',
+            '*'
+        );
+
+        res.setHeader(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate'
+        );
+
+        res.setHeader(
+            'Content-Type',
+            'application/json; charset=utf-8'
+        );
+
+
+        try {
+
+            const now =
+                Date.now();
+
+
+            /*
+               استخدام البيانات المخزنة
+               لمدة 10 دقائق
+            */
+
+            if (
+                weatherCache &&
+                (
+                    now -
+                    weatherCacheTime
+                ) <
+                WEATHER_CACHE_TIME
+            ) {
+
+                console.log(
+                    '🌤️ استخدام بيانات الطقس المخزنة'
+                );
+
+
+                return res.json(
+                    weatherCache
+                );
+
+            }
+
+
+            const weather =
+                await fetchAleppoWeather();
+
+
+            weatherCache =
+                weather;
+
+
+            weatherCacheTime =
+                now;
+
+
+            res.json(
+                weather
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                '❌ Weather Error:',
+                error.message
+            );
+
+
+            /*
+               إذا فشل الاتصال بالمصدر،
+               نعيد آخر بيانات صحيحة إن وجدت.
+            */
+
+            if (
+                weatherCache
+            ) {
+
+                return res.json(
+                    weatherCache
+                );
+
+            }
+
+
+            res.status(503).json({
+
+                error:
+                    'Weather unavailable'
+
+            });
+
+        }
+
+    }
+);
 
 
 /* =====================================================
@@ -646,421 +1010,232 @@ app.get(
     async (req, res) => {
 
         console.log('');
-        console.log('');
-        console.log('======================================');
-        console.log('📰 بدء فحص جميع مصادر الأخبار');
-        console.log('======================================');
+        console.log(
+            '======================================'
+        );
+        console.log(
+            '📰 بدء فحص جميع مصادر الأخبار'
+        );
+        console.log(
+            '======================================'
+        );
 
 
-        try {
+        const feeds = [
 
-            const results =
-                await Promise.all(
-                    NEWS_FEEDS.map(
-                        feed =>
-                            fetchNewsFeed(
-                                feed
-                            )
-                    )
-                );
+            {
+                name:
+                    'BBC Arabic',
 
+                url:
+                    'https://feeds.bbci.co.uk/arabic/rss.xml'
+            },
 
-            const allNews =
-                results.flat();
+            {
+                name:
+                    'العربية - أسواق',
 
+                url:
+                    'https://www.alarabiya.net/feed/rss2/ar/aswaq.xml'
+            },
 
-            console.log(
-                '📊 مجموع الأخبار قبل إزالة التكرار:',
-                allNews.length
-            );
+            {
+                name:
+                    'العربية - رياضة',
 
+                url:
+                    'https://www.alarabiya.net/feed/rss2/ar/sport.xml'
+            },
 
-            const uniqueNews = [];
+            {
+                name:
+                    'العربية - العرب والعالم',
 
-            const seenTitles =
-                new Set();
-
-
-            for (
-                const item
-                of allNews
-            ) {
-
-                const key =
-                    item.title
-                        .toLowerCase()
-                        .replace(/\s+/g, ' ')
-                        .trim();
-
-
-                if (
-                    !seenTitles.has(
-                        key
-                    )
-                ) {
-
-                    seenTitles.add(
-                        key
-                    );
-
-                    uniqueNews.push(
-                        item
-                    );
-
-                }
-
+                url:
+                    'https://www.alarabiya.net/feed/rss2/ar/arab-and-world.xml'
             }
 
-
-            console.log(
-                '📊 مجموع الأخبار بعد إزالة التكرار:',
-                uniqueNews.length
-            );
+        ];
 
 
-            uniqueNews.sort(
-                (a, b) => {
-
-                    const dateA =
-                        new Date(
-                            a.date || 0
-                        ).getTime();
-
-                    const dateB =
-                        new Date(
-                            b.date || 0
-                        ).getTime();
+        const allNews = [];
 
 
-                    return dateB - dateA;
-
-                }
-            );
-
-
-            const finalNews =
-                uniqueNews.slice(
-                    0,
-                    30
-                );
-
-
-            console.log(
-                '📤 الأخبار المرسلة للوحة:',
-                finalNews.length
-            );
-
+        for (
+            const feed
+            of feeds
+        ) {
 
             console.log('');
             console.log(
-                '======================================'
+                '🔎 المصدر:',
+                feed.name
             );
 
             console.log(
-                '📰 انتهى فحص الأخبار'
-            );
-
-            console.log(
-                '======================================'
+                '🔗 الرابط:',
+                feed.url
             );
 
 
-            res.setHeader(
-                'Cache-Control',
-                'no-store, no-cache, must-revalidate'
-            );
+            try {
+
+                const result =
+                    await parser.parseURL(
+                        feed.url
+                    );
 
 
-            res.setHeader(
-                'Content-Type',
-                'application/json; charset=utf-8'
-            );
+                const items =
+                    result.items || [];
 
 
-            res.json(
-                finalNews
-            );
+                console.log(
+                    '✅ نجح المصدر:',
+                    feed.name
+                );
+
+                console.log(
+                    '📰 عدد الأخبار:',
+                    items.length
+                );
 
 
-        } catch (error) {
+                const sourceNews =
+                    items
+                        .slice(0, 10)
+                        .map(
+                            item => ({
 
-            console.error(
-                '❌ خطأ عام في نظام الأخبار:',
-                error.message
-            );
+                                title:
+                                    item.title || '',
+
+                                link:
+                                    item.link || '',
+
+                                date:
+                                    item.pubDate || '',
+
+                                source:
+                                    feed.name
+
+                            })
+                        );
 
 
-            res.status(500).json({
+                allNews.push(
+                    ...sourceNews
+                );
 
-                error:
-                    'News unavailable'
 
-            });
+            } catch (error) {
+
+                console.error(
+                    '❌ فشل المصدر:',
+                    feed.name
+                );
+
+                console.error(
+                    'الخطأ:',
+                    error.message
+                );
+
+            }
 
         }
 
-    }
-);
-
-
-/* =====================================================
-   🌤️ الطقس - حلب
-   ===================================================== */
-
-app.get(
-    '/weather',
-    async (req, res) => {
 
         console.log('');
-        console.log('🌤️ بدء جلب طقس حلب...');
-
-
-        try {
-
-            const latitude =
-                36.2021;
-
-            const longitude =
-                37.1343;
-
-
-            const weatherURL =
-                'https://api.open-meteo.com/v1/forecast' +
-                '?latitude=' + latitude +
-                '&longitude=' + longitude +
-                '&current=temperature_2m,weather_code,is_day' +
-                '&timezone=Asia%2FDamascus';
-
-
-            const response =
-                await fetch(
-                    weatherURL
-                );
-
-
-            if (
-                !response.ok
-            ) {
-
-                throw new Error(
-                    'Weather API HTTP ' +
-                    response.status
-                );
-
-            }
-
-
-            const data =
-                await response.json();
-
-
-            if (
-                !data.current
-            ) {
-
-                throw new Error(
-                    'Current weather data missing'
-                );
-
-            }
-
-
-            const current =
-                data.current;
-
-
-            const temperature =
-                Math.round(
-                    current.temperature_2m
-                );
-
-
-            const weatherCode =
-                current.weather_code;
-
-
-            const isDay =
-                current.is_day === 1;
-
-
-            let icon =
-                '🌤️';
-
-            let description =
-                'غائم جزئياً';
-
-
-            if (
-                weatherCode === 0
-            ) {
-
-                icon =
-                    isDay
-                        ? '☀️'
-                        : '🌙';
-
-                description =
-                    'صافٍ';
-
-            }
-
-            else if (
-                weatherCode === 1 ||
-                weatherCode === 2
-            ) {
-
-                icon =
-                    isDay
-                        ? '🌤️'
-                        : '☁️';
-
-                description =
-                    'غائم جزئياً';
-
-            }
-
-            else if (
-                weatherCode === 3
-            ) {
-
-                icon =
-                    '☁️';
-
-                description =
-                    'غائم';
-
-            }
-
-            else if (
-                weatherCode === 45 ||
-                weatherCode === 48
-            ) {
-
-                icon =
-                    '🌫️';
-
-                description =
-                    'ضباب';
-
-            }
-
-            else if (
-                weatherCode >= 51 &&
-                weatherCode <= 67
-            ) {
-
-                icon =
-                    '🌧️';
-
-                description =
-                    'ممطر';
-
-            }
-
-            else if (
-                weatherCode >= 71 &&
-                weatherCode <= 77
-            ) {
-
-                icon =
-                    '🌨️';
-
-                description =
-                    'ثلوج';
-
-            }
-
-            else if (
-                weatherCode >= 80 &&
-                weatherCode <= 82
-            ) {
-
-                icon =
-                    '🌦️';
-
-                description =
-                    'زخات مطر';
-
-            }
-
-            else if (
-                weatherCode >= 95
-            ) {
-
-                icon =
-                    '⛈️';
-
-                description =
-                    'عواصف رعدية';
-
-            }
-
-
-            console.log(
-                '🌡️ الحرارة:',
-                temperature + '°'
-            );
-
-            console.log(
-                '🌤️ الحالة:',
-                description
-            );
-
-            console.log(
-                '✅ تم جلب الطقس بنجاح'
+        console.log(
+            '📊 مجموع الأخبار قبل إزالة التكرار:',
+            allNews.length
+        );
+
+
+        /* =================================================
+           إزالة الأخبار المكررة
+           ================================================= */
+
+        const uniqueNews =
+            allNews.filter(
+                (item, index, self) =>
+                    index ===
+                    self.findIndex(
+                        other =>
+                            other.title ===
+                            item.title
+                    )
             );
 
 
-            res.setHeader(
-                'Cache-Control',
-                'no-store, no-cache, must-revalidate'
+        console.log(
+            '📊 مجموع الأخبار بعد إزالة التكرار:',
+            uniqueNews.length
+        );
+
+
+        /* =================================================
+           ترتيب الأخبار من الأحدث إلى الأقدم
+           ================================================= */
+
+        uniqueNews.sort(
+            (a, b) => {
+
+                const dateA =
+                    new Date(
+                        a.date || 0
+                    ).getTime();
+
+                const dateB =
+                    new Date(
+                        b.date || 0
+                    ).getTime();
+
+                return dateB - dateA;
+
+            }
+        );
+
+
+        /* =================================================
+           إرسال أول 30 خبراً
+           ================================================= */
+
+        const finalNews =
+            uniqueNews.slice(
+                0,
+                30
             );
 
-            res.setHeader(
-                'Content-Type',
-                'application/json; charset=utf-8'
-            );
+
+        console.log(
+            '📤 الأخبار المرسلة للوحة:',
+            finalNews.length
+        );
 
 
-            res.json({
+        console.log(
+            '======================================'
+        );
 
-                city:
-                    'حلب',
+        console.log(
+            '📰 انتهى فحص الأخبار'
+        );
 
-                temperature:
-                    temperature,
-
-                icon:
-                    icon,
-
-                description:
-                    description,
-
-                isDay:
-                    isDay,
-
-                updated:
-                    current.time
-
-            });
+        console.log(
+            '======================================'
+        );
 
 
-        } catch (error) {
-
-            console.error(
-                '❌ Weather Error:',
-                error.message
-            );
+        res.setHeader(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate'
+        );
 
 
-            res.status(500).json({
-
-                error:
-                    'Weather unavailable'
-
-            });
-
-        }
+        res.json(
+            finalNews
+        );
 
     }
 );
