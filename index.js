@@ -492,6 +492,7 @@ app.post(
 
 /* =====================================================
    🌤️ نظام الطقس
+   MET Norway Locationforecast 2.0
    ===================================================== */
 
 let weatherCache = null;
@@ -503,245 +504,229 @@ const WEATHER_CACHE_TIME =
 
 
 /* =====================================================
-   تحويل حالة الطقس إلى وصف وأيقونة
+   تحويل symbol_code من MET Norway
    ===================================================== */
 
 function getWeatherInfo(
-    weatherCode,
-    isDay
+    symbolCode
 ) {
 
     const code =
-        Number(weatherCode);
+        String(symbolCode || '')
+            .toLowerCase();
 
 
-    if (code === 0) {
+    if (
+        code.includes('clearsky_day')
+    ) {
 
         return {
-
-            icon:
-                isDay ? '☀️' : '🌙',
-
-            description:
-                isDay ? 'صافٍ' : 'سماء صافية'
-
+            icon: '☀️',
+            description: 'صافٍ'
         };
 
     }
 
 
     if (
-        code === 1 ||
-        code === 2
+        code.includes('clearsky_night')
     ) {
 
         return {
-
-            icon:
-                isDay ? '🌤️' : '☁️',
-
-            description:
-                'غائم جزئياً'
-
-        };
-
-    }
-
-
-    if (code === 3) {
-
-        return {
-
-            icon:
-                '☁️',
-
-            description:
-                'غائم'
-
+            icon: '🌙',
+            description: 'سماء صافية'
         };
 
     }
 
 
     if (
-        code === 45 ||
-        code === 48
+        code.includes('fair_day')
     ) {
 
         return {
-
-            icon:
-                '🌫️',
-
-            description:
-                'ضباب'
-
+            icon: '🌤️',
+            description: 'صحو جزئياً'
         };
 
     }
 
 
     if (
-        code === 51 ||
-        code === 53 ||
-        code === 55
+        code.includes('fair_night')
     ) {
 
         return {
-
-            icon:
-                '🌦️',
-
-            description:
-                'رذاذ'
-
+            icon: '🌙',
+            description: 'صحو'
         };
 
     }
 
 
     if (
-        code === 56 ||
-        code === 57
+        code.includes('partlycloudy_day')
     ) {
 
         return {
-
-            icon:
-                '🌧️',
-
-            description:
-                'رذاذ متجمد'
-
+            icon: '🌤️',
+            description: 'غائم جزئياً'
         };
 
     }
 
 
     if (
-        code === 61 ||
-        code === 63 ||
-        code === 65
+        code.includes('partlycloudy_night')
     ) {
 
         return {
-
-            icon:
-                '🌧️',
-
-            description:
-                'مطر'
-
+            icon: '☁️',
+            description: 'غائم جزئياً'
         };
 
     }
 
 
     if (
-        code === 66 ||
-        code === 67
+        code.includes('cloudy')
     ) {
 
         return {
-
-            icon:
-                '🌧️',
-
-            description:
-                'مطر متجمد'
-
+            icon: '☁️',
+            description: 'غائم'
         };
 
     }
 
 
     if (
-        code === 71 ||
-        code === 73 ||
-        code === 75 ||
-        code === 77
+        code.includes('fog')
     ) {
 
         return {
-
-            icon:
-                '❄️',
-
-            description:
-                'ثلوج'
-
+            icon: '🌫️',
+            description: 'ضباب'
         };
 
     }
 
 
     if (
-        code === 80 ||
-        code === 81 ||
-        code === 82
+        code.includes('lightrain')
     ) {
 
         return {
-
-            icon:
-                '🌦️',
-
-            description:
-                'زخات مطر'
-
+            icon: '🌦️',
+            description: 'مطر خفيف'
         };
 
     }
 
 
     if (
-        code === 85 ||
-        code === 86
+        code.includes('rain')
     ) {
 
         return {
-
-            icon:
-                '🌨️',
-
-            description:
-                'زخات ثلج'
-
+            icon: '🌧️',
+            description: 'مطر'
         };
 
     }
 
 
     if (
-        code === 95
+        code.includes('heavyrain')
     ) {
 
         return {
-
-            icon:
-                '⛈️',
-
-            description:
-                'عاصفة رعدية'
-
+            icon: '🌧️',
+            description: 'مطر غزير'
         };
 
     }
 
 
     if (
-        code === 96 ||
-        code === 99
+        code.includes('lightsleet')
     ) {
 
         return {
+            icon: '🌧️',
+            description: 'مطر متجمد خفيف'
+        };
 
-            icon:
-                '⛈️',
+    }
 
-            description:
-                'عاصفة رعدية وبَرَد'
 
+    if (
+        code.includes('sleet')
+    ) {
+
+        return {
+            icon: '🌧️',
+            description: 'مطر متجمد'
+        };
+
+    }
+
+
+    if (
+        code.includes('heavysleet')
+    ) {
+
+        return {
+            icon: '🌨️',
+            description: 'مطر متجمد غزير'
+        };
+
+    }
+
+
+    if (
+        code.includes('lightsnow')
+    ) {
+
+        return {
+            icon: '🌨️',
+            description: 'ثلوج خفيفة'
+        };
+
+    }
+
+
+    if (
+        code.includes('snow')
+    ) {
+
+        return {
+            icon: '❄️',
+            description: 'ثلوج'
+        };
+
+    }
+
+
+    if (
+        code.includes('heavysnow')
+    ) {
+
+        return {
+            icon: '❄️',
+            description: 'ثلوج غزيرة'
+        };
+
+    }
+
+
+    if (
+        code.includes('thunder')
+    ) {
+
+        return {
+            icon: '⛈️',
+            description: 'عاصفة رعدية'
         };
 
     }
@@ -750,7 +735,7 @@ function getWeatherInfo(
     return {
 
         icon:
-            isDay ? '🌤️' : '🌙',
+            '🌤️',
 
         description:
             'غير محدد'
@@ -761,21 +746,19 @@ function getWeatherInfo(
 
 
 /* =====================================================
-   جلب طقس حلب
+   جلب طقس حلب من MET Norway
    ===================================================== */
 
 async function fetchAleppoWeather() {
 
     const url =
-        'https://api.open-meteo.com/v1/forecast' +
-        '?latitude=36.2021' +
-        '&longitude=37.1343' +
-        '&current=temperature_2m,is_day,weather_code' +
-        '&timezone=Asia%2FDamascus';
+        'https://api.met.no/weatherapi/locationforecast/2.0/compact' +
+        '?lat=36.2021' +
+        '&lon=37.1343';
 
 
     console.log(
-        '🌤️ جاري جلب طقس حلب...'
+        '🌤️ جاري جلب طقس حلب من MET Norway...'
     );
 
     console.log(
@@ -788,12 +771,24 @@ async function fetchAleppoWeather() {
 
         const response =
             await fetch(
-                url
+                url,
+                {
+                    headers: {
+
+                        'User-Agent':
+                            'Al-Ittihad-Pricing-Server/1.0 contact: admin@pricing-server.com',
+
+                        'Accept':
+                            'application/json'
+
+                    }
+
+                }
             );
 
 
         console.log(
-            '🌤️ Weather HTTP Status:',
+            '🌤️ MET Norway HTTP Status:',
             response.status
         );
 
@@ -803,8 +798,8 @@ async function fetchAleppoWeather() {
 
 
         console.log(
-            '🌤️ Weather Response:',
-            text
+            '🌤️ MET Norway Response Length:',
+            text.length
         );
 
 
@@ -813,10 +808,10 @@ async function fetchAleppoWeather() {
         ) {
 
             throw new Error(
-                'Weather API HTTP ' +
+                'MET Norway HTTP ' +
                 response.status +
                 ' - ' +
-                text
+                text.substring(0, 500)
             );
 
         }
@@ -830,41 +825,81 @@ async function fetchAleppoWeather() {
 
         if (
             !data ||
-            !data.current
+            !data.properties ||
+            !data.properties.timeseries ||
+            !data.properties.timeseries.length
         ) {
 
             throw new Error(
-                'Weather data missing: ' +
-                JSON.stringify(data)
+                'MET Norway weather data missing'
             );
 
         }
 
 
+        /*
+           أول عنصر في timeseries
+           هو أقرب توقع زمني متاح
+        */
+
+        const current =
+            data.properties.timeseries[0];
+
+
+        if (
+            !current ||
+            !current.data ||
+            !current.data.instant ||
+            !current.data.instant.details
+        ) {
+
+            throw new Error(
+                'MET Norway current data missing'
+            );
+
+        }
+
+
+        const details =
+            current.data.instant.details;
+
+
         const temperature =
             Math.round(
                 Number(
-                    data.current.temperature_2m
+                    details.air_temperature
                 )
             );
 
 
-        const isDay =
-            Number(
-                data.current.is_day
-            ) === 1;
-
-
-        const weatherCode =
-            Number(
-                data.current.weather_code
-            );
+        const symbolCode =
+            (
+                current.data.next_1_hours &&
+                current.data.next_1_hours.summary &&
+                current.data.next_1_hours.summary.symbol_code
+            ) ||
+            (
+                current.data.next_6_hours &&
+                current.data.next_6_hours.summary &&
+                current.data.next_6_hours.summary.symbol_code
+            ) ||
+            'clearsky_day';
 
 
         const weatherInfo =
             getWeatherInfo(
-                weatherCode,
-                isDay
+                symbolCode
+            );
+
+
+        const timeString =
+            current.time ||
+            '';
+
+
+        const isDay =
+            !symbolCode.includes(
+                '_night'
             );
 
 
@@ -886,7 +921,10 @@ async function fetchAleppoWeather() {
                 isDay,
 
             updated:
-                data.current.time || ''
+                timeString,
+
+            source:
+                'MET Norway'
 
         };
 
@@ -898,13 +936,18 @@ async function fetchAleppoWeather() {
             weatherInfo.description
         );
 
+        console.log(
+            '🌤️ Symbol:',
+            symbolCode
+        );
+
 
         return result;
 
     } catch (error) {
 
         console.error(
-            '❌❌❌ WEATHER FETCH ERROR ❌❌❌'
+            '❌❌❌ MET NORWAY WEATHER ERROR ❌❌❌'
         );
 
         console.error(
@@ -960,6 +1003,11 @@ app.get(
                 Date.now();
 
 
+            /*
+               استخدام البيانات المخزنة
+               لمدة 10 دقائق
+            */
+
             if (
                 weatherCache &&
                 (
@@ -1005,6 +1053,11 @@ app.get(
                 error.message
             );
 
+
+            /*
+               إذا فشل الاتصال بالمصدر،
+               نعيد آخر بيانات صحيحة إن وجدت.
+            */
 
             if (
                 weatherCache
@@ -1303,6 +1356,10 @@ app.listen(
 
         console.log(
             'Weather system is ready 🌤️'
+        );
+
+        console.log(
+            'Weather source: MET Norway 🌍'
         );
 
         console.log(
