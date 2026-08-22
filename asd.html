@@ -96,6 +96,38 @@ html,body{
     margin-top:5px;
 }
 
+/* =====================================================
+   الطقس
+   ===================================================== */
+
+.weather{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    margin-top:6px;
+    white-space:nowrap;
+    direction:rtl;
+}
+
+.weather-icon{
+    font-size:1.35rem;
+    line-height:1;
+}
+
+.weather-temp{
+    color:gold;
+    font-size:1.05rem;
+    font-weight:bold;
+    direction:ltr;
+}
+
+.weather-city{
+    color:white;
+    font-size:0.85rem;
+    font-weight:bold;
+}
+
 table{
     width:100%;
     height:auto;
@@ -309,6 +341,7 @@ td{
 }
 
 /* زر الإشعارات */
+
 #notificationButton{
     position:fixed;
     bottom:40px;
@@ -354,6 +387,22 @@ td{
 
     .date{
         font-size:1.3rem;
+    }
+
+    .weather{
+        margin-top:8px;
+    }
+
+    .weather-icon{
+        font-size:1.6rem;
+    }
+
+    .weather-temp{
+        font-size:1.25rem;
+    }
+
+    .weather-city{
+        font-size:1rem;
     }
 
     th{
@@ -416,6 +465,23 @@ td{
     .date{
         font-size:0.8rem;
         margin-top:3px;
+    }
+
+    .weather{
+        margin-top:4px;
+        gap:3px;
+    }
+
+    .weather-icon{
+        font-size:1rem;
+    }
+
+    .weather-temp{
+        font-size:0.85rem;
+    }
+
+    .weather-city{
+        font-size:0.65rem;
     }
 
     th{
@@ -515,6 +581,13 @@ td{
 
 <div class="date" id="liveDate">
 التاريخ
+</div>
+
+<!-- الطقس -->
+<div class="weather" id="weatherBox">
+    <span class="weather-icon" id="weatherIcon">☀️</span>
+    <span class="weather-temp" id="weatherTemp">--°</span>
+    <span class="weather-city" id="weatherCity">حلب</span>
 </div>
 
 </div>
@@ -706,6 +779,100 @@ function updateDateTime(){
 updateDateTime();
 
 setInterval(updateDateTime,1000);
+
+
+/* =====================================================
+   🌤️ نظام الطقس
+   ===================================================== */
+
+const WEATHER_SERVER =
+    "https://pricing-server-1.onrender.com";
+
+async function loadWeather(){
+
+    try{
+
+        const response =
+            await fetch(
+                WEATHER_SERVER + "/weather",
+                {
+                    cache:"no-store"
+                }
+            );
+
+        if(!response.ok){
+
+            throw new Error(
+                "Weather server error"
+            );
+
+        }
+
+        const weather =
+            await response.json();
+
+        console.log(
+            "Weather:",
+            weather
+        );
+
+        if(
+            weather &&
+            weather.temperature !== undefined
+        ){
+
+            document.getElementById(
+                "weatherTemp"
+            ).textContent =
+                weather.temperature + "°";
+
+        }
+
+        if(
+            weather &&
+            weather.icon
+        ){
+
+            document.getElementById(
+                "weatherIcon"
+            ).textContent =
+                weather.icon;
+
+        }
+
+        if(
+            weather &&
+            weather.city
+        ){
+
+            document.getElementById(
+                "weatherCity"
+            ).textContent =
+                weather.city;
+
+        }
+
+    }catch(error){
+
+        console.log(
+            "Weather Error:",
+            error
+        );
+
+    }
+
+}
+
+loadWeather();
+
+/*
+   تحديث الطقس كل 10 دقائق
+*/
+
+setInterval(
+    loadWeather,
+    10 * 60 * 1000
+);
 
 
 /* =====================================================
@@ -1447,11 +1614,6 @@ async function enableNotifications(){
 
         }
 
-
-        /*
-           نجاح كامل
-           نخفي الزر نهائياً
-        */
 
         button.style.display =
             "none";
