@@ -1,7 +1,8 @@
 {
-  "name": "لوحة التسعير - الاتحاد",
+  "name": "شركة الاتحاد - لوحة التسعير",
   "short_name": "الاتحاد",
-  "start_url": "./asd",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0b1b3d",
   "theme_color": "#0b1b3d",
@@ -9,7 +10,8 @@
     {
       "src": "https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
