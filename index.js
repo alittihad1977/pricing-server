@@ -55,6 +55,143 @@ const PRICING_PAGE =
 
 
 /* =====================================================
+   👥 عدد الموجودين الآن على لوحة التسعير
+   ===================================================== */
+
+const onlineUsers = new Map();
+
+const ONLINE_TIMEOUT =
+    60 * 1000;
+
+
+/* =====================================================
+   API عدد الموجودين الآن
+   ===================================================== */
+
+app.get(
+    '/online',
+    (req, res) => {
+
+        res.setHeader(
+            'Access-Control-Allow-Origin',
+            '*'
+        );
+
+        res.setHeader(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate'
+        );
+
+        const userId =
+            String(
+                req.query.id || ''
+            ).trim();
+
+
+        if (!userId) {
+
+            return res.status(400).json({
+
+                success:
+                    false,
+
+                error:
+                    'User ID is required'
+
+            });
+
+        }
+
+
+        /*
+           تسجيل آخر ظهور للجهاز
+        */
+
+        onlineUsers.set(
+            userId,
+            Date.now()
+        );
+
+
+        /*
+           حذف الأجهزة التي لم ترسل
+           إشارة منذ أكثر من دقيقة
+        */
+
+        const now =
+            Date.now();
+
+
+        for (
+            const [id, lastSeen]
+            of onlineUsers.entries()
+        ) {
+
+            if (
+                now -
+                lastSeen >
+                ONLINE_TIMEOUT
+            ) {
+
+                onlineUsers.delete(
+                    id
+                );
+
+            }
+
+        }
+
+
+        res.json({
+
+            success:
+                true,
+
+            online:
+                onlineUsers.size
+
+        });
+
+    }
+);
+
+
+/* =====================================================
+   تنظيف الأجهزة القديمة
+   ===================================================== */
+
+setInterval(
+    () => {
+
+        const now =
+            Date.now();
+
+
+        for (
+            const [id, lastSeen]
+            of onlineUsers.entries()
+        ) {
+
+            if (
+                now -
+                lastSeen >
+                ONLINE_TIMEOUT
+            ) {
+
+                onlineUsers.delete(
+                    id
+                );
+
+            }
+
+        }
+
+    },
+    30 * 1000
+);
+
+
+/* =====================================================
    مفاتيح VAPID
    ===================================================== */
 
@@ -625,24 +762,24 @@ function getWeatherInfo(
 
 
     if (
-        code.includes('rain')
-    ) {
-
-        return {
-            icon: '🌧️',
-            description: 'مطر'
-        };
-
-    }
-
-
-    if (
         code.includes('heavyrain')
     ) {
 
         return {
             icon: '🌧️',
             description: 'مطر غزير'
+        };
+
+    }
+
+
+    if (
+        code.includes('rain')
+    ) {
+
+        return {
+            icon: '🌧️',
+            description: 'مطر'
         };
 
     }
@@ -661,24 +798,24 @@ function getWeatherInfo(
 
 
     if (
-        code.includes('sleet')
-    ) {
-
-        return {
-            icon: '🌧️',
-            description: 'مطر متجمد'
-        };
-
-    }
-
-
-    if (
         code.includes('heavysleet')
     ) {
 
         return {
             icon: '🌨️',
             description: 'مطر متجمد غزير'
+        };
+
+    }
+
+
+    if (
+        code.includes('sleet')
+    ) {
+
+        return {
+            icon: '🌧️',
+            description: 'مطر متجمد'
         };
 
     }
@@ -697,24 +834,24 @@ function getWeatherInfo(
 
 
     if (
-        code.includes('snow')
-    ) {
-
-        return {
-            icon: '❄️',
-            description: 'ثلوج'
-        };
-
-    }
-
-
-    if (
         code.includes('heavysnow')
     ) {
 
         return {
             icon: '❄️',
             description: 'ثلوج غزيرة'
+        };
+
+    }
+
+
+    if (
+        code.includes('snow')
+    ) {
+
+        return {
+            icon: '❄️',
+            description: 'ثلوج'
         };
 
     }
@@ -836,11 +973,6 @@ async function fetchAleppoWeather() {
 
         }
 
-
-        /*
-           أول عنصر في timeseries
-           هو أقرب توقع زمني متاح
-        */
 
         const current =
             data.properties.timeseries[0];
@@ -1003,11 +1135,6 @@ app.get(
                 Date.now();
 
 
-            /*
-               استخدام البيانات المخزنة
-               لمدة 10 دقائق
-            */
-
             if (
                 weatherCache &&
                 (
@@ -1053,11 +1180,6 @@ app.get(
                 error.message
             );
 
-
-            /*
-               إذا فشل الاتصال بالمصدر،
-               نعيد آخر بيانات صحيحة إن وجدت.
-            */
 
             if (
                 weatherCache
@@ -1364,6 +1486,10 @@ app.listen(
 
         console.log(
             'Push notification system is ready 🔔'
+        );
+
+        console.log(
+            'Online users system is ready 👥'
         );
 
     }
