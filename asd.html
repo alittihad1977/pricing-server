@@ -728,7 +728,6 @@ td{
 <textarea id="msg"></textarea>
 </div>
 
-
 <!-- =====================================================
      زر الإشعارات
      ===================================================== -->
@@ -786,7 +785,7 @@ setInterval(updateDateTime,1000);
    ===================================================== */
 
 const WEATHER_SERVER =
-    "https://pricing-server-1.onrender.com";
+    "https://pricing-server-yjam.onrender.com";
 
 async function loadWeather(){
 
@@ -864,10 +863,6 @@ async function loadWeather(){
 }
 
 loadWeather();
-
-/*
-   تحديث الطقس كل 10 دقائق
-*/
 
 setInterval(
     loadWeather,
@@ -1100,7 +1095,7 @@ async function fetchMessage(){
 
         const res =
             await fetch(
-                "https://pricing-server-1.onrender.com/msg",
+                "https://pricing-server-yjam.onrender.com/msg",
                 {
                     cache:"no-store"
                 }
@@ -1171,7 +1166,7 @@ async function checkConnection(){
 
         const response =
             await fetch(
-                "https://pricing-server-1.onrender.com/msg",
+                "https://pricing-server-yjam.onrender.com/msg",
                 {
                     method:"GET",
                     cache:"no-store"
@@ -1217,7 +1212,7 @@ async function loadNews(){
 
         const response =
             await fetch(
-                "https://pricing-server-1.onrender.com/news",
+                "https://pricing-server-yjam.onrender.com/news",
                 {
                     cache:"no-store"
                 }
@@ -1441,7 +1436,7 @@ setInterval(
    ===================================================== */
 
 const PUSH_SERVER =
-    "https://pricing-server-1.onrender.com";
+    "https://pricing-server-yjam.onrender.com";
 
 
 function urlBase64ToUint8Array(base64String){
@@ -1603,6 +1598,7 @@ async function enableNotifications(){
                         )
 
                 }
+
             );
 
 
