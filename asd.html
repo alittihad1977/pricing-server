@@ -299,10 +299,6 @@ td{
     overflow:hidden;
     z-index:1000;
     direction:rtl;
-
-    transition:
-        opacity 0.8s ease,
-        transform 0.8s ease;
 }
 
 .bottom-title{
@@ -340,10 +336,14 @@ td{
 
 
 /* =====================================================
-   📰 الأخبار داخل الشريط الموحد
+   📰 الأخبار
    ===================================================== */
 
 #newsTrack{
+    position:absolute;
+    top:0;
+    right:0;
+
     width:100%;
     height:100%;
 
@@ -351,7 +351,11 @@ td{
     align-items:center;
     justify-content:center;
 
-    position:relative;
+    opacity:1;
+
+    transition:
+        opacity 0.8s ease,
+        transform 0.8s ease;
 }
 
 .news-item{
@@ -399,10 +403,14 @@ td{
 
 
 /* =====================================================
-   📈 الأسواق داخل الشريط الموحد
+   📈 الأسواق
    ===================================================== */
 
 #marketsTrack{
+    position:absolute;
+    top:0;
+    right:0;
+
     width:100%;
     height:100%;
 
@@ -410,7 +418,13 @@ td{
     align-items:center;
     justify-content:center;
 
-    white-space:nowrap;
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:
+        opacity 0.8s ease,
+        transform 0.8s ease;
 }
 
 .market-item{
@@ -453,33 +467,6 @@ td{
 
 .market-change-down{
     color:#ff3d00;
-}
-
-
-/* =====================================================
-   🔄 الانتقال بين الأخبار والأسواق
-   ===================================================== */
-
-.bottom-content{
-    position:relative;
-}
-
-#newsTrack,
-#marketsTrack{
-    transition:
-        opacity 0.8s ease,
-        transform 0.8s ease;
-}
-
-.bottom-hidden{
-    opacity:0 !important;
-    transform:translateY(5px);
-    pointer-events:none;
-}
-
-.bottom-visible{
-    opacity:1 !important;
-    transform:translateY(0);
 }
 
 
@@ -717,8 +704,11 @@ td{
      ===================================================== -->
 
 <div id="connectionStatus" class="connection-status offline">
+
     <span class="connection-dot"></span>
+
     <span class="connection-text"></span>
+
 </div>
 
 
@@ -789,30 +779,10 @@ td{
 <table>
 
 <tr>
+
 <th>الزوج</th>
 <th>شراء</th>
 <th>بيع</th>
-</tr>
-
-
-<tr>
-
-<td>
-
-<svg class="flag-svg" viewBox="0 0 70 40">
-<image href="https://flagcdn.com/w80/us.png" width="70" height="40"/>
-</svg>
-
-/
-
-<svg class="flag-svg" viewBox="0 0 70 40">
-<image href="https://flagcdn.com/w80/sy.png" width="70" height="40"/>
-</svg>
-
-</td>
-
-<td class="price-cell" id="buy1">11800</td>
-<td class="price-cell" id="sell1">11900</td>
 
 </tr>
 
@@ -822,19 +792,38 @@ td{
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-<image href="https://flagcdn.com/w80/tr.png" width="70" height="40"/>
+
+<image
+href="https://flagcdn.com/w80/us.png"
+width="70"
+height="40"/>
+
 </svg>
 
 /
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-<image href="https://flagcdn.com/w80/sy.png" width="70" height="40"/>
+
+<image
+href="https://flagcdn.com/w80/sy.png"
+width="70"
+height="40"/>
+
 </svg>
 
 </td>
 
-<td class="price-cell" id="buy2">268</td>
-<td class="price-cell" id="sell2">272</td>
+<td
+class="price-cell"
+id="buy1">
+11800
+</td>
+
+<td
+class="price-cell"
+id="sell1">
+11900
+</td>
 
 </tr>
 
@@ -844,19 +833,38 @@ td{
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-<image href="https://flagcdn.com/w80/eu.png" width="70" height="40"/>
+
+<image
+href="https://flagcdn.com/w80/tr.png"
+width="70"
+height="40"/>
+
 </svg>
 
 /
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-<image href="https://flagcdn.com/w80/sy.png" width="70" height="40"/>
+
+<image
+href="https://flagcdn.com/w80/sy.png"
+width="70"
+height="40"/>
+
 </svg>
 
 </td>
 
-<td class="price-cell" id="buy3">13450</td>
-<td class="price-cell" id="sell3">13600</td>
+<td
+class="price-cell"
+id="buy2">
+268
+</td>
+
+<td
+class="price-cell"
+id="sell2">
+272
+</td>
 
 </tr>
 
@@ -866,19 +874,38 @@ td{
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-<image href="https://flagcdn.com/w80/us.png" width="70" height="40"/>
+
+<image
+href="https://flagcdn.com/w80/eu.png"
+width="70"
+height="40"/>
+
 </svg>
 
 /
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-<image href="https://flagcdn.com/w80/tr.png" width="70" height="40"/>
+
+<image
+href="https://flagcdn.com/w80/sy.png"
+width="70"
+height="40"/>
+
 </svg>
 
 </td>
 
-<td class="price-cell" id="buy4">43.7</td>
-<td class="price-cell" id="sell4">44</td>
+<td
+class="price-cell"
+id="buy3">
+13450
+</td>
+
+<td
+class="price-cell"
+id="sell3">
+13600
+</td>
 
 </tr>
 
@@ -888,25 +915,86 @@ td{
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-<image href="https://flagcdn.com/w80/eu.png" width="70" height="40"/>
+
+<image
+href="https://flagcdn.com/w80/us.png"
+width="70"
+height="40"/>
+
 </svg>
 
 /
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-<image href="https://flagcdn.com/w80/us.png" width="70" height="40"/>
+
+<image
+href="https://flagcdn.com/w80/tr.png"
+width="70"
+height="40"/>
+
 </svg>
 
 </td>
 
-<td class="price-cell" id="buy5">1.14</td>
-<td class="price-cell" id="sell5">1.16</td>
+<td
+class="price-cell"
+id="buy4">
+43.7
+</td>
+
+<td
+class="price-cell"
+id="sell4">
+44
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+
+<svg class="flag-svg" viewBox="0 0 70 40">
+
+<image
+href="https://flagcdn.com/w80/eu.png"
+width="70"
+height="40"/>
+
+</svg>
+
+/
+
+<svg class="flag-svg" viewBox="0 0 70 40">
+
+<image
+href="https://flagcdn.com/w80/us.png"
+width="70"
+height="40"/>
+
+</svg>
+
+</td>
+
+<td
+class="price-cell"
+id="buy5">
+1.14
+</td>
+
+<td
+class="price-cell"
+id="sell5">
+1.16
+</td>
 
 </tr>
 
 </table>
 
 </div>
+
 </div>
 
 
@@ -914,30 +1002,34 @@ td{
      📺 الشريط الموحد
      ===================================================== -->
 
-<div class="bottom-bar" id="bottomBar">
+<div
+class="bottom-bar"
+id="bottomBar">
 
-    <div class="bottom-title" id="bottomTitle">
+    <div
+    class="bottom-title"
+    id="bottomTitle">
+
         📰 آخر الأخبار
+
     </div>
+
 
     <div class="bottom-content">
 
-        <!-- الأخبار -->
-
-        <div id="newsTrack"
-             class="bottom-visible">
+        <div
+        id="newsTrack">
 
         </div>
 
 
-        <!-- الأسواق -->
-
-        <div id="marketsTrack"
-             class="bottom-hidden"
-             style="position:absolute;top:0;right:0;">
+        <div
+        id="marketsTrack">
 
             <div class="market-item">
+
                 جاري تحميل الأسواق...
+
             </div>
 
         </div>
@@ -955,7 +1047,9 @@ td{
 
 
 <button id="notificationButton">
+
 🔔 تفعيل الإشعارات
+
 </button>
 
 
@@ -979,9 +1073,11 @@ function updateDateTime(){
     const now =
         new Date();
 
+
     document.getElementById(
         "liveTime"
     ).textContent =
+
         now.toLocaleTimeString(
             "ar-SY",
             {
@@ -992,9 +1088,11 @@ function updateDateTime(){
             }
         );
 
+
     document.getElementById(
         "liveDate"
     ).textContent =
+
         now.toLocaleDateString(
             "ar-SY",
             {
@@ -1007,7 +1105,9 @@ function updateDateTime(){
 
 }
 
+
 updateDateTime();
+
 
 setInterval(
     updateDateTime,
@@ -1016,7 +1116,7 @@ setInterval(
 
 
 /* =====================================================
-   👥 الأجهزة المتصلة
+   👥 الأجهزة
    ===================================================== */
 
 function getDeviceId(){
@@ -1025,6 +1125,7 @@ function getDeviceId(){
         localStorage.getItem(
             "alittihad_device_id"
         );
+
 
     if(!id){
 
@@ -1036,12 +1137,14 @@ function getDeviceId(){
                 .toString(36)
                 .substring(2,10);
 
+
         localStorage.setItem(
             "alittihad_device_id",
             id
         );
 
     }
+
 
     return id;
 
@@ -1068,13 +1171,18 @@ async function updateOnlineDevices(){
                 }
             );
 
+
         if(!response.ok)
             throw new Error();
+
 
         const data =
             await response.json();
 
-        if(data.online !== undefined){
+
+        if(
+            data.online !== undefined
+        ){
 
             document.getElementById(
                 "onlineCount"
@@ -1082,6 +1190,7 @@ async function updateOnlineDevices(){
                 data.online;
 
         }
+
 
     }catch(error){
 
@@ -1094,7 +1203,9 @@ async function updateOnlineDevices(){
 
 }
 
+
 updateOnlineDevices();
+
 
 setInterval(
     updateOnlineDevices,
@@ -1119,13 +1230,18 @@ async function loadWeather(){
                 }
             );
 
+
         if(!response.ok)
             throw new Error();
+
 
         const weather =
             await response.json();
 
-        if(weather.temperature !== undefined){
+
+        if(
+            weather.temperature !== undefined
+        ){
 
             document.getElementById(
                 "weatherTemp"
@@ -1134,6 +1250,7 @@ async function loadWeather(){
                 "°";
 
         }
+
 
         if(weather.icon){
 
@@ -1144,6 +1261,7 @@ async function loadWeather(){
 
         }
 
+
         if(weather.city){
 
             document.getElementById(
@@ -1152,6 +1270,7 @@ async function loadWeather(){
                 weather.city;
 
         }
+
 
     }catch(error){
 
@@ -1164,7 +1283,9 @@ async function loadWeather(){
 
 }
 
+
 loadWeather();
+
 
 setInterval(
     loadWeather,
@@ -1184,8 +1305,10 @@ function formatMarketNumber(value){
     const number =
         Number(value);
 
+
     if(!Number.isFinite(number))
         return "--";
+
 
     return number.toLocaleString(
         "en-US",
@@ -1194,6 +1317,44 @@ function formatMarketNumber(value){
             maximumFractionDigits:3
         }
     );
+
+}
+
+
+/*
+   تحديد أيقونة السوق
+*/
+
+function getMarketIcon(market){
+
+    const symbol =
+        String(
+            market.symbol || ""
+        ).toUpperCase();
+
+
+    const name =
+        String(
+            market.name || ""
+        );
+
+
+    /*
+       الذهب:
+       XAU أو اسم يحتوي على كلمة ذهب
+    */
+
+    if(
+        symbol.includes("XAU") ||
+        name.includes("ذهب")
+    ){
+
+        return "🪙";
+
+    }
+
+
+    return market.icon || "📊";
 
 }
 
@@ -1212,6 +1373,7 @@ function showMarkets(markets){
     ){
 
         track.innerHTML =
+
             `<div class="market-item">
                 لا توجد بيانات أسواق حالياً
              </div>`;
@@ -1232,6 +1394,7 @@ function showMarkets(markets){
                     "div"
                 );
 
+
             item.className =
                 "market-item";
 
@@ -1245,22 +1408,31 @@ function showMarkets(markets){
             let arrow =
                 "↔";
 
+
             let directionClass =
                 "";
 
 
-            if(direction === "UP"){
+            if(
+                direction === "UP"
+            ){
 
-                arrow = "▲";
+                arrow =
+                    "▲";
+
                 directionClass =
                     "market-up";
 
             }
 
 
-            if(direction === "DOWN"){
+            if(
+                direction === "DOWN"
+            ){
 
-                arrow = "▼";
+                arrow =
+                    "▼";
+
                 directionClass =
                     "market-down";
 
@@ -1276,23 +1448,30 @@ function showMarkets(markets){
             let changeText =
                 "--";
 
+
             let changeClass =
                 "";
 
 
-            if(Number.isFinite(change)){
+            if(
+                Number.isFinite(change)
+            ){
 
                 changeText =
+
                     (
                         change > 0
                         ? "+"
                         : ""
                     ) +
+
                     change.toFixed(2) +
+
                     "%";
 
 
                 changeClass =
+
                     change >= 0
                     ? "market-change-up"
                     : "market-change-down";
@@ -1300,10 +1479,16 @@ function showMarkets(markets){
             }
 
 
+            const icon =
+                getMarketIcon(
+                    market
+                );
+
+
             item.innerHTML =
 
                 `<span>
-                    ${market.icon || "📊"}
+                    ${icon}
                  </span>
 
                  <span class="market-symbol">
@@ -1364,9 +1549,12 @@ async function loadMarkets(){
             await response.json();
 
 
+        const newData =
+            JSON.stringify(data);
+
+
         if(
-            JSON.stringify(data)
-            ===
+            newData ===
             lastMarketsData
         ){
 
@@ -1376,7 +1564,7 @@ async function loadMarkets(){
 
 
         lastMarketsData =
-            JSON.stringify(data);
+            newData;
 
 
         showMarkets(
@@ -1408,10 +1596,6 @@ async function loadMarkets(){
 loadMarkets();
 
 
-/*
-   تحديث الأسواق كل 10 ثواني
-*/
-
 setInterval(
     loadMarkets,
     10000
@@ -1433,6 +1617,7 @@ let audioCtx =
         window.webkitAudioContext
     )();
 
+
 let unlocked = false;
 
 
@@ -1442,7 +1627,10 @@ document.addEventListener(
 
         audioCtx.resume().then(
             function(){
-                unlocked = true;
+
+                unlocked =
+                    true;
+
             }
         );
 
@@ -1457,7 +1645,10 @@ document.addEventListener(
 
         audioCtx.resume().then(
             function(){
-                unlocked = true;
+
+                unlocked =
+                    true;
+
             }
         );
 
@@ -1475,6 +1666,7 @@ function playSound(){
     const o =
         audioCtx.createOscillator();
 
+
     const g =
         audioCtx.createGain();
 
@@ -1482,8 +1674,10 @@ function playSound(){
     o.type =
         "sine";
 
+
     o.frequency.value =
         880;
+
 
     g.gain.value =
         0.15;
@@ -1491,12 +1685,14 @@ function playSound(){
 
     o.connect(g);
 
+
     g.connect(
         audioCtx.destination
     );
 
 
     o.start();
+
 
     o.stop(
         audioCtx.currentTime +
@@ -1560,10 +1756,13 @@ function updateCell(
         value;
 
 
-    let arrow = "";
+    let arrow =
+        "";
 
 
-    if(direction[id] === "up"){
+    if(
+        direction[id] === "up"
+    ){
 
         arrow =
             "<span class='up'>▲</span>";
@@ -1571,7 +1770,9 @@ function updateCell(
     }
 
 
-    if(direction[id] === "down"){
+    if(
+        direction[id] === "down"
+    ){
 
         arrow =
             "<span class='down'>▼</span>";
@@ -1599,13 +1800,16 @@ function updatePrices(){
                 "buy"+i
             );
 
+
         const sell =
             localStorage.getItem(
                 "sell"+i
             );
 
 
-        if(buy !== null){
+        if(
+            buy !== null
+        ){
 
             updateCell(
                 "buy"+i,
@@ -1615,7 +1819,9 @@ function updatePrices(){
         }
 
 
-        if(sell !== null){
+        if(
+            sell !== null
+        ){
 
             updateCell(
                 "sell"+i,
@@ -1627,6 +1833,7 @@ function updatePrices(){
     }
 
 }
+
 
 updatePrices();
 
@@ -1676,7 +1883,9 @@ function processMessage(){
         i++
     ){
 
-        if(buys[i]){
+        if(
+            buys[i]
+        ){
 
             localStorage.setItem(
                 "buy"+(i+1),
@@ -1686,7 +1895,9 @@ function processMessage(){
         }
 
 
-        if(sells[i]){
+        if(
+            sells[i]
+        ){
 
             localStorage.setItem(
                 "sell"+(i+1),
@@ -1700,7 +1911,9 @@ function processMessage(){
 
     updatePrices();
 
-    textarea.value = "";
+
+    textarea.value =
+        "";
 
 }
 
@@ -1741,6 +1954,7 @@ async function fetchMessage(){
                 data;
 
         }
+
 
     }catch(error){
 
@@ -1823,6 +2037,7 @@ async function checkConnection(){
 
 checkConnection();
 
+
 setInterval(
     checkConnection,
     5000
@@ -1830,7 +2045,7 @@ setInterval(
 
 
 /* =====================================================
-   📰 الأخبار
+   📰 الأخبار + 📈 الأسواق
    ===================================================== */
 
 let newsList = [];
@@ -1839,171 +2054,86 @@ let currentNewsIndex = 0;
 
 let newsTimer = null;
 
-const NEWS_DISPLAY_TIME =
-    7000;
-
-
-/* =====================================================
-   📺 نظام التناوب بين الأخبار والأسواق
-   ===================================================== */
+let marketTimer = null;
 
 let bottomMode =
     "news";
 
-let marketTimer = null;
+
+const NEWS_DISPLAY_TIME =
+    7000;
+
 
 const MARKET_DISPLAY_TIME =
     10000;
 
 
-function showNewsMode(){
+/* =====================================================
+   عرض الأخبار
+   ===================================================== */
+
+function startNews(){
+
+    if(
+        marketTimer
+    ){
+
+        clearTimeout(
+            marketTimer
+        );
+
+        marketTimer =
+            null;
+
+    }
+
+
+    if(
+        newsTimer
+    ){
+
+        clearTimeout(
+            newsTimer
+        );
+
+        newsTimer =
+            null;
+
+    }
+
 
     bottomMode =
         "news";
 
 
-    const title =
-        document.getElementById(
-            "bottomTitle"
-        );
-
-    const newsTrack =
-        document.getElementById(
-            "newsTrack"
-        );
-
-    const marketsTrack =
-        document.getElementById(
-            "marketsTrack"
-        );
-
-
-    title.textContent =
+    document.getElementById(
+        "bottomTitle"
+    ).textContent =
         "📰 آخر الأخبار";
 
 
-    marketsTrack.classList.remove(
-        "bottom-visible"
-    );
-
-    marketsTrack.classList.add(
-        "bottom-hidden"
-    );
+    document.getElementById(
+        "newsTrack"
+    ).style.opacity =
+        "1";
 
 
-    newsTrack.classList.remove(
-        "bottom-hidden"
-    );
-
-    newsTrack.classList.add(
-        "bottom-visible"
-    );
+    document.getElementById(
+        "marketsTrack"
+    ).style.opacity =
+        "0";
 
 
-    startNews();
-
-}
-
-
-function showMarketsMode(){
-
-    bottomMode =
-        "markets";
+    document.getElementById(
+        "marketsTrack"
+    ).style.pointerEvents =
+        "none";
 
 
-    const title =
-        document.getElementById(
-            "bottomTitle"
-        );
-
-    const newsTrack =
-        document.getElementById(
-            "newsTrack"
-        );
-
-    const marketsTrack =
-        document.getElementById(
-            "marketsTrack"
-        );
-
-
-    title.textContent =
-        "📈 الأسواق";
-
-
-    newsTrack.classList.remove(
-        "bottom-visible"
-    );
-
-    newsTrack.classList.add(
-        "bottom-hidden"
-    );
-
-
-    marketsTrack.classList.remove(
-        "bottom-hidden"
-    );
-
-    marketsTrack.classList.add(
-        "bottom-visible"
-    );
-
-
-    if(newsTimer){
-
-        clearTimeout(
-            newsTimer
-        );
-
-        newsTimer = null;
-
-    }
-
-
-    if(marketTimer){
-
-        clearTimeout(
-            marketTimer
-        );
-
-    }
-
-
-    marketTimer =
-        setTimeout(
-            function(){
-
-                showNewsMode();
-
-            },
-            MARKET_DISPLAY_TIME
-        );
-
-}
-
-
-function startNews(){
-
-    if(marketTimer){
-
-        clearTimeout(
-            marketTimer
-        );
-
-        marketTimer = null;
-
-    }
-
-
-    if(newsTimer){
-
-        clearTimeout(
-            newsTimer
-        );
-
-        newsTimer = null;
-
-    }
+    document.getElementById(
+        "newsTrack"
+    ).style.pointerEvents =
+        "auto";
 
 
     currentNewsIndex =
@@ -2015,7 +2145,17 @@ function startNews(){
 }
 
 
+/* =====================================================
+   عرض الخبر التالي
+   ===================================================== */
+
 function showNextNews(){
+
+    if(
+        bottomMode !== "news"
+    )
+        return;
+
 
     const track =
         document.getElementById(
@@ -2023,7 +2163,9 @@ function showNextNews(){
         );
 
 
-    if(newsList.length === 0){
+    if(
+        !newsList.length
+    ){
 
         showNewsMessage(
             "لا توجد أخبار حالياً"
@@ -2034,7 +2176,8 @@ function showNextNews(){
     }
 
 
-    track.innerHTML = "";
+    track.innerHTML =
+        "";
 
 
     const item =
@@ -2097,12 +2240,18 @@ function showNextNews(){
                 setTimeout(
                     function(){
 
+                        if(
+                            bottomMode !==
+                            "news"
+                        )
+                            return;
+
+
                         currentNewsIndex++;
 
 
                         /*
-                           إذا وصلنا لآخر خبر
-                           ننتقل مباشرة للأسواق
+                           آخر خبر
                         */
 
                         if(
@@ -2110,9 +2259,12 @@ function showNextNews(){
                             newsList.length
                         ){
 
-                            currentNewsIndex = 0;
+                            currentNewsIndex =
+                                0;
+
 
                             showMarketsMode();
+
 
                             return;
 
@@ -2132,9 +2284,27 @@ function showNextNews(){
 }
 
 
+/* =====================================================
+   لا توجد أخبار
+   ===================================================== */
+
 function showNewsMessage(
     message
 ){
+
+    if(
+        newsTimer
+    ){
+
+        clearTimeout(
+            newsTimer
+        );
+
+        newsTimer =
+            null;
+
+    }
+
 
     const track =
         document.getElementById(
@@ -2142,18 +2312,8 @@ function showNewsMessage(
         );
 
 
-    if(newsTimer){
-
-        clearTimeout(
-            newsTimer
-        );
-
-        newsTimer = null;
-
-    }
-
-
-    track.innerHTML = "";
+    track.innerHTML =
+        "";
 
 
     const item =
@@ -2175,11 +2335,6 @@ function showNewsMessage(
     );
 
 
-    /*
-       إذا لم توجد أخبار،
-       نعرض الأسواق بعد 7 ثواني
-    */
-
     newsTimer =
         setTimeout(
             function(){
@@ -2192,6 +2347,92 @@ function showNewsMessage(
 
 }
 
+
+/* =====================================================
+   عرض الأسواق
+   ===================================================== */
+
+function showMarketsMode(){
+
+    if(
+        newsTimer
+    ){
+
+        clearTimeout(
+            newsTimer
+        );
+
+        newsTimer =
+            null;
+
+    }
+
+
+    bottomMode =
+        "markets";
+
+
+    document.getElementById(
+        "bottomTitle"
+    ).textContent =
+        "📈 الأسواق";
+
+
+    document.getElementById(
+        "newsTrack"
+    ).style.opacity =
+        "0";
+
+
+    document.getElementById(
+        "marketsTrack"
+    ).style.opacity =
+        "1";
+
+
+    document.getElementById(
+        "newsTrack"
+    ).style.pointerEvents =
+        "none";
+
+
+    document.getElementById(
+        "marketsTrack"
+    ).style.pointerEvents =
+        "auto";
+
+
+    if(
+        marketTimer
+    ){
+
+        clearTimeout(
+            marketTimer
+        );
+
+    }
+
+
+    /*
+       الأسواق تبقى 10 ثواني
+    */
+
+    marketTimer =
+        setTimeout(
+            function(){
+
+                startNews();
+
+            },
+            MARKET_DISPLAY_TIME
+        );
+
+}
+
+
+/* =====================================================
+   تحميل الأخبار
+   ===================================================== */
 
 async function loadNews(){
 
@@ -2207,7 +2448,9 @@ async function loadNews(){
             );
 
 
-        if(!response.ok)
+        if(
+            !response.ok
+        )
             throw new Error();
 
 
@@ -2216,20 +2459,15 @@ async function loadNews(){
 
 
         if(
-            !Array.isArray(news) ||
-            news.length === 0
+            !Array.isArray(news)
         ){
-
-            showNewsMessage(
-                "لا توجد أخبار حالياً"
-            );
 
             return;
 
         }
 
 
-        newsList =
+        const newNewsList =
             news.filter(
                 function(item){
 
@@ -2243,31 +2481,44 @@ async function loadNews(){
             );
 
 
-        if(newsList.length === 0){
+        if(
+            newNewsList.length === 0
+        ){
 
-            showNewsMessage(
-                "لا توجد أخبار حالياً"
-            );
+            newsList =
+                [];
+
+            if(
+                bottomMode ===
+                "news"
+            ){
+
+                showNewsMessage(
+                    "لا توجد أخبار حالياً"
+                );
+
+            }
 
             return;
 
         }
 
 
+        newsList =
+            newNewsList;
+
+
         /*
-           لا نعيد تشغيل الأخبار إذا
-           كانت الدورة الحالية تعمل.
+           إذا كانت الأخبار تعمل،
+           لا نعيد تشغيلها من البداية.
         */
 
-        if(bottomMode === "news"){
+        if(
+            bottomMode === "news" &&
+            !newsTimer
+        ){
 
-            if(
-                !newsTimer
-            ){
-
-                startNews();
-
-            }
+            startNews();
 
         }
 
@@ -2280,7 +2531,10 @@ async function loadNews(){
         );
 
 
-        if(bottomMode === "news"){
+        if(
+            bottomMode === "news" &&
+            newsList.length === 0
+        ){
 
             showNewsMessage(
                 "الأخبار غير متاحة حالياً"
@@ -2293,16 +2547,8 @@ async function loadNews(){
 }
 
 
-/*
-   تحميل الأخبار أول مرة
-*/
-
 loadNews();
 
-
-/*
-   تحديث الأخبار كل 5 دقائق
-*/
 
 setInterval(
     loadNews,
@@ -2413,7 +2659,9 @@ async function enableNotifications(){
             await Notification.requestPermission();
 
 
-        if(permission !== "granted"){
+        if(
+            permission !== "granted"
+        ){
 
             throw new Error(
                 "لم يتم السماح بالإشعارات"
@@ -2432,7 +2680,9 @@ async function enableNotifications(){
             );
 
 
-        if(!response.ok){
+        if(
+            !response.ok
+        ){
 
             throw new Error(
                 "تعذر الاتصال بخادم الإشعارات"
@@ -2445,7 +2695,9 @@ async function enableNotifications(){
             await response.json();
 
 
-        if(!data.publicKey){
+        if(
+            !data.publicKey
+        ){
 
             throw new Error(
                 "مفتاح الإشعارات غير موجود"
@@ -2459,13 +2711,16 @@ async function enableNotifications(){
                 .getSubscription();
 
 
-        if(!subscription){
+        if(
+            !subscription
+        ){
 
             subscription =
                 await registration.pushManager
                     .subscribe({
 
-                        userVisibleOnly:true,
+                        userVisibleOnly:
+                            true,
 
                         applicationServerKey:
                             urlBase64ToUint8Array(
@@ -2483,7 +2738,8 @@ async function enableNotifications(){
                 "/subscribe",
                 {
 
-                    method:"POST",
+                    method:
+                        "POST",
 
                     headers:{
                         "Content-Type":
@@ -2499,7 +2755,9 @@ async function enableNotifications(){
             );
 
 
-        if(!subscribeResponse.ok){
+        if(
+            !subscribeResponse.ok
+        ){
 
             throw new Error(
                 "تعذر تسجيل الجهاز"
@@ -2566,7 +2824,9 @@ document
                 );
 
 
-        if(!registration)
+        if(
+            !registration
+        )
             return;
 
 
@@ -2587,6 +2847,7 @@ document
                 "none";
 
         }
+
 
     }catch(error){
 
