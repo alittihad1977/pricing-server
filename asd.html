@@ -207,11 +207,6 @@ td{
     display:none;
 }
 
-
-/* =====================================================
-   🟢 حالة الاتصال
-   ===================================================== */
-
 .connection-status{
     position:fixed;
     top:8px;
@@ -252,11 +247,6 @@ td{
     content:"غير متصل";
 }
 
-
-/* =====================================================
-   👥 الأجهزة
-   ===================================================== */
-
 .online-devices{
     position:fixed;
     top:8px;
@@ -276,11 +266,6 @@ td{
     color:gold;
     font-weight:bold;
 }
-
-
-/* =====================================================
-   📺 الشريط الموحد
-   ===================================================== */
 
 .bottom-bar{
     position:fixed;
@@ -333,11 +318,6 @@ td{
     align-items:center;
     justify-content:center;
 }
-
-
-/* =====================================================
-   📰 الأخبار
-   ===================================================== */
 
 #newsTrack{
     position:absolute;
@@ -400,11 +380,6 @@ td{
     margin-right:15px;
     margin-left:15px;
 }
-
-
-/* =====================================================
-   📈 الأسواق
-   ===================================================== */
 
 #marketsTrack{
     position:absolute;
@@ -469,11 +444,6 @@ td{
     color:#ff3d00;
 }
 
-
-/* =====================================================
-   🔔 الإشعارات
-   ===================================================== */
-
 #notificationButton{
     position:fixed;
     bottom:50px;
@@ -497,11 +467,6 @@ td{
 
     opacity:0.55;
 }
-
-
-/* =====================================================
-   🖥️ شاشات كبيرة
-   ===================================================== */
 
 @media screen and (min-width:1400px){
 
@@ -571,13 +536,7 @@ td{
         font-size:1rem;
         line-height:38px;
     }
-
 }
-
-
-/* =====================================================
-   📱 الموبايل
-   ===================================================== */
 
 @media screen and (max-width:900px){
 
@@ -690,7 +649,6 @@ td{
         font-size:8px;
         padding:3px 5px;
     }
-
 }
 
 </style>
@@ -698,42 +656,17 @@ td{
 
 <body>
 
-
-<!-- =====================================================
-     🟢 الاتصال
-     ===================================================== -->
-
 <div id="connectionStatus" class="connection-status offline">
-
     <span class="connection-dot"></span>
-
     <span class="connection-text"></span>
-
 </div>
-
-
-<!-- =====================================================
-     👥 الأجهزة
-     ===================================================== -->
 
 <div id="onlineDevices" class="online-devices">
-
     <span>👥</span>
-
-    <span>
-        الآن:
-    </span>
-
-    <span id="onlineCount">
-        0
-    </span>
-
-    <span>
-        أجهزة
-    </span>
-
+    <span>الآن:</span>
+    <span id="onlineCount">0</span>
+    <span>أجهزة</span>
 </div>
-
 
 <div class="screen">
 
@@ -747,337 +680,182 @@ td{
 
 <div class="date-time">
 
-<div class="time" id="liveTime">
-00:00:00
-</div>
+<div class="time" id="liveTime">00:00:00</div>
 
-<div class="date" id="liveDate">
-التاريخ
-</div>
+<div class="date" id="liveDate">التاريخ</div>
 
 <div class="weather" id="weatherBox">
 
-<span class="weather-icon" id="weatherIcon">
-☀️
-</span>
+<span class="weather-icon" id="weatherIcon">☀️</span>
 
-<span class="weather-temp" id="weatherTemp">
---°
-</span>
+<span class="weather-temp" id="weatherTemp">--°</span>
 
-<span class="weather-city" id="weatherCity">
-حلب
-</span>
+<span class="weather-city" id="weatherCity">حلب</span>
 
 </div>
 
 </div>
 
 </div>
-
 
 <table>
 
 <tr>
-
 <th>الزوج</th>
 <th>شراء</th>
 <th>بيع</th>
-
 </tr>
 
-
 <tr>
-
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/us.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/us.png" width="70" height="40"/>
 </svg>
 
 /
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/sy.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/sy.png" width="70" height="40"/>
 </svg>
 
 </td>
 
-<td
-class="price-cell"
-id="buy1">
-11800
-</td>
-
-<td
-class="price-cell"
-id="sell1">
-11900
-</td>
+<td class="price-cell" id="buy1">11800</td>
+<td class="price-cell" id="sell1">11900</td>
 
 </tr>
 
-
 <tr>
-
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/tr.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/tr.png" width="70" height="40"/>
 </svg>
 
 /
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/sy.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/sy.png" width="70" height="40"/>
 </svg>
 
 </td>
 
-<td
-class="price-cell"
-id="buy2">
-268
-</td>
-
-<td
-class="price-cell"
-id="sell2">
-272
-</td>
+<td class="price-cell" id="buy2">268</td>
+<td class="price-cell" id="sell2">272</td>
 
 </tr>
 
-
 <tr>
-
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/eu.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/eu.png" width="70" height="40"/>
 </svg>
 
 /
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/sy.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/sy.png" width="70" height="40"/>
 </svg>
 
 </td>
 
-<td
-class="price-cell"
-id="buy3">
-13450
-</td>
-
-<td
-class="price-cell"
-id="sell3">
-13600
-</td>
+<td class="price-cell" id="buy3">13450</td>
+<td class="price-cell" id="sell3">13600</td>
 
 </tr>
 
-
 <tr>
-
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/us.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/us.png" width="70" height="40"/>
 </svg>
 
 /
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/tr.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/tr.png" width="70" height="40"/>
 </svg>
 
 </td>
 
-<td
-class="price-cell"
-id="buy4">
-43.7
-</td>
-
-<td
-class="price-cell"
-id="sell4">
-44
-</td>
+<td class="price-cell" id="buy4">43.7</td>
+<td class="price-cell" id="sell4">44</td>
 
 </tr>
 
-
 <tr>
-
 <td>
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/eu.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/eu.png" width="70" height="40"/>
 </svg>
 
 /
 
 <svg class="flag-svg" viewBox="0 0 70 40">
-
-<image
-href="https://flagcdn.com/w80/us.png"
-width="70"
-height="40"/>
-
+<image href="https://flagcdn.com/w80/us.png" width="70" height="40"/>
 </svg>
 
 </td>
 
-<td
-class="price-cell"
-id="buy5">
-1.14
-</td>
-
-<td
-class="price-cell"
-id="sell5">
-1.16
-</td>
+<td class="price-cell" id="buy5">1.14</td>
+<td class="price-cell" id="sell5">1.16</td>
 
 </tr>
 
 </table>
 
 </div>
+</div>
+
+<div class="bottom-bar" id="bottomBar">
+
+<div class="bottom-title" id="bottomTitle">
+📰 آخر الأخبار
+</div>
+
+<div class="bottom-content">
+
+<div id="newsTrack"></div>
+
+<div id="marketsTrack">
+
+<div class="market-item">
+جاري تحميل الأسواق...
+</div>
 
 </div>
 
-
-<!-- =====================================================
-     📺 الشريط الموحد
-     ===================================================== -->
-
-<div
-class="bottom-bar"
-id="bottomBar">
-
-    <div
-    class="bottom-title"
-    id="bottomTitle">
-
-        📰 آخر الأخبار
-
-    </div>
-
-
-    <div class="bottom-content">
-
-        <div
-        id="newsTrack">
-
-        </div>
-
-
-        <div
-        id="marketsTrack">
-
-            <div class="market-item">
-
-                جاري تحميل الأسواق...
-
-            </div>
-
-        </div>
-
-    </div>
-
 </div>
 
+</div>
 
 <div id="updateSystem">
-
 <textarea id="msg"></textarea>
-
 </div>
 
-
 <button id="notificationButton">
-
 🔔 تفعيل الإشعارات
-
 </button>
-
 
 <script>
 
-
-/* =====================================================
-   السيرفر
-   ===================================================== */
-
 const SERVER =
-    "https://pricing-server-yjam.onrender.com";
+"https://pricing-server-yjam.onrender.com";
 
 
 /* =====================================================
    الساعة والتاريخ
-   ===================================================== */
+===================================================== */
 
 function updateDateTime(){
 
-    const now =
-        new Date();
+    const now = new Date();
 
-
-    document.getElementById(
-        "liveTime"
-    ).textContent =
-
+    document.getElementById("liveTime").textContent =
         now.toLocaleTimeString(
             "ar-SY",
             {
@@ -1088,11 +866,7 @@ function updateDateTime(){
             }
         );
 
-
-    document.getElementById(
-        "liveDate"
-    ).textContent =
-
+    document.getElementById("liveDate").textContent =
         now.toLocaleDateString(
             "ar-SY",
             {
@@ -1102,30 +876,21 @@ function updateDateTime(){
                 day:"numeric"
             }
         );
-
 }
-
 
 updateDateTime();
 
-
-setInterval(
-    updateDateTime,
-    1000
-);
+setInterval(updateDateTime,1000);
 
 
 /* =====================================================
-   👥 الأجهزة
-   ===================================================== */
+   الأجهزة
+===================================================== */
 
 function getDeviceId(){
 
     let id =
-        localStorage.getItem(
-            "alittihad_device_id"
-        );
-
+        localStorage.getItem("alittihad_device_id");
 
     if(!id){
 
@@ -1137,22 +902,16 @@ function getDeviceId(){
                 .toString(36)
                 .substring(2,10);
 
-
         localStorage.setItem(
             "alittihad_device_id",
             id
         );
-
     }
 
-
     return id;
-
 }
 
-
-const DEVICE_ID =
-    getDeviceId();
+const DEVICE_ID = getDeviceId();
 
 
 async function updateOnlineDevices(){
@@ -1163,34 +922,25 @@ async function updateOnlineDevices(){
             await fetch(
                 SERVER +
                 "/online?id=" +
-                encodeURIComponent(
-                    DEVICE_ID
-                ),
+                encodeURIComponent(DEVICE_ID),
                 {
                     cache:"no-store"
                 }
             );
 
-
         if(!response.ok)
             throw new Error();
-
 
         const data =
             await response.json();
 
-
-        if(
-            data.online !== undefined
-        ){
+        if(data.online !== undefined){
 
             document.getElementById(
                 "onlineCount"
             ).textContent =
                 data.online;
-
         }
-
 
     }catch(error){
 
@@ -1198,14 +948,10 @@ async function updateOnlineDevices(){
             "Online error",
             error
         );
-
     }
-
 }
 
-
 updateOnlineDevices();
-
 
 setInterval(
     updateOnlineDevices,
@@ -1214,8 +960,8 @@ setInterval(
 
 
 /* =====================================================
-   🌤️ الطقس
-   ===================================================== */
+   الطقس
+===================================================== */
 
 async function loadWeather(){
 
@@ -1223,34 +969,25 @@ async function loadWeather(){
 
         const response =
             await fetch(
-                SERVER +
-                "/weather",
+                SERVER + "/weather",
                 {
                     cache:"no-store"
                 }
             );
 
-
         if(!response.ok)
             throw new Error();
-
 
         const weather =
             await response.json();
 
-
-        if(
-            weather.temperature !== undefined
-        ){
+        if(weather.temperature !== undefined){
 
             document.getElementById(
                 "weatherTemp"
             ).textContent =
-                weather.temperature +
-                "°";
-
+                weather.temperature + "°";
         }
-
 
         if(weather.icon){
 
@@ -1258,9 +995,7 @@ async function loadWeather(){
                 "weatherIcon"
             ).textContent =
                 weather.icon;
-
         }
-
 
         if(weather.city){
 
@@ -1268,9 +1003,7 @@ async function loadWeather(){
                 "weatherCity"
             ).textContent =
                 weather.city;
-
         }
-
 
     }catch(error){
 
@@ -1278,14 +1011,10 @@ async function loadWeather(){
             "Weather Error",
             error
         );
-
     }
-
 }
 
-
 loadWeather();
-
 
 setInterval(
     loadWeather,
@@ -1294,8 +1023,8 @@ setInterval(
 
 
 /* =====================================================
-   📈 الأسواق
-   ===================================================== */
+   الأسواق
+===================================================== */
 
 let lastMarketsData = "";
 
@@ -1305,10 +1034,8 @@ function formatMarketNumber(value){
     const number =
         Number(value);
 
-
     if(!Number.isFinite(number))
         return "--";
-
 
     return number.toLocaleString(
         "en-US",
@@ -1317,12 +1044,11 @@ function formatMarketNumber(value){
             maximumFractionDigits:3
         }
     );
-
 }
 
 
 /*
-   تحديد أيقونة السوق
+   أيقونات الأسواق ثابتة
 */
 
 function getMarketIcon(market){
@@ -1332,30 +1058,20 @@ function getMarketIcon(market){
             market.symbol || ""
         ).toUpperCase();
 
+    if(symbol === "XAUUSD")
+        return "🥇";
 
-    const name =
-        String(
-            market.name || ""
-        );
-
-
-    /*
-       الذهب:
-       XAU أو اسم يحتوي على كلمة ذهب
-    */
+    if(symbol === "XAGUSD")
+        return "🥈";
 
     if(
-        symbol.includes("XAU") ||
-        name.includes("ذهب")
-    ){
-
-        return "🪙";
-
-    }
-
+        symbol === "USOIL" ||
+        symbol === "XTIUSD" ||
+        symbol === "WTI"
+    )
+        return "🛢️";
 
     return market.icon || "📊";
-
 }
 
 
@@ -1366,138 +1082,91 @@ function showMarkets(markets){
             "marketsTrack"
         );
 
-
     if(
         !Array.isArray(markets) ||
         markets.length === 0
     ){
 
         track.innerHTML =
-
             `<div class="market-item">
                 لا توجد بيانات أسواق حالياً
              </div>`;
 
         return;
-
     }
 
-
     track.innerHTML = "";
-
 
     markets.forEach(
         function(market){
 
             const item =
-                document.createElement(
-                    "div"
-                );
-
+                document.createElement("div");
 
             item.className =
                 "market-item";
-
 
             const direction =
                 String(
                     market.direction || ""
                 ).toUpperCase();
 
+            let arrow = "↔";
 
-            let arrow =
-                "↔";
+            let directionClass = "";
 
+            if(direction === "UP"){
 
-            let directionClass =
-                "";
-
-
-            if(
-                direction === "UP"
-            ){
-
-                arrow =
-                    "▲";
-
-                directionClass =
-                    "market-up";
+                arrow = "▲";
+                directionClass = "market-up";
 
             }
 
+            if(direction === "DOWN"){
 
-            if(
-                direction === "DOWN"
-            ){
-
-                arrow =
-                    "▼";
-
-                directionClass =
-                    "market-down";
+                arrow = "▼";
+                directionClass = "market-down";
 
             }
-
 
             const change =
                 Number(
                     market.dayDiffPercent
                 );
 
+            let changeText = "--";
 
-            let changeText =
-                "--";
+            let changeClass = "";
 
-
-            let changeClass =
-                "";
-
-
-            if(
-                Number.isFinite(change)
-            ){
+            if(Number.isFinite(change)){
 
                 changeText =
-
                     (
                         change > 0
                         ? "+"
                         : ""
                     ) +
-
                     change.toFixed(2) +
-
                     "%";
 
-
                 changeClass =
-
                     change >= 0
                     ? "market-change-up"
                     : "market-change-down";
-
             }
 
-
             const icon =
-                getMarketIcon(
-                    market
-                );
-
+                getMarketIcon(market);
 
             item.innerHTML =
 
-                `<span>
-                    ${icon}
-                 </span>
+                `<span>${icon}</span>
 
                  <span class="market-symbol">
                     ${market.name || market.symbol || "السوق"}
                  </span>
 
-                 <span>
-                    :
-                 </span>
+                 <span>:</span>
 
                  <span class="market-price">
                     ${formatMarketNumber(market.price)}
@@ -1511,14 +1180,10 @@ function showMarkets(markets){
                     ${changeText}
                  </span>`;
 
-
-            track.appendChild(
-                item
-            );
+            track.appendChild(item);
 
         }
     );
-
 }
 
 
@@ -1528,49 +1193,34 @@ async function loadMarkets(){
 
         const response =
             await fetch(
-                SERVER +
-                "/markets",
+                SERVER + "/markets",
                 {
                     cache:"no-store"
                 }
             );
-
 
         if(!response.ok){
 
             throw new Error(
                 "Markets server error"
             );
-
         }
-
 
         const data =
             await response.json();
 
-
         const newData =
             JSON.stringify(data);
 
-
-        if(
-            newData ===
-            lastMarketsData
-        ){
-
+        if(newData === lastMarketsData)
             return;
-
-        }
-
 
         lastMarketsData =
             newData;
 
-
         showMarkets(
             data.markets
         );
-
 
     }catch(error){
 
@@ -1579,7 +1229,6 @@ async function loadMarkets(){
             error
         );
 
-
         document.getElementById(
             "marketsTrack"
         ).innerHTML =
@@ -1587,14 +1236,10 @@ async function loadMarkets(){
             `<div class="market-item">
                 📈 الأسواق غير متاحة حالياً
              </div>`;
-
     }
-
 }
 
-
 loadMarkets();
-
 
 setInterval(
     loadMarkets,
@@ -1604,19 +1249,17 @@ setInterval(
 
 /* =====================================================
    نظام الأسعار
-   ===================================================== */
+===================================================== */
 
 let oldPrices = {};
 
 let direction = {};
-
 
 let audioCtx =
     new (
         window.AudioContext ||
         window.webkitAudioContext
     )();
-
 
 let unlocked = false;
 
@@ -1628,8 +1271,7 @@ document.addEventListener(
         audioCtx.resume().then(
             function(){
 
-                unlocked =
-                    true;
+                unlocked = true;
 
             }
         );
@@ -1646,8 +1288,7 @@ document.addEventListener(
         audioCtx.resume().then(
             function(){
 
-                unlocked =
-                    true;
+                unlocked = true;
 
             }
         );
@@ -1662,60 +1303,39 @@ function playSound(){
     if(!unlocked)
         return;
 
-
     const o =
         audioCtx.createOscillator();
-
 
     const g =
         audioCtx.createGain();
 
+    o.type = "sine";
 
-    o.type =
-        "sine";
+    o.frequency.value = 880;
 
-
-    o.frequency.value =
-        880;
-
-
-    g.gain.value =
-        0.15;
-
+    g.gain.value = 0.15;
 
     o.connect(g);
-
 
     g.connect(
         audioCtx.destination
     );
 
-
     o.start();
 
-
     o.stop(
-        audioCtx.currentTime +
-        0.12
+        audioCtx.currentTime + 0.12
     );
-
 }
 
 
-function updateCell(
-    id,
-    value
-){
+function updateCell(id,value){
 
     const el =
-        document.getElementById(
-            id
-        );
-
+        document.getElementById(id);
 
     if(!el)
         return;
-
 
     if(
         oldPrices[id] !== undefined &&
@@ -1729,11 +1349,9 @@ function updateCell(
             ? "up"
             : "down";
 
-
         document.body.classList.add(
             "flash"
         );
-
 
         setTimeout(
             function(){
@@ -1746,101 +1364,70 @@ function updateCell(
             300
         );
 
-
         playSound();
-
     }
 
+    oldPrices[id] = value;
 
-    oldPrices[id] =
-        value;
+    let arrow = "";
 
-
-    let arrow =
-        "";
-
-
-    if(
-        direction[id] === "up"
-    ){
+    if(direction[id] === "up"){
 
         arrow =
             "<span class='up'>▲</span>";
 
     }
 
-
-    if(
-        direction[id] === "down"
-    ){
+    if(direction[id] === "down"){
 
         arrow =
             "<span class='down'>▼</span>";
 
     }
 
-
     el.innerHTML =
-        value +
-        arrow;
-
+        value + arrow;
 }
 
 
 function updatePrices(){
 
-    for(
-        let i=1;
-        i<=5;
-        i++
-    ){
+    for(let i=1;i<=5;i++){
 
         const buy =
             localStorage.getItem(
                 "buy"+i
             );
 
-
         const sell =
             localStorage.getItem(
                 "sell"+i
             );
 
-
-        if(
-            buy !== null
-        ){
+        if(buy !== null){
 
             updateCell(
                 "buy"+i,
                 buy
             );
-
         }
 
-
-        if(
-            sell !== null
-        ){
+        if(sell !== null){
 
             updateCell(
                 "sell"+i,
                 sell
             );
-
         }
-
     }
-
 }
-
 
 updatePrices();
 
 
 /* =====================================================
    استقبال رسالة الأسعار
-   ===================================================== */
+===================================================== */
 
 let lastProcessed = "";
 
@@ -1848,18 +1435,13 @@ let lastProcessed = "";
 function processMessage(){
 
     const textarea =
-        document.getElementById(
-            "msg"
-        );
-
+        document.getElementById("msg");
 
     const text =
         textarea.value;
 
-
     if(!text.trim())
         return;
-
 
     const buys =
         [
@@ -1868,7 +1450,6 @@ function processMessage(){
             )
         ];
 
-
     const sells =
         [
             ...text.matchAll(
@@ -1876,45 +1457,28 @@ function processMessage(){
             )
         ];
 
+    for(let i=0;i<5;i++){
 
-    for(
-        let i=0;
-        i<5;
-        i++
-    ){
-
-        if(
-            buys[i]
-        ){
+        if(buys[i]){
 
             localStorage.setItem(
                 "buy"+(i+1),
                 buys[i][1]
             );
-
         }
 
-
-        if(
-            sells[i]
-        ){
+        if(sells[i]){
 
             localStorage.setItem(
                 "sell"+(i+1),
                 sells[i][1]
             );
-
         }
-
     }
-
 
     updatePrices();
 
-
-    textarea.value =
-        "";
-
+    textarea.value = "";
 }
 
 
@@ -1924,17 +1488,14 @@ async function fetchMessage(){
 
         const response =
             await fetch(
-                SERVER +
-                "/msg",
+                SERVER + "/msg",
                 {
                     cache:"no-store"
                 }
             );
 
-
         const data =
             await response.text();
-
 
         if(
             data.trim() !== "" &&
@@ -1943,18 +1504,12 @@ async function fetchMessage(){
 
             document.getElementById(
                 "msg"
-            ).value =
-                data;
-
+            ).value = data;
 
             processMessage();
 
-
-            lastProcessed =
-                data;
-
+            lastProcessed = data;
         }
-
 
     }catch(error){
 
@@ -1962,14 +1517,10 @@ async function fetchMessage(){
             "Message Error",
             error
         );
-
     }
-
 }
 
-
 fetchMessage();
-
 
 setInterval(
     fetchMessage,
@@ -1979,29 +1530,24 @@ setInterval(
 
 /* =====================================================
    حالة الاتصال
-   ===================================================== */
+===================================================== */
 
-function setConnectionStatus(
-    online
-){
+function setConnectionStatus(online){
 
     const status =
         document.getElementById(
             "connectionStatus"
         );
 
-
     status.classList.toggle(
         "online",
         online
     );
 
-
     status.classList.toggle(
         "offline",
         !online
     );
-
 }
 
 
@@ -2011,32 +1557,24 @@ async function checkConnection(){
 
         const response =
             await fetch(
-                SERVER +
-                "/msg",
+                SERVER + "/msg",
                 {
                     cache:"no-store"
                 }
             );
 
-
         setConnectionStatus(
             response.ok
         );
 
-
     }catch(error){
 
-        setConnectionStatus(
-            false
-        );
+        setConnectionStatus(false);
 
     }
-
 }
 
-
 checkConnection();
-
 
 setInterval(
     checkConnection,
@@ -2045,8 +1583,8 @@ setInterval(
 
 
 /* =====================================================
-   📰 الأخبار + 📈 الأسواق
-   ===================================================== */
+   الأخبار والأسواق
+===================================================== */
 
 let newsList = [];
 
@@ -2056,177 +1594,104 @@ let newsTimer = null;
 
 let marketTimer = null;
 
-let bottomMode =
-    "news";
+let bottomMode = "news";
 
+const NEWS_DISPLAY_TIME = 7000;
 
-const NEWS_DISPLAY_TIME =
-    7000;
+const MARKET_DISPLAY_TIME = 10000;
 
-
-const MARKET_DISPLAY_TIME =
-    10000;
-
-
-/* =====================================================
-   عرض الأخبار
-   ===================================================== */
 
 function startNews(){
 
-    if(
-        marketTimer
-    ){
+    if(marketTimer){
 
-        clearTimeout(
-            marketTimer
-        );
+        clearTimeout(marketTimer);
 
-        marketTimer =
-            null;
-
+        marketTimer = null;
     }
 
+    if(newsTimer){
 
-    if(
-        newsTimer
-    ){
+        clearTimeout(newsTimer);
 
-        clearTimeout(
-            newsTimer
-        );
-
-        newsTimer =
-            null;
-
+        newsTimer = null;
     }
 
-
-    bottomMode =
-        "news";
-
+    bottomMode = "news";
 
     document.getElementById(
         "bottomTitle"
     ).textContent =
         "📰 آخر الأخبار";
 
-
     document.getElementById(
         "newsTrack"
-    ).style.opacity =
-        "1";
-
+    ).style.opacity = "1";
 
     document.getElementById(
         "marketsTrack"
-    ).style.opacity =
-        "0";
-
+    ).style.opacity = "0";
 
     document.getElementById(
         "marketsTrack"
-    ).style.pointerEvents =
-        "none";
-
+    ).style.pointerEvents = "none";
 
     document.getElementById(
         "newsTrack"
-    ).style.pointerEvents =
-        "auto";
+    ).style.pointerEvents = "auto";
 
-
-    currentNewsIndex =
-        0;
-
+    currentNewsIndex = 0;
 
     showNextNews();
-
 }
 
 
-/* =====================================================
-   عرض الخبر التالي
-   ===================================================== */
-
 function showNextNews(){
 
-    if(
-        bottomMode !== "news"
-    )
+    if(bottomMode !== "news")
         return;
-
 
     const track =
         document.getElementById(
             "newsTrack"
         );
 
-
-    if(
-        !newsList.length
-    ){
+    if(!newsList.length){
 
         showNewsMessage(
             "لا توجد أخبار حالياً"
         );
 
         return;
-
     }
 
-
-    track.innerHTML =
-        "";
-
+    track.innerHTML = "";
 
     const item =
-        document.createElement(
-            "div"
-        );
+        document.createElement("div");
 
-
-    item.className =
-        "news-item";
-
+    item.className = "news-item";
 
     item.textContent =
         newsList[
             currentNewsIndex
         ].title;
 
-
     const separator =
-        document.createElement(
-            "span"
-        );
-
+        document.createElement("span");
 
     separator.className =
         "news-separator";
 
+    separator.textContent = "◆";
 
-    separator.textContent =
-        "◆";
+    item.appendChild(separator);
 
-
-    item.appendChild(
-        separator
-    );
-
-
-    track.appendChild(
-        item
-    );
-
+    track.appendChild(item);
 
     void item.offsetWidth;
 
-
-    item.classList.add(
-        "active"
-    );
-
+    item.classList.add("active");
 
     newsTimer =
         setTimeout(
@@ -2236,40 +1701,27 @@ function showNextNews(){
                     "active"
                 );
 
-
                 setTimeout(
                     function(){
 
                         if(
-                            bottomMode !==
-                            "news"
+                            bottomMode !== "news"
                         )
                             return;
 
-
                         currentNewsIndex++;
-
-
-                        /*
-                           آخر خبر
-                        */
 
                         if(
                             currentNewsIndex >=
                             newsList.length
                         ){
 
-                            currentNewsIndex =
-                                0;
-
+                            currentNewsIndex = 0;
 
                             showMarketsMode();
 
-
                             return;
-
                         }
-
 
                         showNextNews();
 
@@ -2280,60 +1732,34 @@ function showNextNews(){
             },
             NEWS_DISPLAY_TIME
         );
-
 }
 
 
-/* =====================================================
-   لا توجد أخبار
-   ===================================================== */
+function showNewsMessage(message){
 
-function showNewsMessage(
-    message
-){
+    if(newsTimer){
 
-    if(
-        newsTimer
-    ){
+        clearTimeout(newsTimer);
 
-        clearTimeout(
-            newsTimer
-        );
-
-        newsTimer =
-            null;
-
+        newsTimer = null;
     }
-
 
     const track =
         document.getElementById(
             "newsTrack"
         );
 
-
-    track.innerHTML =
-        "";
-
+    track.innerHTML = "";
 
     const item =
-        document.createElement(
-            "div"
-        );
-
+        document.createElement("div");
 
     item.className =
         "news-item active";
 
+    item.textContent = message;
 
-    item.textContent =
-        message;
-
-
-    track.appendChild(
-        item
-    );
-
+    track.appendChild(item);
 
     newsTimer =
         setTimeout(
@@ -2344,78 +1770,45 @@ function showNewsMessage(
             },
             NEWS_DISPLAY_TIME
         );
-
 }
 
 
-/* =====================================================
-   عرض الأسواق
-   ===================================================== */
-
 function showMarketsMode(){
 
-    if(
-        newsTimer
-    ){
+    if(newsTimer){
 
-        clearTimeout(
-            newsTimer
-        );
+        clearTimeout(newsTimer);
 
-        newsTimer =
-            null;
-
+        newsTimer = null;
     }
 
-
-    bottomMode =
-        "markets";
-
+    bottomMode = "markets";
 
     document.getElementById(
         "bottomTitle"
     ).textContent =
         "📈 الأسواق";
 
-
     document.getElementById(
         "newsTrack"
-    ).style.opacity =
-        "0";
-
+    ).style.opacity = "0";
 
     document.getElementById(
         "marketsTrack"
-    ).style.opacity =
-        "1";
-
+    ).style.opacity = "1";
 
     document.getElementById(
         "newsTrack"
-    ).style.pointerEvents =
-        "none";
-
+    ).style.pointerEvents = "none";
 
     document.getElementById(
         "marketsTrack"
-    ).style.pointerEvents =
-        "auto";
+    ).style.pointerEvents = "auto";
 
+    if(marketTimer){
 
-    if(
-        marketTimer
-    ){
-
-        clearTimeout(
-            marketTimer
-        );
-
+        clearTimeout(marketTimer);
     }
-
-
-    /*
-       الأسواق تبقى 10 ثواني
-    */
 
     marketTimer =
         setTimeout(
@@ -2426,13 +1819,12 @@ function showMarketsMode(){
             },
             MARKET_DISPLAY_TIME
         );
-
 }
 
 
 /* =====================================================
    تحميل الأخبار
-   ===================================================== */
+===================================================== */
 
 async function loadNews(){
 
@@ -2440,32 +1832,20 @@ async function loadNews(){
 
         const response =
             await fetch(
-                SERVER +
-                "/news",
+                SERVER + "/news",
                 {
                     cache:"no-store"
                 }
             );
 
-
-        if(
-            !response.ok
-        )
+        if(!response.ok)
             throw new Error();
-
 
         const news =
             await response.json();
 
-
-        if(
-            !Array.isArray(news)
-        ){
-
+        if(!Array.isArray(news))
             return;
-
-        }
-
 
         const newNewsList =
             news.filter(
@@ -2480,38 +1860,22 @@ async function loadNews(){
                 }
             );
 
+        if(newNewsList.length === 0){
 
-        if(
-            newNewsList.length === 0
-        ){
+            newsList = [];
 
-            newsList =
-                [];
-
-            if(
-                bottomMode ===
-                "news"
-            ){
+            if(bottomMode === "news"){
 
                 showNewsMessage(
                     "لا توجد أخبار حالياً"
                 );
-
             }
 
             return;
-
         }
-
 
         newsList =
             newNewsList;
-
-
-        /*
-           إذا كانت الأخبار تعمل،
-           لا نعيد تشغيلها من البداية.
-        */
 
         if(
             bottomMode === "news" &&
@@ -2519,9 +1883,7 @@ async function loadNews(){
         ){
 
             startNews();
-
         }
-
 
     }catch(error){
 
@@ -2529,7 +1891,6 @@ async function loadNews(){
             "News Error:",
             error
         );
-
 
         if(
             bottomMode === "news" &&
@@ -2539,16 +1900,11 @@ async function loadNews(){
             showNewsMessage(
                 "الأخبار غير متاحة حالياً"
             );
-
         }
-
     }
-
 }
 
-
 loadNews();
-
 
 setInterval(
     loadNews,
@@ -2557,16 +1913,13 @@ setInterval(
 
 
 /* =====================================================
-   🔔 الإشعارات
-   ===================================================== */
+   الإشعارات
+===================================================== */
 
-const PUSH_SERVER =
-    SERVER;
+const PUSH_SERVER = SERVER;
 
 
-function urlBase64ToUint8Array(
-    base64String
-){
+function urlBase64ToUint8Array(base64String){
 
     const padding =
         "=".repeat(
@@ -2576,33 +1929,21 @@ function urlBase64ToUint8Array(
             ) % 4
         );
 
-
     const base64 =
         (
             base64String +
             padding
         )
-        .replace(
-            /-/g,
-            "+"
-        )
-        .replace(
-            /_/g,
-            "/"
-        );
-
+        .replace(/-/g,"+")
+        .replace(/_/g,"/");
 
     const rawData =
-        window.atob(
-            base64
-        );
-
+        window.atob(base64);
 
     const outputArray =
         new Uint8Array(
             rawData.length
         );
-
 
     for(
         let i=0;
@@ -2612,12 +1953,9 @@ function urlBase64ToUint8Array(
 
         outputArray[i] =
             rawData.charCodeAt(i);
-
     }
 
-
     return outputArray;
-
 }
 
 
@@ -2627,7 +1965,6 @@ async function enableNotifications(){
         document.getElementById(
             "notificationButton"
         );
-
 
     try{
 
@@ -2639,9 +1976,7 @@ async function enableNotifications(){
             throw new Error(
                 "المتصفح لا يدعم الإشعارات"
             );
-
         }
-
 
         const registration =
             await navigator.serviceWorker.register(
@@ -2651,24 +1986,17 @@ async function enableNotifications(){
                 }
             );
 
-
         await navigator.serviceWorker.ready;
-
 
         const permission =
             await Notification.requestPermission();
 
-
-        if(
-            permission !== "granted"
-        ){
+        if(permission !== "granted"){
 
             throw new Error(
                 "لم يتم السماح بالإشعارات"
             );
-
         }
-
 
         const response =
             await fetch(
@@ -2679,48 +2007,34 @@ async function enableNotifications(){
                 }
             );
 
-
-        if(
-            !response.ok
-        ){
+        if(!response.ok){
 
             throw new Error(
                 "تعذر الاتصال بخادم الإشعارات"
             );
-
         }
-
 
         const data =
             await response.json();
 
-
-        if(
-            !data.publicKey
-        ){
+        if(!data.publicKey){
 
             throw new Error(
                 "مفتاح الإشعارات غير موجود"
             );
-
         }
-
 
         let subscription =
             await registration.pushManager
                 .getSubscription();
 
-
-        if(
-            !subscription
-        ){
+        if(!subscription){
 
             subscription =
                 await registration.pushManager
                     .subscribe({
 
-                        userVisibleOnly:
-                            true,
+                        userVisibleOnly:true,
 
                         applicationServerKey:
                             urlBase64ToUint8Array(
@@ -2728,18 +2042,14 @@ async function enableNotifications(){
                             )
 
                     });
-
         }
-
 
         const subscribeResponse =
             await fetch(
-                PUSH_SERVER +
-                "/subscribe",
+                PUSH_SERVER + "/subscribe",
                 {
 
-                    method:
-                        "POST",
+                    method:"POST",
 
                     headers:{
                         "Content-Type":
@@ -2750,30 +2060,21 @@ async function enableNotifications(){
                         JSON.stringify(
                             subscription
                         )
-
                 }
             );
 
-
-        if(
-            !subscribeResponse.ok
-        ){
+        if(!subscribeResponse.ok){
 
             throw new Error(
                 "تعذر تسجيل الجهاز"
             );
-
         }
 
-
-        button.style.display =
-            "none";
-
+        button.style.display = "none";
 
         console.log(
             "تم تفعيل الإشعارات 🔔"
         );
-
 
     }catch(error){
 
@@ -2782,14 +2083,11 @@ async function enableNotifications(){
             error
         );
 
-
         alert(
             "تعذر تفعيل الإشعارات:\n\n" +
             error.message
         );
-
     }
-
 }
 
 
@@ -2805,49 +2103,36 @@ document
 
 /* =====================================================
    التحقق من الإشعارات
-   ===================================================== */
+===================================================== */
 
 (async function(){
 
     try{
 
-        if(
-            !("serviceWorker" in navigator)
-        )
+        if(!("serviceWorker" in navigator))
             return;
-
 
         const registration =
             await navigator.serviceWorker
-                .getRegistration(
-                    "./"
-                );
+                .getRegistration("./");
 
-
-        if(
-            !registration
-        )
+        if(!registration)
             return;
-
 
         const subscription =
             await registration.pushManager
                 .getSubscription();
 
-
         if(
             subscription &&
-            Notification.permission ===
-            "granted"
+            Notification.permission === "granted"
         ){
 
             document.getElementById(
                 "notificationButton"
             ).style.display =
                 "none";
-
         }
-
 
     }catch(error){
 
@@ -2855,7 +2140,6 @@ document
             "Notification status:",
             error
         );
-
     }
 
 })();
