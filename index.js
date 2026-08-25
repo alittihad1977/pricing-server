@@ -620,7 +620,7 @@ app.post(
 
 /* =====================================================
    🌤️ نظام الطقس
-   MET Norway Locationforecast 2.0
+   MET Norway
    ===================================================== */
 
 let weatherCache = null;
@@ -632,7 +632,7 @@ const WEATHER_CACHE_TIME =
 
 
 /* =====================================================
-   تحويل symbol_code من MET Norway
+   تحويل حالة الطقس
    ===================================================== */
 
 function getWeatherInfo(
@@ -777,42 +777,6 @@ function getWeatherInfo(
 
 
     if (
-        code.includes('lightsleet')
-    ) {
-
-        return {
-            icon: '🌧️',
-            description: 'مطر متجمد خفيف'
-        };
-
-    }
-
-
-    if (
-        code.includes('heavysleet')
-    ) {
-
-        return {
-            icon: '🌨️',
-            description: 'مطر متجمد غزير'
-        };
-
-    }
-
-
-    if (
-        code.includes('sleet')
-    ) {
-
-        return {
-            icon: '🌧️',
-            description: 'مطر متجمد'
-        };
-
-    }
-
-
-    if (
         code.includes('lightsnow')
     ) {
 
@@ -874,7 +838,7 @@ function getWeatherInfo(
 
 
 /* =====================================================
-   جلب طقس حلب من MET Norway
+   جلب طقس حلب
    ===================================================== */
 
 async function fetchAleppoWeather() {
@@ -885,165 +849,106 @@ async function fetchAleppoWeather() {
         '&lon=37.1343';
 
 
-    console.log(
-        '🌤️ جاري جلب طقس حلب من MET Norway...'
-    );
+    const response =
+        await fetch(
+            url,
+            {
+                headers: {
 
+                    'User-Agent':
+                        'Al-Ittihad-Pricing-Server/1.0 contact: admin@pricing-server.com',
 
-    try {
-
-        const response =
-            await fetch(
-                url,
-                {
-                    headers: {
-
-                        'User-Agent':
-                            'Al-Ittihad-Pricing-Server/1.0 contact: admin@pricing-server.com',
-
-                        'Accept':
-                            'application/json'
-
-                    }
+                    'Accept':
+                        'application/json'
 
                 }
-            );
 
-
-        const text =
-            await response.text();
-
-
-        if (
-            !response.ok
-        ) {
-
-            throw new Error(
-                'MET Norway HTTP ' +
-                response.status +
-                ' - ' +
-                text.substring(0, 500)
-            );
-
-        }
-
-
-        const data =
-            JSON.parse(
-                text
-            );
-
-
-        if (
-            !data ||
-            !data.properties ||
-            !data.properties.timeseries ||
-            !data.properties.timeseries.length
-        ) {
-
-            throw new Error(
-                'MET Norway weather data missing'
-            );
-
-        }
-
-
-        const current =
-            data.properties.timeseries[0];
-
-
-        if (
-            !current ||
-            !current.data ||
-            !current.data.instant ||
-            !current.data.instant.details
-        ) {
-
-            throw new Error(
-                'MET Norway current data missing'
-            );
-
-        }
-
-
-        const details =
-            current.data.instant.details;
-
-
-        const temperature =
-            Math.round(
-                Number(
-                    details.air_temperature
-                )
-            );
-
-
-        const symbolCode =
-            (
-                current.data.next_1_hours &&
-                current.data.next_1_hours.summary &&
-                current.data.next_1_hours.summary.symbol_code
-            ) ||
-            (
-                current.data.next_6_hours &&
-                current.data.next_6_hours.summary &&
-                current.data.next_6_hours.summary.symbol_code
-            ) ||
-            'clearsky_day';
-
-
-        const weatherInfo =
-            getWeatherInfo(
-                symbolCode
-            );
-
-
-        const timeString =
-            current.time ||
-            '';
-
-
-        const isDay =
-            !symbolCode.includes(
-                '_night'
-            );
-
-
-        return {
-
-            city:
-                'حلب',
-
-            temperature:
-                temperature,
-
-            icon:
-                weatherInfo.icon,
-
-            description:
-                weatherInfo.description,
-
-            isDay:
-                isDay,
-
-            updated:
-                timeString,
-
-            source:
-                'MET Norway'
-
-        };
-
-    } catch (error) {
-
-        console.error(
-            '❌ MET Norway Weather Error:',
-            error.message
+            }
         );
 
-        throw error;
+
+    const text =
+        await response.text();
+
+
+    if (
+        !response.ok
+    ) {
+
+        throw new Error(
+            'MET Norway HTTP ' +
+            response.status
+        );
 
     }
+
+
+    const data =
+        JSON.parse(
+            text
+        );
+
+
+    const current =
+        data.properties.timeseries[0];
+
+
+    const details =
+        current.data.instant.details;
+
+
+    const temperature =
+        Math.round(
+            Number(
+                details.air_temperature
+            )
+        );
+
+
+    const symbolCode =
+        (
+            current.data.next_1_hours &&
+            current.data.next_1_hours.summary &&
+            current.data.next_1_hours.summary.symbol_code
+        ) ||
+        (
+            current.data.next_6_hours &&
+            current.data.next_6_hours.summary &&
+            current.data.next_6_hours.summary.symbol_code
+        ) ||
+        'clearsky_day';
+
+
+    const weatherInfo =
+        getWeatherInfo(
+            symbolCode
+        );
+
+
+    return {
+
+        city:
+            'حلب',
+
+        temperature:
+            temperature,
+
+        icon:
+            weatherInfo.icon,
+
+        description:
+            weatherInfo.description,
+
+        isDay:
+            !symbolCode.includes('_night'),
+
+        updated:
+            current.time,
+
+        source:
+            'MET Norway'
+
+    };
 
 }
 
@@ -1147,8 +1052,8 @@ app.get(
 
 
 /* =====================================================
-   🥇 نظام الذهب XAU/USD
-   مصدر: BiQuote
+   🥇 GOLD API
+   XAUUSD
    ===================================================== */
 
 let goldCache = null;
@@ -1160,98 +1065,180 @@ const GOLD_CACHE_TIME =
 
 
 /* =====================================================
-   جلب سعر الذهب من BiQuote
+   جلب الذهب من BiQuote
    ===================================================== */
 
-async function fetchGoldPrice() {
+async function fetchGold() {
 
     const url =
         'https://biquote.io/api/XAUUSD';
 
 
     console.log(
-        '🥇 جاري جلب سعر الذهب من BiQuote...'
+        '🥇 جاري جلب سعر الذهب...'
     );
 
 
-    try {
+    const response =
+        await fetch(
+            url,
+            {
+                headers: {
 
-        const response =
-            await fetch(
-                url,
-                {
-                    headers: {
-
-                        'Accept':
-                            'application/json'
-
-                    }
+                    'Accept':
+                        'application/json'
 
                 }
-            );
 
-
-        const text =
-            await response.text();
-
-
-        console.log(
-            '🥇 BiQuote HTTP Status:',
-            response.status
+            }
         );
 
 
-        if (
-            !response.ok
-        ) {
-
-            throw new Error(
-                'BiQuote HTTP ' +
-                response.status +
-                ' - ' +
-                text.substring(0, 500)
-            );
-
-        }
+    const text =
+        await response.text();
 
 
-        const data =
-            JSON.parse(
-                text
-            );
+    if (
+        !response.ok
+    ) {
 
-
-        if (
-            !data ||
-            data.symbol !== 'XAUUSD'
-        ) {
-
-            throw new Error(
-                'Invalid XAUUSD data from BiQuote'
-            );
-
-        }
-
-
-        return data;
-
-    } catch (error) {
-
-        console.error(
-            '❌ BiQuote Gold Error:',
-            error.message
+        throw new Error(
+            'BiQuote HTTP ' +
+            response.status +
+            ' - ' +
+            text.substring(0, 500)
         );
-
-        throw error;
 
     }
+
+
+    const data =
+        JSON.parse(
+            text
+        );
+
+
+    const bid =
+        Number(
+            data.bid
+        );
+
+
+    const ask =
+        Number(
+            data.ask
+        );
+
+
+    const mid =
+        Number(
+            data.mid
+        ) ||
+        (
+            (
+                bid +
+                ask
+            ) /
+            2
+        );
+
+
+    return {
+
+        symbol:
+            data.symbol ||
+            'XAUUSD',
+
+        bid:
+            bid,
+
+        ask:
+            ask,
+
+        last:
+            Number(
+                data.last
+            ) || 0,
+
+        volume:
+            Number(
+                data.volume
+            ) || 0,
+
+        timestamp:
+            data.timestamp ||
+            new Date().toISOString(),
+
+        source:
+            data.source ||
+            'MetaTrader 5 (Broker 1)',
+
+        high:
+            Number(
+                data.high
+            ) || 0,
+
+        low:
+            Number(
+                data.low
+            ) || 0,
+
+        direction:
+            data.direction ||
+            '',
+
+        dayDiffPercent:
+            Number(
+                data.dayDiffPercent
+            ) || 0,
+
+        description:
+            data.description ||
+            'Gold vs US Dollar',
+
+        time:
+            data.time ||
+            '',
+
+        spread:
+            Number(
+                data.spread
+            ) ||
+            (
+                ask -
+                bid
+            ),
+
+        mid:
+            mid,
+
+        stale:
+            Boolean(
+                data.stale
+            ),
+
+        quoteAgeSeconds:
+            Number(
+                data.quoteAgeSeconds
+            ) || 0,
+
+        marketState:
+            data.marketState ||
+            'unknown',
+
+        lastQuoteAt:
+            data.lastQuoteAt ||
+            data.timestamp ||
+            ''
+
+    };
 
 }
 
 
 /* =====================================================
-   🥇 API دائم للذهب
-   GET /gold
+   API دائم للذهب
+   https://pricing-server-yjam.onrender.com/gold
    ===================================================== */
 
 app.get(
@@ -1280,8 +1267,6 @@ app.get(
                 Date.now();
 
 
-            /* استخدام Cache لمدة 15 ثانية */
-
             if (
                 goldCache &&
                 (
@@ -1298,16 +1283,13 @@ app.get(
             }
 
 
-            /* جلب سعر جديد */
-
             const gold =
-                await fetchGoldPrice();
+                await fetchGold();
 
-
-            /* تخزين السعر */
 
             goldCache =
                 gold;
+
 
             goldCacheTime =
                 now;
@@ -1321,29 +1303,18 @@ app.get(
         } catch (error) {
 
             console.error(
-                '❌ Gold API Error:',
+                '❌ Gold Error:',
                 error.message
             );
 
-
-            /* إذا المصدر تعطل،
-               نرجع آخر سعر معروف */
 
             if (
                 goldCache
             ) {
 
-                return res.json({
-
-                    ...goldCache,
-
-                    stale:
-                        true,
-
-                    source:
-                        'BiQuote - cached'
-
-                });
+                return res.json(
+                    goldCache
+                );
 
             }
 
@@ -1354,7 +1325,7 @@ app.get(
                     false,
 
                 error:
-                    'Gold price unavailable',
+                    'Gold unavailable',
 
                 details:
                     error.message
@@ -1368,7 +1339,7 @@ app.get(
 
 
 /* =====================================================
-   🧪 اختبار BiQuote
+   🧪 اختبار BiQuote القديم
    ===================================================== */
 
 app.get(
@@ -1385,20 +1356,18 @@ app.get(
                 '🥇 اختبار BiQuote للذهب...'
             );
 
-            console.log(
-                '🌐 URL:',
-                url
-            );
-
 
             const response =
                 await fetch(
                     url,
                     {
                         headers: {
+
                             'Accept':
                                 'application/json'
+
                         }
+
                     }
                 );
 
@@ -1411,6 +1380,7 @@ app.get(
                 '📊 BiQuote Status:',
                 response.status
             );
+
 
             console.log(
                 '📊 BiQuote Response:',
@@ -1485,15 +1455,8 @@ app.get(
     '/news',
     async (req, res) => {
 
-        console.log('');
         console.log(
-            '======================================'
-        );
-        console.log(
-            '📰 بدء فحص جميع مصادر الأخبار'
-        );
-        console.log(
-            '======================================'
+            '📰 فحص مصادر الأخبار'
         );
 
 
@@ -1708,6 +1671,10 @@ app.listen(
 
         console.log(
             'Gold API is ready 🥇'
+        );
+
+        console.log(
+            'Gold endpoint: /gold'
         );
 
     }
