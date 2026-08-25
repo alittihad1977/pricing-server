@@ -1147,6 +1147,227 @@ app.get(
 
 
 /* =====================================================
+   🥇 نظام الذهب XAU/USD
+   مصدر: BiQuote
+   ===================================================== */
+
+let goldCache = null;
+
+let goldCacheTime = 0;
+
+const GOLD_CACHE_TIME =
+    15 * 1000;
+
+
+/* =====================================================
+   جلب سعر الذهب من BiQuote
+   ===================================================== */
+
+async function fetchGoldPrice() {
+
+    const url =
+        'https://biquote.io/api/XAUUSD';
+
+
+    console.log(
+        '🥇 جاري جلب سعر الذهب من BiQuote...'
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                url,
+                {
+                    headers: {
+
+                        'Accept':
+                            'application/json'
+
+                    }
+
+                }
+            );
+
+
+        const text =
+            await response.text();
+
+
+        console.log(
+            '🥇 BiQuote HTTP Status:',
+            response.status
+        );
+
+
+        if (
+            !response.ok
+        ) {
+
+            throw new Error(
+                'BiQuote HTTP ' +
+                response.status +
+                ' - ' +
+                text.substring(0, 500)
+            );
+
+        }
+
+
+        const data =
+            JSON.parse(
+                text
+            );
+
+
+        if (
+            !data ||
+            data.symbol !== 'XAUUSD'
+        ) {
+
+            throw new Error(
+                'Invalid XAUUSD data from BiQuote'
+            );
+
+        }
+
+
+        return data;
+
+    } catch (error) {
+
+        console.error(
+            '❌ BiQuote Gold Error:',
+            error.message
+        );
+
+        throw error;
+
+    }
+
+}
+
+
+/* =====================================================
+   🥇 API دائم للذهب
+   GET /gold
+   ===================================================== */
+
+app.get(
+    '/gold',
+    async (req, res) => {
+
+        res.setHeader(
+            'Access-Control-Allow-Origin',
+            '*'
+        );
+
+        res.setHeader(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate'
+        );
+
+        res.setHeader(
+            'Content-Type',
+            'application/json; charset=utf-8'
+        );
+
+
+        try {
+
+            const now =
+                Date.now();
+
+
+            /* استخدام Cache لمدة 15 ثانية */
+
+            if (
+                goldCache &&
+                (
+                    now -
+                    goldCacheTime
+                ) <
+                GOLD_CACHE_TIME
+            ) {
+
+                return res.json(
+                    goldCache
+                );
+
+            }
+
+
+            /* جلب سعر جديد */
+
+            const gold =
+                await fetchGoldPrice();
+
+
+            /* تخزين السعر */
+
+            goldCache =
+                gold;
+
+            goldCacheTime =
+                now;
+
+
+            res.json(
+                gold
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                '❌ Gold API Error:',
+                error.message
+            );
+
+
+            /* إذا المصدر تعطل،
+               نرجع آخر سعر معروف */
+
+            if (
+                goldCache
+            ) {
+
+                return res.json({
+
+                    ...goldCache,
+
+                    stale:
+                        true,
+
+                    source:
+                        'BiQuote - cached'
+
+                });
+
+            }
+
+
+            res.status(503).json({
+
+                success:
+                    false,
+
+                error:
+                    'Gold price unavailable',
+
+                details:
+                    error.message
+
+            });
+
+        }
+
+    }
+);
+
+
+/* =====================================================
    🧪 اختبار BiQuote
    ===================================================== */
 
@@ -1483,6 +1704,10 @@ app.listen(
 
         console.log(
             'BiQuote test endpoint is ready 📈'
+        );
+
+        console.log(
+            'Gold API is ready 🥇'
         );
 
     }
