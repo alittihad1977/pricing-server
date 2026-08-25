@@ -15,7 +15,6 @@ app.use(cors({
 app.use(express.json());
 app.use(express.text({ type: '*/*' }));
 
-
 /* =====================================================
    Telegram
    ===================================================== */
@@ -31,20 +30,17 @@ const bot = new TelegramBot(token, {
     polling: true
 });
 
-
 /* =====================================================
    RSS
    ===================================================== */
 
 const parser = new Parser();
 
-
 /* =====================================================
    آخر رسالة أسعار
    ===================================================== */
 
 let lastMessage = '';
-
 
 /* =====================================================
    رابط لوحة الأسعار
@@ -53,137 +49,79 @@ let lastMessage = '';
 const PRICING_PAGE =
     'https://alittihad1977.github.io/pricing-server/asd.html';
 
-
 /* =====================================================
-   👥 عدد الموجودين الآن على لوحة التسعير
+   👥 الأجهزة المتصلة
    ===================================================== */
 
 const onlineUsers = new Map();
 
-const ONLINE_TIMEOUT =
-    60 * 1000;
+const ONLINE_TIMEOUT = 60 * 1000;
 
+app.get('/online', (req, res) => {
 
-/* =====================================================
-   API عدد الموجودين الآن
-   ===================================================== */
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader(
+        'Cache-Control',
+        'no-store, no-cache, must-revalidate'
+    );
 
-app.get(
-    '/online',
-    (req, res) => {
+    const userId =
+        String(req.query.id || '').trim();
 
-        res.setHeader(
-            'Access-Control-Allow-Origin',
-            '*'
-        );
+    if (!userId) {
 
-        res.setHeader(
-            'Cache-Control',
-            'no-store, no-cache, must-revalidate'
-        );
-
-        const userId =
-            String(
-                req.query.id || ''
-            ).trim();
-
-
-        if (!userId) {
-
-            return res.status(400).json({
-
-                success:
-                    false,
-
-                error:
-                    'User ID is required'
-
-            });
-
-        }
-
-
-        onlineUsers.set(
-            userId,
-            Date.now()
-        );
-
-
-        const now =
-            Date.now();
-
-
-        for (
-            const [id, lastSeen]
-            of onlineUsers.entries()
-        ) {
-
-            if (
-                now -
-                lastSeen >
-                ONLINE_TIMEOUT
-            ) {
-
-                onlineUsers.delete(
-                    id
-                );
-
-            }
-
-        }
-
-
-        res.json({
-
-            success:
-                true,
-
-            online:
-                onlineUsers.size
-
+        return res.status(400).json({
+            success: false,
+            error: 'User ID is required'
         });
 
     }
-);
 
+    onlineUsers.set(userId, Date.now());
 
-/* =====================================================
-   تنظيف الأجهزة القديمة
-   ===================================================== */
+    const now = Date.now();
 
-setInterval(
-    () => {
+    for (const [id, lastSeen] of onlineUsers.entries()) {
 
-        const now =
-            Date.now();
-
-
-        for (
-            const [id, lastSeen]
-            of onlineUsers.entries()
+        if (
+            now - lastSeen >
+            ONLINE_TIMEOUT
         ) {
 
-            if (
-                now -
-                lastSeen >
-                ONLINE_TIMEOUT
-            ) {
-
-                onlineUsers.delete(
-                    id
-                );
-
-            }
+            onlineUsers.delete(id);
 
         }
 
-    },
-    30 * 1000
-);
+    }
 
+    res.json({
+        success: true,
+        online: onlineUsers.size
+    });
+
+});
+
+setInterval(() => {
+
+    const now = Date.now();
+
+    for (const [id, lastSeen] of onlineUsers.entries()) {
+
+        if (
+            now - lastSeen >
+            ONLINE_TIMEOUT
+        ) {
+
+            onlineUsers.delete(id);
+
+        }
+
+    }
+
+}, 30 * 1000);
 
 /* =====================================================
-   مفاتيح VAPID
+   🔔 VAPID
    ===================================================== */
 
 const VAPID_PUBLIC_KEY =
@@ -198,25 +136,15 @@ const VAPID_PRIVATE_KEY =
         .replace(/^["']|["']$/g, '')
         .replace(/=+$/g, '');
 
-
 console.log(
     'VAPID_PUBLIC_KEY:',
-    VAPID_PUBLIC_KEY
-        ? 'موجود ✅'
-        : 'غير موجود ❌'
+    VAPID_PUBLIC_KEY ? 'موجود ✅' : 'غير موجود ❌'
 );
 
 console.log(
     'VAPID_PRIVATE_KEY:',
-    VAPID_PRIVATE_KEY
-        ? 'موجود ✅'
-        : 'غير موجود ❌'
+    VAPID_PRIVATE_KEY ? 'موجود ✅' : 'غير موجود ❌'
 );
-
-
-/* =====================================================
-   Web Push
-   ===================================================== */
 
 if (
     VAPID_PUBLIC_KEY &&
@@ -231,9 +159,7 @@ if (
             VAPID_PRIVATE_KEY
         );
 
-        console.log(
-            'Web Push جاهز 🔔'
-        );
+        console.log('Web Push جاهز 🔔');
 
     } catch (error) {
 
@@ -246,13 +172,11 @@ if (
 
 }
 
-
 /* =====================================================
    الأجهزة المسجلة
    ===================================================== */
 
 let subscriptions = [];
-
 
 /* =====================================================
    إرسال الإشعار
@@ -270,9 +194,7 @@ async function sendPushNotification(message) {
         );
 
         return;
-
     }
-
 
     if (
         subscriptions.length === 0
@@ -283,9 +205,7 @@ async function sendPushNotification(message) {
         );
 
         return;
-
     }
-
 
     const notificationData = {
 
@@ -311,23 +231,16 @@ async function sendPushNotification(message) {
             false,
 
         data: {
-
             url:
                 PRICING_PAGE
-
         }
 
     };
 
-
     const payload =
-        JSON.stringify(
-            notificationData
-        );
-
+        JSON.stringify(notificationData);
 
     const activeSubscriptions = [];
-
 
     for (
         const subscription
@@ -341,16 +254,13 @@ async function sendPushNotification(message) {
                 payload
             );
 
-
             console.log(
                 'تم إرسال الإشعار بنجاح 🔔'
             );
 
-
             activeSubscriptions.push(
                 subscription
             );
-
 
         } catch (error) {
 
@@ -359,7 +269,6 @@ async function sendPushNotification(message) {
                 error.statusCode,
                 error.message
             );
-
 
             if (
                 error.statusCode !== 404 &&
@@ -376,10 +285,8 @@ async function sendPushNotification(message) {
 
     }
 
-
     subscriptions =
         activeSubscriptions;
-
 
     console.log(
         'عدد الأجهزة المسجلة حالياً:',
@@ -388,9 +295,8 @@ async function sendPushNotification(message) {
 
 }
 
-
 /* =====================================================
-   استقبال رسائل Telegram
+   استقبال Telegram
    ===================================================== */
 
 bot.on(
@@ -400,33 +306,24 @@ bot.on(
         const message =
             msg.text || '';
 
-
         if (!message) {
             return;
         }
 
-
         if (
             message === lastMessage
         ) {
-
             return;
-
         }
-
 
         lastMessage =
             message;
-
 
         console.log(
             'تم استقبال رسالة جديدة'
         );
 
-        console.log(
-            message
-        );
-
+        console.log(message);
 
         await sendPushNotification(
             message
@@ -435,39 +332,32 @@ bot.on(
     }
 );
 
-
 /* =====================================================
-   نظام الأسعار
+   API الرسالة
    ===================================================== */
 
-app.get(
-    '/msg',
-    (req, res) => {
+app.get('/msg', (req, res) => {
 
-        res.setHeader(
-            'Access-Control-Allow-Origin',
-            '*'
-        );
+    res.setHeader(
+        'Access-Control-Allow-Origin',
+        '*'
+    );
 
-        res.setHeader(
-            'Cache-Control',
-            'no-store, no-cache, must-revalidate'
-        );
+    res.setHeader(
+        'Cache-Control',
+        'no-store, no-cache, must-revalidate'
+    );
 
-        res.type(
-            'text/plain; charset=utf-8'
-        );
+    res.type(
+        'text/plain; charset=utf-8'
+    );
 
-        res.send(
-            lastMessage
-        );
+    res.send(lastMessage);
 
-    }
-);
-
+});
 
 /* =====================================================
-   مفتاح VAPID العام
+   VAPID PUBLIC KEY
    ===================================================== */
 
 app.get(
@@ -489,34 +379,23 @@ app.get(
             'application/json; charset=utf-8'
         );
 
-
-        if (
-            !VAPID_PUBLIC_KEY
-        ) {
+        if (!VAPID_PUBLIC_KEY) {
 
             return res.status(500).json({
-
-                publicKey:
-                    null,
-
+                publicKey: null,
                 error:
                     'VAPID_PUBLIC_KEY is missing'
-
             });
 
         }
 
-
         res.json({
-
             publicKey:
                 VAPID_PUBLIC_KEY
-
         });
 
     }
 );
-
 
 /* =====================================================
    تسجيل جهاز للإشعارات
@@ -531,24 +410,18 @@ app.post(
             const subscription =
                 req.body;
 
-
             if (
                 !subscription ||
                 !subscription.endpoint
             ) {
 
                 return res.status(400).json({
-
-                    success:
-                        false,
-
+                    success: false,
                     error:
                         'Invalid subscription'
-
                 });
 
             }
-
 
             const exists =
                 subscriptions.some(
@@ -556,7 +429,6 @@ app.post(
                         item.endpoint ===
                         subscription.endpoint
                 );
-
 
             if (!exists) {
 
@@ -576,23 +448,11 @@ app.post(
 
             }
 
-
-            console.log(
-                'عدد الأجهزة المسجلة:',
-                subscriptions.length
-            );
-
-
             res.json({
-
-                success:
-                    true,
-
+                success: true,
                 devices:
                     subscriptions.length
-
             });
-
 
         } catch (error) {
 
@@ -601,15 +461,10 @@ app.post(
                 error
             );
 
-
             res.status(500).json({
-
-                success:
-                    false,
-
+                success: false,
                 error:
                     'Subscribe failed'
-
             });
 
         }
@@ -617,229 +472,100 @@ app.post(
     }
 );
 
-
 /* =====================================================
-   🌤️ نظام الطقس
-   MET Norway
+   🌤️ الطقس
    ===================================================== */
 
 let weatherCache = null;
-
 let weatherCacheTime = 0;
 
 const WEATHER_CACHE_TIME =
     10 * 60 * 1000;
 
-
-/* =====================================================
-   تحويل حالة الطقس
-   ===================================================== */
-
-function getWeatherInfo(
-    symbolCode
-) {
+function getWeatherInfo(symbolCode) {
 
     const code =
         String(symbolCode || '')
             .toLowerCase();
 
-
-    if (
-        code.includes('clearsky_day')
-    ) {
-
+    if (code.includes('clearsky_day'))
         return {
             icon: '☀️',
             description: 'صافٍ'
         };
 
-    }
-
-
-    if (
-        code.includes('clearsky_night')
-    ) {
-
+    if (code.includes('clearsky_night'))
         return {
             icon: '🌙',
             description: 'سماء صافية'
         };
 
-    }
-
-
     if (
-        code.includes('fair_day')
-    ) {
-
-        return {
-            icon: '🌤️',
-            description: 'صحو جزئياً'
-        };
-
-    }
-
-
-    if (
-        code.includes('fair_night')
-    ) {
-
-        return {
-            icon: '🌙',
-            description: 'صحو'
-        };
-
-    }
-
-
-    if (
+        code.includes('fair_day') ||
         code.includes('partlycloudy_day')
-    ) {
-
+    )
         return {
             icon: '🌤️',
             description: 'غائم جزئياً'
         };
 
-    }
-
-
     if (
+        code.includes('fair_night') ||
         code.includes('partlycloudy_night')
-    ) {
-
+    )
         return {
             icon: '☁️',
             description: 'غائم جزئياً'
         };
 
-    }
-
-
-    if (
-        code.includes('cloudy')
-    ) {
-
+    if (code.includes('cloudy'))
         return {
             icon: '☁️',
             description: 'غائم'
         };
 
-    }
-
-
-    if (
-        code.includes('fog')
-    ) {
-
+    if (code.includes('fog'))
         return {
             icon: '🌫️',
             description: 'ضباب'
         };
 
-    }
-
-
-    if (
-        code.includes('lightrain')
-    ) {
-
+    if (code.includes('lightrain'))
         return {
             icon: '🌦️',
             description: 'مطر خفيف'
         };
 
-    }
-
-
-    if (
-        code.includes('heavyrain')
-    ) {
-
+    if (code.includes('heavyrain'))
         return {
             icon: '🌧️',
             description: 'مطر غزير'
         };
 
-    }
-
-
-    if (
-        code.includes('rain')
-    ) {
-
+    if (code.includes('rain'))
         return {
             icon: '🌧️',
             description: 'مطر'
         };
 
-    }
-
-
-    if (
-        code.includes('lightsnow')
-    ) {
-
-        return {
-            icon: '🌨️',
-            description: 'ثلوج خفيفة'
-        };
-
-    }
-
-
-    if (
-        code.includes('heavysnow')
-    ) {
-
-        return {
-            icon: '❄️',
-            description: 'ثلوج غزيرة'
-        };
-
-    }
-
-
-    if (
-        code.includes('snow')
-    ) {
-
+    if (code.includes('snow'))
         return {
             icon: '❄️',
             description: 'ثلوج'
         };
 
-    }
-
-
-    if (
-        code.includes('thunder')
-    ) {
-
+    if (code.includes('thunder'))
         return {
             icon: '⛈️',
             description: 'عاصفة رعدية'
         };
 
-    }
-
-
     return {
-
-        icon:
-            '🌤️',
-
-        description:
-            'غير محدد'
-
+        icon: '🌤️',
+        description: 'غير محدد'
     };
 
 }
-
-
-/* =====================================================
-   جلب طقس حلب
-   ===================================================== */
 
 async function fetchAleppoWeather() {
 
@@ -848,114 +574,102 @@ async function fetchAleppoWeather() {
         '?lat=36.2021' +
         '&lon=37.1343';
 
+    try {
 
-    const response =
-        await fetch(
-            url,
-            {
-                headers: {
-
-                    'User-Agent':
-                        'Al-Ittihad-Pricing-Server/1.0 contact: admin@pricing-server.com',
-
-                    'Accept':
-                        'application/json'
-
+        const response =
+            await fetch(
+                url,
+                {
+                    headers: {
+                        'User-Agent':
+                            'Al-Ittihad-Pricing-Server/1.0 contact: admin@pricing-server.com',
+                        'Accept':
+                            'application/json'
+                    }
                 }
+            );
 
-            }
+        const text =
+            await response.text();
+
+        if (!response.ok) {
+
+            throw new Error(
+                'MET Norway HTTP ' +
+                response.status +
+                ' - ' +
+                text.substring(0, 500)
+            );
+
+        }
+
+        const data =
+            JSON.parse(text);
+
+        const current =
+            data.properties.timeseries[0];
+
+        const details =
+            current.data.instant.details;
+
+        const temperature =
+            Math.round(
+                Number(
+                    details.air_temperature
+                )
+            );
+
+        const symbolCode =
+            (
+                current.data.next_1_hours &&
+                current.data.next_1_hours.summary &&
+                current.data.next_1_hours.summary.symbol_code
+            ) ||
+            (
+                current.data.next_6_hours &&
+                current.data.next_6_hours.summary &&
+                current.data.next_6_hours.summary.symbol_code
+            ) ||
+            'clearsky_day';
+
+        const weatherInfo =
+            getWeatherInfo(symbolCode);
+
+        return {
+
+            city: 'حلب',
+
+            temperature,
+
+            icon:
+                weatherInfo.icon,
+
+            description:
+                weatherInfo.description,
+
+            isDay:
+                !symbolCode.includes('_night'),
+
+            updated:
+                current.time || '',
+
+            source:
+                'MET Norway'
+
+        };
+
+    } catch (error) {
+
+        console.error(
+            '❌ MET Norway Weather Error:',
+            error.message
         );
 
-
-    const text =
-        await response.text();
-
-
-    if (
-        !response.ok
-    ) {
-
-        throw new Error(
-            'MET Norway HTTP ' +
-            response.status
-        );
+        throw error;
 
     }
 
-
-    const data =
-        JSON.parse(
-            text
-        );
-
-
-    const current =
-        data.properties.timeseries[0];
-
-
-    const details =
-        current.data.instant.details;
-
-
-    const temperature =
-        Math.round(
-            Number(
-                details.air_temperature
-            )
-        );
-
-
-    const symbolCode =
-        (
-            current.data.next_1_hours &&
-            current.data.next_1_hours.summary &&
-            current.data.next_1_hours.summary.symbol_code
-        ) ||
-        (
-            current.data.next_6_hours &&
-            current.data.next_6_hours.summary &&
-            current.data.next_6_hours.summary.symbol_code
-        ) ||
-        'clearsky_day';
-
-
-    const weatherInfo =
-        getWeatherInfo(
-            symbolCode
-        );
-
-
-    return {
-
-        city:
-            'حلب',
-
-        temperature:
-            temperature,
-
-        icon:
-            weatherInfo.icon,
-
-        description:
-            weatherInfo.description,
-
-        isDay:
-            !symbolCode.includes('_night'),
-
-        updated:
-            current.time,
-
-        source:
-            'MET Norway'
-
-    };
-
 }
-
-
-/* =====================================================
-   API الطقس
-   ===================================================== */
 
 app.get(
     '/weather',
@@ -968,20 +682,13 @@ app.get(
 
         res.setHeader(
             'Cache-Control',
-            'no-store, no-cache, must-revalidate'
+            'no-store'
         );
-
-        res.setHeader(
-            'Content-Type',
-            'application/json; charset=utf-8'
-        );
-
 
         try {
 
             const now =
                 Date.now();
-
 
             if (
                 weatherCache &&
@@ -998,35 +705,20 @@ app.get(
 
             }
 
-
             const weather =
                 await fetchAleppoWeather();
-
 
             weatherCache =
                 weather;
 
-
             weatherCacheTime =
                 now;
 
-
-            res.json(
-                weather
-            );
-
+            res.json(weather);
 
         } catch (error) {
 
-            console.error(
-                '❌ Weather Error:',
-                error.message
-            );
-
-
-            if (
-                weatherCache
-            ) {
+            if (weatherCache) {
 
                 return res.json(
                     weatherCache
@@ -1034,15 +726,11 @@ app.get(
 
             }
 
-
             res.status(503).json({
-
                 error:
                     'Weather unavailable',
-
                 details:
                     error.message
-
             });
 
         }
@@ -1050,17 +738,14 @@ app.get(
     }
 );
 
-
 /* =====================================================
-   🥇 GOLD API
-   XAUUSD
+   🥇 API الذهب والأسواق
    ===================================================== */
 
-let goldCache = null;
+let marketsCache = null;
+let marketsCacheTime = 0;
 
-let goldCacheTime = 0;
-
-const GOLD_CACHE_TIME =
+const MARKETS_CACHE_TIME =
     15 * 1000;
 
 
@@ -1073,163 +758,74 @@ async function fetchGold() {
     const url =
         'https://biquote.io/api/XAUUSD';
 
-
-    console.log(
-        '🥇 جاري جلب سعر الذهب...'
-    );
-
-
     const response =
         await fetch(
             url,
             {
                 headers: {
-
                     'Accept':
                         'application/json'
-
                 }
-
             }
         );
-
 
     const text =
         await response.text();
 
-
-    if (
-        !response.ok
-    ) {
+    if (!response.ok) {
 
         throw new Error(
             'BiQuote HTTP ' +
-            response.status +
-            ' - ' +
-            text.substring(0, 500)
+            response.status
         );
 
     }
 
-
     const data =
-        JSON.parse(
-            text
-        );
-
-
-    const bid =
-        Number(
-            data.bid
-        );
-
-
-    const ask =
-        Number(
-            data.ask
-        );
-
-
-    const mid =
-        Number(
-            data.mid
-        ) ||
-        (
-            (
-                bid +
-                ask
-            ) /
-            2
-        );
-
+        JSON.parse(text);
 
     return {
 
         symbol:
-            data.symbol ||
             'XAUUSD',
 
+        name:
+            'الذهب',
+
+        icon:
+            '🥇',
+
+        price:
+            Number(data.mid || data.bid || 0),
+
         bid:
-            bid,
+            Number(data.bid || 0),
 
         ask:
-            ask,
-
-        last:
-            Number(
-                data.last
-            ) || 0,
-
-        volume:
-            Number(
-                data.volume
-            ) || 0,
-
-        timestamp:
-            data.timestamp ||
-            new Date().toISOString(),
-
-        source:
-            data.source ||
-            'MetaTrader 5 (Broker 1)',
-
-        high:
-            Number(
-                data.high
-            ) || 0,
-
-        low:
-            Number(
-                data.low
-            ) || 0,
+            Number(data.ask || 0),
 
         direction:
-            data.direction ||
-            '',
+            data.direction || 'FLAT',
 
         dayDiffPercent:
             Number(
-                data.dayDiffPercent
-            ) || 0,
-
-        description:
-            data.description ||
-            'Gold vs US Dollar',
-
-        time:
-            data.time ||
-            '',
-
-        spread:
-            Number(
-                data.spread
-            ) ||
-            (
-                ask -
-                bid
+                data.dayDiffPercent || 0
             ),
 
-        mid:
-            mid,
+        high:
+            Number(data.high || 0),
 
-        stale:
-            Boolean(
-                data.stale
-            ),
-
-        quoteAgeSeconds:
-            Number(
-                data.quoteAgeSeconds
-            ) || 0,
+        low:
+            Number(data.low || 0),
 
         marketState:
-            data.marketState ||
-            'unknown',
+            data.marketState || 'unknown',
 
-        lastQuoteAt:
-            data.lastQuoteAt ||
-            data.timestamp ||
-            ''
+        timestamp:
+            data.timestamp || '',
+
+        source:
+            data.source || 'BiQuote'
 
     };
 
@@ -1237,12 +833,11 @@ async function fetchGold() {
 
 
 /* =====================================================
-   API دائم للذهب
-   https://pricing-server-yjam.onrender.com/gold
+   API دائم للأسواق
    ===================================================== */
 
 app.get(
-    '/gold',
+    '/markets',
     async (req, res) => {
 
         res.setHeader(
@@ -1260,64 +855,64 @@ app.get(
             'application/json; charset=utf-8'
         );
 
-
         try {
 
             const now =
                 Date.now();
 
-
             if (
-                goldCache &&
+                marketsCache &&
                 (
                     now -
-                    goldCacheTime
+                    marketsCacheTime
                 ) <
-                GOLD_CACHE_TIME
+                MARKETS_CACHE_TIME
             ) {
 
                 return res.json(
-                    goldCache
+                    marketsCache
                 );
 
             }
-
 
             const gold =
                 await fetchGold();
 
+            marketsCache = {
 
-            goldCache =
-                gold;
+                success:
+                    true,
 
+                updated:
+                    new Date().toISOString(),
 
-            goldCacheTime =
+                markets: [
+                    gold
+                ]
+
+            };
+
+            marketsCacheTime =
                 now;
 
-
             res.json(
-                gold
+                marketsCache
             );
-
 
         } catch (error) {
 
             console.error(
-                '❌ Gold Error:',
+                '❌ Markets Error:',
                 error.message
             );
 
-
-            if (
-                goldCache
-            ) {
+            if (marketsCache) {
 
                 return res.json(
-                    goldCache
+                    marketsCache
                 );
 
             }
-
 
             res.status(503).json({
 
@@ -1325,7 +920,7 @@ app.get(
                     false,
 
                 error:
-                    'Gold unavailable',
+                    'Markets unavailable',
 
                 details:
                     error.message
@@ -1339,7 +934,7 @@ app.get(
 
 
 /* =====================================================
-   🧪 اختبار BiQuote القديم
+   اختبار الذهب القديم
    ===================================================== */
 
 app.get(
@@ -1348,45 +943,8 @@ app.get(
 
         try {
 
-            const url =
-                'https://biquote.io/api/XAUUSD';
-
-
-            console.log(
-                '🥇 اختبار BiQuote للذهب...'
-            );
-
-
-            const response =
-                await fetch(
-                    url,
-                    {
-                        headers: {
-
-                            'Accept':
-                                'application/json'
-
-                        }
-
-                    }
-                );
-
-
-            const text =
-                await response.text();
-
-
-            console.log(
-                '📊 BiQuote Status:',
-                response.status
-            );
-
-
-            console.log(
-                '📊 BiQuote Response:',
-                text
-            );
-
+            const gold =
+                await fetchGold();
 
             res.setHeader(
                 'Access-Control-Allow-Origin',
@@ -1398,38 +956,9 @@ app.get(
                 'no-store'
             );
 
-            res.setHeader(
-                'Content-Type',
-                'application/json; charset=utf-8'
-            );
-
-
-            res.status(
-                response.status
-            );
-
-
-            try {
-
-                res.json(
-                    JSON.parse(text)
-                );
-
-            } catch {
-
-                res.send(
-                    text
-                );
-
-            }
+            res.json(gold);
 
         } catch (error) {
-
-            console.error(
-                '❌ BiQuote Error:',
-                error.message
-            );
-
 
             res.status(500).json({
 
@@ -1448,17 +977,12 @@ app.get(
 
 
 /* =====================================================
-   الأخبار
+   📰 الأخبار
    ===================================================== */
 
 app.get(
     '/news',
     async (req, res) => {
-
-        console.log(
-            '📰 فحص مصادر الأخبار'
-        );
-
 
         const feeds = [
 
@@ -1496,9 +1020,7 @@ app.get(
 
         ];
 
-
         const allNews = [];
-
 
         for (
             const feed
@@ -1512,10 +1034,8 @@ app.get(
                         feed.url
                     );
 
-
                 const items =
                     result.items || [];
-
 
                 const sourceNews =
                     items
@@ -1538,11 +1058,9 @@ app.get(
                             })
                         );
 
-
                 allNews.push(
                     ...sourceNews
                 );
-
 
             } catch (error) {
 
@@ -1556,7 +1074,6 @@ app.get(
 
         }
 
-
         const uniqueNews =
             allNews.filter(
                 (item, index, self) =>
@@ -1567,7 +1084,6 @@ app.get(
                             item.title
                     )
             );
-
 
         uniqueNews.sort(
             (a, b) => {
@@ -1587,43 +1103,29 @@ app.get(
             }
         );
 
-
-        const finalNews =
-            uniqueNews.slice(
-                0,
-                30
-            );
-
-
         res.setHeader(
             'Cache-Control',
             'no-store, no-cache, must-revalidate'
         );
 
-
         res.json(
-            finalNews
+            uniqueNews.slice(0, 30)
         );
 
     }
 );
-
 
 /* =====================================================
    الصفحة الرئيسية
    ===================================================== */
 
-app.get(
-    '/',
-    (req, res) => {
+app.get('/', (req, res) => {
 
-        res.send(
-            'Pricing Server is running'
-        );
+    res.send(
+        'Pricing Server is running'
+    );
 
-    }
-);
-
+});
 
 /* =====================================================
    تشغيل السيرفر
@@ -1631,7 +1133,6 @@ app.get(
 
 const PORT =
     process.env.PORT || 3000;
-
 
 app.listen(
     PORT,
@@ -1654,10 +1155,6 @@ app.listen(
         );
 
         console.log(
-            'Weather source: MET Norway 🌍'
-        );
-
-        console.log(
             'Push notification system is ready 🔔'
         );
 
@@ -1666,15 +1163,11 @@ app.listen(
         );
 
         console.log(
-            'BiQuote test endpoint is ready 📈'
+            'Markets API is ready 📈'
         );
 
         console.log(
-            'Gold API is ready 🥇'
-        );
-
-        console.log(
-            'Gold endpoint: /gold'
+            'Gold API: /markets 🥇'
         );
 
     }
