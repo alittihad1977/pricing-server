@@ -103,20 +103,11 @@ app.get(
         }
 
 
-        /*
-           تسجيل آخر ظهور للجهاز
-        */
-
         onlineUsers.set(
             userId,
             Date.now()
         );
 
-
-        /*
-           حذف الأجهزة التي لم ترسل
-           إشارة منذ أكثر من دقيقة
-        */
 
         const now =
             Date.now();
@@ -898,11 +889,6 @@ async function fetchAleppoWeather() {
         '🌤️ جاري جلب طقس حلب من MET Norway...'
     );
 
-    console.log(
-        '🌐 Weather URL:',
-        url
-    );
-
 
     try {
 
@@ -924,20 +910,8 @@ async function fetchAleppoWeather() {
             );
 
 
-        console.log(
-            '🌤️ MET Norway HTTP Status:',
-            response.status
-        );
-
-
         const text =
             await response.text();
-
-
-        console.log(
-            '🌤️ MET Norway Response Length:',
-            text.length
-        );
 
 
         if (
@@ -1035,7 +1009,7 @@ async function fetchAleppoWeather() {
             );
 
 
-        const result = {
+        return {
 
             city:
                 'حلب',
@@ -1060,43 +1034,12 @@ async function fetchAleppoWeather() {
 
         };
 
-
-        console.log(
-            '🌤️ طقس حلب:',
-            temperature + '°',
-            weatherInfo.icon,
-            weatherInfo.description
-        );
-
-        console.log(
-            '🌤️ Symbol:',
-            symbolCode
-        );
-
-
-        return result;
-
     } catch (error) {
 
         console.error(
-            '❌❌❌ MET NORWAY WEATHER ERROR ❌❌❌'
-        );
-
-        console.error(
-            'Name:',
-            error.name
-        );
-
-        console.error(
-            'Message:',
+            '❌ MET Norway Weather Error:',
             error.message
         );
-
-        console.error(
-            'Stack:',
-            error.stack
-        );
-
 
         throw error;
 
@@ -1143,11 +1086,6 @@ app.get(
                 ) <
                 WEATHER_CACHE_TIME
             ) {
-
-                console.log(
-                    '🌤️ استخدام بيانات الطقس المخزنة'
-                );
-
 
                 return res.json(
                     weatherCache
@@ -1198,6 +1136,116 @@ app.get(
                     'Weather unavailable',
 
                 details:
+                    error.message
+
+            });
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   🧪 اختبار BiQuote
+   ===================================================== */
+
+app.get(
+    '/test-markets',
+    async (req, res) => {
+
+        try {
+
+            const url =
+                'https://biquote.io/api/XAUUSD';
+
+
+            console.log(
+                '🥇 اختبار BiQuote للذهب...'
+            );
+
+            console.log(
+                '🌐 URL:',
+                url
+            );
+
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        headers: {
+                            'Accept':
+                                'application/json'
+                        }
+                    }
+                );
+
+
+            const text =
+                await response.text();
+
+
+            console.log(
+                '📊 BiQuote Status:',
+                response.status
+            );
+
+            console.log(
+                '📊 BiQuote Response:',
+                text
+            );
+
+
+            res.setHeader(
+                'Access-Control-Allow-Origin',
+                '*'
+            );
+
+            res.setHeader(
+                'Cache-Control',
+                'no-store'
+            );
+
+            res.setHeader(
+                'Content-Type',
+                'application/json; charset=utf-8'
+            );
+
+
+            res.status(
+                response.status
+            );
+
+
+            try {
+
+                res.json(
+                    JSON.parse(text)
+                );
+
+            } catch {
+
+                res.send(
+                    text
+                );
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                '❌ BiQuote Error:',
+                error.message
+            );
+
+
+            res.status(500).json({
+
+                success:
+                    false,
+
+                error:
                     error.message
 
             });
@@ -1273,18 +1321,6 @@ app.get(
             of feeds
         ) {
 
-            console.log('');
-            console.log(
-                '🔎 المصدر:',
-                feed.name
-            );
-
-            console.log(
-                '🔗 الرابط:',
-                feed.url
-            );
-
-
             try {
 
                 const result =
@@ -1295,17 +1331,6 @@ app.get(
 
                 const items =
                     result.items || [];
-
-
-                console.log(
-                    '✅ نجح المصدر:',
-                    feed.name
-                );
-
-                console.log(
-                    '📰 عدد الأخبار:',
-                    items.length
-                );
 
 
                 const sourceNews =
@@ -1339,24 +1364,13 @@ app.get(
 
                 console.error(
                     '❌ فشل المصدر:',
-                    feed.name
-                );
-
-                console.error(
-                    'الخطأ:',
+                    feed.name,
                     error.message
                 );
 
             }
 
         }
-
-
-        console.log('');
-        console.log(
-            '📊 مجموع الأخبار قبل إزالة التكرار:',
-            allNews.length
-        );
 
 
         const uniqueNews =
@@ -1369,12 +1383,6 @@ app.get(
                             item.title
                     )
             );
-
-
-        console.log(
-            '📊 مجموع الأخبار بعد إزالة التكرار:',
-            uniqueNews.length
-        );
 
 
         uniqueNews.sort(
@@ -1403,25 +1411,6 @@ app.get(
             );
 
 
-        console.log(
-            '📤 الأخبار المرسلة للوحة:',
-            finalNews.length
-        );
-
-
-        console.log(
-            '======================================'
-        );
-
-        console.log(
-            '📰 انتهى فحص الأخبار'
-        );
-
-        console.log(
-            '======================================'
-        );
-
-
         res.setHeader(
             'Cache-Control',
             'no-store, no-cache, must-revalidate'
@@ -1434,85 +1423,7 @@ app.get(
 
     }
 );
-/* =====================================================
-   🧪 اختبار مصدر الأسواق - BiQuote
-   ===================================================== */
 
-app.get(
-    '/test-markets',
-    async (req, res) => {
-
-        try {
-
-            const url =
-                'https://biquote.io/api/latest?symbols=US500,USTEC,US30,XAUUSD,USOIL,EURUSD,BTCUSD';
-
-            console.log(
-                '📈 اختبار BiQuote:',
-                url
-            );
-
-            const response =
-                await fetch(
-                    url,
-                    {
-                        headers: {
-                            'Accept':
-                                'application/json'
-                        }
-                    }
-                );
-
-            const text =
-                await response.text();
-
-            console.log(
-                '📈 BiQuote Status:',
-                response.status
-            );
-
-            console.log(
-                '📈 BiQuote Response:',
-                text.substring(0, 2000)
-            );
-
-            res.setHeader(
-                'Access-Control-Allow-Origin',
-                '*'
-            );
-
-            res.setHeader(
-                'Content-Type',
-                'application/json; charset=utf-8'
-            );
-
-            res.status(
-                response.status
-            ).send(
-                text
-            );
-
-        } catch (error) {
-
-            console.error(
-                '❌ BiQuote Test Error:',
-                error
-            );
-
-            res.status(500).json({
-
-                success:
-                    false,
-
-                error:
-                    error.message
-
-            });
-
-        }
-
-    }
-);
 
 /* =====================================================
    الصفحة الرئيسية
@@ -1568,6 +1479,10 @@ app.listen(
 
         console.log(
             'Online users system is ready 👥'
+        );
+
+        console.log(
+            'BiQuote test endpoint is ready 📈'
         );
 
     }
