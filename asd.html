@@ -279,12 +279,12 @@ td{
 
 
 /* =====================================================
-   📈 شريط الأسواق
+   📺 الشريط الموحد
    ===================================================== */
 
-.markets-bar{
+.bottom-bar{
     position:fixed;
-    bottom:40px;
+    bottom:5px;
     left:2%;
     width:96%;
     height:34px;
@@ -299,9 +299,13 @@ td{
     overflow:hidden;
     z-index:1000;
     direction:rtl;
+
+    transition:
+        opacity 0.8s ease,
+        transform 0.8s ease;
 }
 
-.markets-title{
+.bottom-title{
     flex:0 0 auto;
     height:100%;
 
@@ -312,6 +316,7 @@ td{
     justify-content:center;
 
     background:rgba(244,196,48,0.12);
+
     color:gold;
 
     font-size:0.9rem;
@@ -320,16 +325,82 @@ td{
     z-index:2;
 }
 
-.markets-content{
+.bottom-content{
     flex:1;
+    height:100%;
+
+    overflow:hidden;
+
+    position:relative;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+
+/* =====================================================
+   📰 الأخبار داخل الشريط الموحد
+   ===================================================== */
+
+#newsTrack{
+    width:100%;
     height:100%;
 
     display:flex;
     align-items:center;
     justify-content:center;
 
-    overflow:hidden;
+    position:relative;
 }
+
+.news-item{
+    width:100%;
+    height:100%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+
+    color:white;
+
+    font-size:0.90rem;
+    font-weight:bold;
+
+    line-height:34px;
+
+    opacity:0;
+
+    position:absolute;
+    top:0;
+    right:0;
+
+    padding:0 15px;
+
+    transition:opacity 0.8s ease;
+}
+
+.news-item.active{
+    opacity:1;
+}
+
+.news-separator{
+    color:gold;
+    font-size:0.65rem;
+    margin-right:15px;
+    margin-left:15px;
+}
+
+
+/* =====================================================
+   📈 الأسواق داخل الشريط الموحد
+   ===================================================== */
 
 #marketsTrack{
     width:100%;
@@ -386,110 +457,29 @@ td{
 
 
 /* =====================================================
-   📰 الأخبار
+   🔄 الانتقال بين الأخبار والأسواق
    ===================================================== */
 
-.news-bar{
-    position:fixed;
-    bottom:5px;
-    left:2%;
-    width:96%;
-    height:30px;
-
-    display:flex;
-    align-items:center;
-
-    background:rgba(255,255,255,0.055);
-    border:1px solid rgba(244,196,48,0.30);
-    border-radius:9px;
-
-    overflow:hidden;
-    z-index:1000;
-    direction:rtl;
-}
-
-.news-title{
-    flex:0 0 auto;
-    height:100%;
-
-    padding:0 10px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    background:rgba(244,196,48,0.10);
-
-    color:gold;
-    font-size:0.85rem;
-    font-weight:bold;
-}
-
-.news-content{
-    flex:1;
-    height:100%;
-
-    overflow:hidden;
-
-    position:relative;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-#newsTrack{
-    width:100%;
-    height:100%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
+.bottom-content{
     position:relative;
 }
 
-.news-item{
-    width:100%;
-    height:100%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    text-align:center;
-
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-
-    color:white;
-
-    font-size:0.85rem;
-    font-weight:bold;
-
-    line-height:30px;
-
-    opacity:0;
-
-    position:absolute;
-    top:0;
-    right:0;
-
-    padding:0 15px;
-
-    transition:opacity 0.8s ease;
+#newsTrack,
+#marketsTrack{
+    transition:
+        opacity 0.8s ease,
+        transform 0.8s ease;
 }
 
-.news-item.active{
-    opacity:1;
+.bottom-hidden{
+    opacity:0 !important;
+    transform:translateY(5px);
+    pointer-events:none;
 }
 
-.news-separator{
-    color:gold;
-    font-size:0.65rem;
-    margin-right:15px;
-    margin-left:15px;
+.bottom-visible{
+    opacity:1 !important;
+    transform:translateY(0);
 }
 
 
@@ -499,7 +489,7 @@ td{
 
 #notificationButton{
     position:fixed;
-    bottom:78px;
+    bottom:50px;
     left:8px;
 
     z-index:3000;
@@ -576,23 +566,23 @@ td{
         height:38px;
     }
 
-    .markets-bar{
+    .bottom-bar{
         height:38px;
-        bottom:45px;
+        bottom:5px;
+    }
+
+    .bottom-title{
+        font-size:1rem;
+        padding:0 14px;
     }
 
     .market-item{
         font-size:1rem;
     }
 
-    .news-bar{
-        height:34px;
-        bottom:5px;
-    }
-
     .news-item{
         font-size:1rem;
-        line-height:34px;
+        line-height:38px;
     }
 
 }
@@ -684,14 +674,14 @@ td{
         font-size:0.60rem;
     }
 
-    .markets-bar{
-        bottom:31px;
+    .bottom-bar{
+        bottom:3px;
         left:2.5%;
         width:95%;
         height:25px;
     }
 
-    .markets-title{
+    .bottom-title{
         padding:0 7px;
         font-size:0.70rem;
     }
@@ -701,18 +691,6 @@ td{
         gap:4px;
     }
 
-    .news-bar{
-        bottom:3px;
-        left:2.5%;
-        width:95%;
-        height:25px;
-    }
-
-    .news-title{
-        padding:0 7px;
-        font-size:0.70rem;
-    }
-
     .news-item{
         font-size:0.70rem;
         line-height:25px;
@@ -720,7 +698,7 @@ td{
     }
 
     #notificationButton{
-        bottom:60px;
+        bottom:35px;
         left:5px;
         font-size:8px;
         padding:3px 5px;
@@ -933,18 +911,30 @@ td{
 
 
 <!-- =====================================================
-     📈 شريط الأسواق
+     📺 الشريط الموحد
      ===================================================== -->
 
-<div class="markets-bar">
+<div class="bottom-bar" id="bottomBar">
 
-    <div class="markets-title">
-        📈 الأسواق
+    <div class="bottom-title" id="bottomTitle">
+        📰 آخر الأخبار
     </div>
 
-    <div class="markets-content">
+    <div class="bottom-content">
 
-        <div id="marketsTrack">
+        <!-- الأخبار -->
+
+        <div id="newsTrack"
+             class="bottom-visible">
+
+        </div>
+
+
+        <!-- الأسواق -->
+
+        <div id="marketsTrack"
+             class="bottom-hidden"
+             style="position:absolute;top:0;right:0;">
 
             <div class="market-item">
                 جاري تحميل الأسواق...
@@ -957,27 +947,10 @@ td{
 </div>
 
 
-<!-- =====================================================
-     📰 شريط الأخبار
-     ===================================================== -->
-
-<div class="news-bar">
-
-    <div class="news-title">
-        📰 آخر الأخبار
-    </div>
-
-    <div class="news-content">
-
-        <div id="newsTrack"></div>
-
-    </div>
-
-</div>
-
-
 <div id="updateSystem">
+
 <textarea id="msg"></textarea>
+
 </div>
 
 
@@ -1870,95 +1843,110 @@ const NEWS_DISPLAY_TIME =
     7000;
 
 
-async function loadNews(){
+/* =====================================================
+   📺 نظام التناوب بين الأخبار والأسواق
+   ===================================================== */
 
-    try{
+let bottomMode =
+    "news";
 
-        const response =
-            await fetch(
-                SERVER +
-                "/news",
-                {
-                    cache:"no-store"
-                }
-            );
+let marketTimer = null;
 
-
-        if(!response.ok)
-            throw new Error();
+const MARKET_DISPLAY_TIME =
+    10000;
 
 
-        const news =
-            await response.json();
+function showNewsMode(){
+
+    bottomMode =
+        "news";
 
 
-        if(
-            !Array.isArray(news) ||
-            news.length === 0
-        ){
+    const title =
+        document.getElementById(
+            "bottomTitle"
+        );
 
-            showNewsMessage(
-                "لا توجد أخبار حالياً"
-            );
+    const newsTrack =
+        document.getElementById(
+            "newsTrack"
+        );
 
-            return;
-
-        }
-
-
-        newsList =
-            news.filter(
-                function(item){
-
-                    return (
-                        item &&
-                        typeof item.title === "string" &&
-                        item.title.trim() !== ""
-                    );
-
-                }
-            );
-
-
-        if(newsList.length === 0){
-
-            showNewsMessage(
-                "لا توجد أخبار حالياً"
-            );
-
-            return;
-
-        }
-
-
-        startNews();
-
-
-    }catch(error){
-
-        console.log(
-            "News Error:",
-            error
+    const marketsTrack =
+        document.getElementById(
+            "marketsTrack"
         );
 
 
-        showNewsMessage(
-            "الأخبار غير متاحة حالياً"
-        );
+    title.textContent =
+        "📰 آخر الأخبار";
 
-    }
+
+    marketsTrack.classList.remove(
+        "bottom-visible"
+    );
+
+    marketsTrack.classList.add(
+        "bottom-hidden"
+    );
+
+
+    newsTrack.classList.remove(
+        "bottom-hidden"
+    );
+
+    newsTrack.classList.add(
+        "bottom-visible"
+    );
+
+
+    startNews();
 
 }
 
 
-function showNewsMessage(
-    message
-){
+function showMarketsMode(){
 
-    const track =
+    bottomMode =
+        "markets";
+
+
+    const title =
+        document.getElementById(
+            "bottomTitle"
+        );
+
+    const newsTrack =
         document.getElementById(
             "newsTrack"
         );
+
+    const marketsTrack =
+        document.getElementById(
+            "marketsTrack"
+        );
+
+
+    title.textContent =
+        "📈 الأسواق";
+
+
+    newsTrack.classList.remove(
+        "bottom-visible"
+    );
+
+    newsTrack.classList.add(
+        "bottom-hidden"
+    );
+
+
+    marketsTrack.classList.remove(
+        "bottom-hidden"
+    );
+
+    marketsTrack.classList.add(
+        "bottom-visible"
+    );
 
 
     if(newsTimer){
@@ -1967,45 +1955,60 @@ function showNewsMessage(
             newsTimer
         );
 
+        newsTimer = null;
+
     }
 
 
-    track.innerHTML = "";
+    if(marketTimer){
 
-
-    const item =
-        document.createElement(
-            "div"
+        clearTimeout(
+            marketTimer
         );
 
-
-    item.className =
-        "news-item active";
+    }
 
 
-    item.textContent =
-        message;
+    marketTimer =
+        setTimeout(
+            function(){
 
+                showNewsMode();
 
-    track.appendChild(
-        item
-    );
+            },
+            MARKET_DISPLAY_TIME
+        );
 
 }
 
 
 function startNews(){
 
+    if(marketTimer){
+
+        clearTimeout(
+            marketTimer
+        );
+
+        marketTimer = null;
+
+    }
+
+
     if(newsTimer){
 
         clearTimeout(
             newsTimer
         );
 
+        newsTimer = null;
+
     }
 
 
-    currentNewsIndex = 0;
+    currentNewsIndex =
+        0;
+
 
     showNextNews();
 
@@ -2020,9 +2023,6 @@ function showNextNews(){
         );
 
 
-    track.innerHTML = "";
-
-
     if(newsList.length === 0){
 
         showNewsMessage(
@@ -2032,6 +2032,9 @@ function showNextNews(){
         return;
 
     }
+
+
+    track.innerHTML = "";
 
 
     const item =
@@ -2097,12 +2100,21 @@ function showNextNews(){
                         currentNewsIndex++;
 
 
+                        /*
+                           إذا وصلنا لآخر خبر
+                           ننتقل مباشرة للأسواق
+                        */
+
                         if(
                             currentNewsIndex >=
                             newsList.length
                         ){
 
                             currentNewsIndex = 0;
+
+                            showMarketsMode();
+
+                            return;
 
                         }
 
@@ -2120,8 +2132,177 @@ function showNextNews(){
 }
 
 
+function showNewsMessage(
+    message
+){
+
+    const track =
+        document.getElementById(
+            "newsTrack"
+        );
+
+
+    if(newsTimer){
+
+        clearTimeout(
+            newsTimer
+        );
+
+        newsTimer = null;
+
+    }
+
+
+    track.innerHTML = "";
+
+
+    const item =
+        document.createElement(
+            "div"
+        );
+
+
+    item.className =
+        "news-item active";
+
+
+    item.textContent =
+        message;
+
+
+    track.appendChild(
+        item
+    );
+
+
+    /*
+       إذا لم توجد أخبار،
+       نعرض الأسواق بعد 7 ثواني
+    */
+
+    newsTimer =
+        setTimeout(
+            function(){
+
+                showMarketsMode();
+
+            },
+            NEWS_DISPLAY_TIME
+        );
+
+}
+
+
+async function loadNews(){
+
+    try{
+
+        const response =
+            await fetch(
+                SERVER +
+                "/news",
+                {
+                    cache:"no-store"
+                }
+            );
+
+
+        if(!response.ok)
+            throw new Error();
+
+
+        const news =
+            await response.json();
+
+
+        if(
+            !Array.isArray(news) ||
+            news.length === 0
+        ){
+
+            showNewsMessage(
+                "لا توجد أخبار حالياً"
+            );
+
+            return;
+
+        }
+
+
+        newsList =
+            news.filter(
+                function(item){
+
+                    return (
+                        item &&
+                        typeof item.title === "string" &&
+                        item.title.trim() !== ""
+                    );
+
+                }
+            );
+
+
+        if(newsList.length === 0){
+
+            showNewsMessage(
+                "لا توجد أخبار حالياً"
+            );
+
+            return;
+
+        }
+
+
+        /*
+           لا نعيد تشغيل الأخبار إذا
+           كانت الدورة الحالية تعمل.
+        */
+
+        if(bottomMode === "news"){
+
+            if(
+                !newsTimer
+            ){
+
+                startNews();
+
+            }
+
+        }
+
+
+    }catch(error){
+
+        console.log(
+            "News Error:",
+            error
+        );
+
+
+        if(bottomMode === "news"){
+
+            showNewsMessage(
+                "الأخبار غير متاحة حالياً"
+            );
+
+        }
+
+    }
+
+}
+
+
+/*
+   تحميل الأخبار أول مرة
+*/
+
 loadNews();
 
+
+/*
+   تحديث الأخبار كل 5 دقائق
+*/
 
 setInterval(
     loadNews,
