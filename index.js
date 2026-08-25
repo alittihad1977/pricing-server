@@ -59,7 +59,10 @@ const ONLINE_TIMEOUT = 60 * 1000;
 
 app.get('/online', (req, res) => {
 
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader(
+        'Access-Control-Allow-Origin',
+        '*'
+    );
 
     res.setHeader(
         'Cache-Control',
@@ -78,11 +81,18 @@ app.get('/online', (req, res) => {
 
     }
 
-    onlineUsers.set(userId, Date.now());
+    onlineUsers.set(
+        userId,
+        Date.now()
+    );
 
-    const now = Date.now();
+    const now =
+        Date.now();
 
-    for (const [id, lastSeen] of onlineUsers.entries()) {
+    for (
+        const [id, lastSeen]
+        of onlineUsers.entries()
+    ) {
 
         if (
             now - lastSeen >
@@ -104,9 +114,13 @@ app.get('/online', (req, res) => {
 
 setInterval(() => {
 
-    const now = Date.now();
+    const now =
+        Date.now();
 
-    for (const [id, lastSeen] of onlineUsers.entries()) {
+    for (
+        const [id, lastSeen]
+        of onlineUsers.entries()
+    ) {
 
         if (
             now - lastSeen >
@@ -120,6 +134,7 @@ setInterval(() => {
     }
 
 }, 30 * 1000);
+
 
 /* =====================================================
    🔔 VAPID
@@ -139,12 +154,16 @@ const VAPID_PRIVATE_KEY =
 
 console.log(
     'VAPID_PUBLIC_KEY:',
-    VAPID_PUBLIC_KEY ? 'موجود ✅' : 'غير موجود ❌'
+    VAPID_PUBLIC_KEY
+        ? 'موجود ✅'
+        : 'غير موجود ❌'
 );
 
 console.log(
     'VAPID_PRIVATE_KEY:',
-    VAPID_PRIVATE_KEY ? 'موجود ✅' : 'غير موجود ❌'
+    VAPID_PRIVATE_KEY
+        ? 'موجود ✅'
+        : 'غير موجود ❌'
 );
 
 if (
@@ -175,11 +194,13 @@ if (
 
 }
 
+
 /* =====================================================
    الأجهزة المسجلة
    ===================================================== */
 
 let subscriptions = [];
+
 
 /* =====================================================
    إرسال الإشعار
@@ -234,14 +255,18 @@ async function sendPushNotification(message) {
             false,
 
         data: {
+
             url:
                 PRICING_PAGE
+
         }
 
     };
 
     const payload =
-        JSON.stringify(notificationData);
+        JSON.stringify(
+            notificationData
+        );
 
     const activeSubscriptions = [];
 
@@ -298,6 +323,7 @@ async function sendPushNotification(message) {
 
 }
 
+
 /* =====================================================
    استقبال Telegram
    ===================================================== */
@@ -335,6 +361,7 @@ bot.on(
     }
 );
 
+
 /* =====================================================
    API الرسالة
    ===================================================== */
@@ -355,9 +382,12 @@ app.get('/msg', (req, res) => {
         'text/plain; charset=utf-8'
     );
 
-    res.send(lastMessage);
+    res.send(
+        lastMessage
+    );
 
 });
+
 
 /* =====================================================
    VAPID PUBLIC KEY
@@ -385,20 +415,27 @@ app.get(
         if (!VAPID_PUBLIC_KEY) {
 
             return res.status(500).json({
-                publicKey: null,
+
+                publicKey:
+                    null,
+
                 error:
                     'VAPID_PUBLIC_KEY is missing'
+
             });
 
         }
 
         res.json({
+
             publicKey:
                 VAPID_PUBLIC_KEY
+
         });
 
     }
 );
+
 
 /* =====================================================
    تسجيل جهاز للإشعارات
@@ -419,9 +456,13 @@ app.post(
             ) {
 
                 return res.status(400).json({
-                    success: false,
+
+                    success:
+                        false,
+
                     error:
                         'Invalid subscription'
+
                 });
 
             }
@@ -452,9 +493,13 @@ app.post(
             }
 
             res.json({
-                success: true,
+
+                success:
+                    true,
+
                 devices:
                     subscriptions.length
+
             });
 
         } catch (error) {
@@ -465,15 +510,20 @@ app.post(
             );
 
             res.status(500).json({
-                success: false,
+
+                success:
+                    false,
+
                 error:
                     'Subscribe failed'
+
             });
 
         }
 
     }
 );
+
 
 /* =====================================================
    🌤️ الطقس
@@ -491,13 +541,17 @@ function getWeatherInfo(symbolCode) {
         String(symbolCode || '')
             .toLowerCase();
 
-    if (code.includes('clearsky_day'))
+    if (
+        code.includes('clearsky_day')
+    )
         return {
             icon: '☀️',
             description: 'صافٍ'
         };
 
-    if (code.includes('clearsky_night'))
+    if (
+        code.includes('clearsky_night')
+    )
         return {
             icon: '🌙',
             description: 'سماء صافية'
@@ -521,43 +575,57 @@ function getWeatherInfo(symbolCode) {
             description: 'غائم جزئياً'
         };
 
-    if (code.includes('cloudy'))
+    if (
+        code.includes('cloudy')
+    )
         return {
             icon: '☁️',
             description: 'غائم'
         };
 
-    if (code.includes('fog'))
+    if (
+        code.includes('fog')
+    )
         return {
             icon: '🌫️',
             description: 'ضباب'
         };
 
-    if (code.includes('lightrain'))
+    if (
+        code.includes('lightrain')
+    )
         return {
             icon: '🌦️',
             description: 'مطر خفيف'
         };
 
-    if (code.includes('heavyrain'))
+    if (
+        code.includes('heavyrain')
+    )
         return {
             icon: '🌧️',
             description: 'مطر غزير'
         };
 
-    if (code.includes('rain'))
+    if (
+        code.includes('rain')
+    )
         return {
             icon: '🌧️',
             description: 'مطر'
         };
 
-    if (code.includes('snow'))
+    if (
+        code.includes('snow')
+    )
         return {
             icon: '❄️',
             description: 'ثلوج'
         };
 
-    if (code.includes('thunder'))
+    if (
+        code.includes('thunder')
+    )
         return {
             icon: '⛈️',
             description: 'عاصفة رعدية'
@@ -569,6 +637,7 @@ function getWeatherInfo(symbolCode) {
     };
 
 }
+
 
 async function fetchAleppoWeather() {
 
@@ -584,10 +653,13 @@ async function fetchAleppoWeather() {
                 url,
                 {
                     headers: {
+
                         'User-Agent':
                             'Al-Ittihad-Pricing-Server/1.0 contact: admin@pricing-server.com',
+
                         'Accept':
                             'application/json'
+
                     }
                 }
             );
@@ -636,11 +708,14 @@ async function fetchAleppoWeather() {
             'clearsky_day';
 
         const weatherInfo =
-            getWeatherInfo(symbolCode);
+            getWeatherInfo(
+                symbolCode
+            );
 
         return {
 
-            city: 'حلب',
+            city:
+                'حلب',
 
             temperature,
 
@@ -651,7 +726,9 @@ async function fetchAleppoWeather() {
                 weatherInfo.description,
 
             isDay:
-                !symbolCode.includes('_night'),
+                !symbolCode.includes(
+                    '_night'
+                ),
 
             updated:
                 current.time || '',
@@ -673,6 +750,7 @@ async function fetchAleppoWeather() {
     }
 
 }
+
 
 app.get(
     '/weather',
@@ -717,7 +795,9 @@ app.get(
             weatherCacheTime =
                 now;
 
-            res.json(weather);
+            res.json(
+                weather
+            );
 
         } catch (error) {
 
@@ -730,10 +810,13 @@ app.get(
             }
 
             res.status(503).json({
+
                 error:
                     'Weather unavailable',
+
                 details:
                     error.message
+
             });
 
         }
@@ -741,9 +824,9 @@ app.get(
     }
 );
 
+
 /* =====================================================
-   📈 الأسواق
-   الذهب + الفضة + النفط
+   📈 API الذهب والفضة والنفط
    ===================================================== */
 
 let marketsCache = null;
@@ -754,10 +837,10 @@ const MARKETS_CACHE_TIME =
 
 
 /* =====================================================
-   جلب أي سوق من BiQuote
+   جلب أصل من BiQuote
    ===================================================== */
 
-async function fetchMarket(
+async function fetchMarketAsset(
     symbol,
     name,
     icon
@@ -765,12 +848,7 @@ async function fetchMarket(
 
     const url =
         'https://biquote.io/api/' +
-        encodeURIComponent(symbol);
-
-    console.log(
-        '📊 جلب السوق:',
-        symbol
-    );
+        symbol;
 
     const response =
         await fetch(
@@ -798,41 +876,8 @@ async function fetchMarket(
 
     }
 
-    let data;
-
-    try {
-
-        data =
-            JSON.parse(text);
-
-    } catch (error) {
-
-        throw new Error(
-            symbol +
-            ' returned invalid JSON'
-        );
-
-    }
-
-    const price =
-        Number(
-            data.mid ||
-            data.price ||
-            data.bid ||
-            0
-        );
-
-    const bid =
-        Number(
-            data.bid ||
-            0
-        );
-
-    const ask =
-        Number(
-            data.ask ||
-            0
-        );
+    const data =
+        JSON.parse(text);
 
     return {
 
@@ -846,13 +891,23 @@ async function fetchMarket(
             icon,
 
         price:
-            price,
+            Number(
+                data.mid ||
+                data.bid ||
+                0
+            ),
 
         bid:
-            bid,
+            Number(
+                data.bid ||
+                0
+            ),
 
         ask:
-            ask,
+            Number(
+                data.ask ||
+                0
+            ),
 
         direction:
             data.direction ||
@@ -899,7 +954,7 @@ async function fetchMarket(
 
 async function fetchGold() {
 
-    return await fetchMarket(
+    return await fetchMarketAsset(
         'XAUUSD',
         'الذهب',
         '🥇'
@@ -914,7 +969,7 @@ async function fetchGold() {
 
 async function fetchSilver() {
 
-    return await fetchMarket(
+    return await fetchMarketAsset(
         'XAGUSD',
         'الفضة',
         '🥈'
@@ -929,8 +984,8 @@ async function fetchSilver() {
 
 async function fetchOil() {
 
-    return await fetchMarket(
-        'XTIUSD',
+    return await fetchMarketAsset(
+        'USOIL',
         'النفط',
         '🛢️'
     );
@@ -939,7 +994,7 @@ async function fetchOil() {
 
 
 /* =====================================================
-   API الأسواق
+   API الأسواق الثلاثة
    ===================================================== */
 
 app.get(
@@ -981,105 +1036,81 @@ app.get(
 
             }
 
-            /*
-             * نطلب الأسواق الثلاثة بشكل مستقل
-             * حتى إذا تعطل سوق واحد لا نخسر الباقي
-             */
-
-            const results =
-                await Promise.allSettled([
-
-                    fetchGold(),
-
-                    fetchSilver(),
-
-                    fetchOil()
-
-                ]);
-
-            const markets = [];
+            const results = [];
 
             /* الذهب */
 
-            if (
-                results[0].status ===
-                'fulfilled'
-            ) {
+            try {
 
-                markets.push(
-                    results[0].value
+                const gold =
+                    await fetchGold();
+
+                results.push(
+                    gold
                 );
 
-                console.log(
-                    'Gold API: XAUUSD 🥇'
-                );
-
-            } else {
+            } catch (error) {
 
                 console.error(
                     '❌ Gold Error:',
-                    results[0].reason?.message
+                    error.message
                 );
 
             }
+
 
             /* الفضة */
 
-            if (
-                results[1].status ===
-                'fulfilled'
-            ) {
+            try {
 
-                markets.push(
-                    results[1].value
+                const silver =
+                    await fetchSilver();
+
+                results.push(
+                    silver
                 );
 
-                console.log(
-                    'Silver API: XAGUSD 🥈'
-                );
-
-            } else {
+            } catch (error) {
 
                 console.error(
                     '❌ Silver Error:',
-                    results[1].reason?.message
+                    error.message
                 );
 
             }
+
 
             /* النفط */
 
-            if (
-                results[2].status ===
-                'fulfilled'
-            ) {
+            try {
 
-                markets.push(
-                    results[2].value
+                const oil =
+                    await fetchOil();
+
+                results.push(
+                    oil
                 );
 
-                console.log(
-                    'Oil API: XTIUSD 🛢️'
-                );
-
-            } else {
+            } catch (error) {
 
                 console.error(
                     '❌ Oil Error:',
-                    results[2].reason?.message
+                    error.message
                 );
 
             }
 
+
             if (
-                markets.length === 0
+                results.length === 0
             ) {
 
                 throw new Error(
-                    'All markets unavailable'
+                    'No market data available'
                 );
 
             }
+
 
             marketsCache = {
 
@@ -1090,7 +1121,7 @@ app.get(
                     new Date().toISOString(),
 
                 markets:
-                    markets
+                    results
 
             };
 
@@ -1158,7 +1189,9 @@ app.get(
                 'no-store'
             );
 
-            res.json(gold);
+            res.json(
+                gold
+            );
 
         } catch (error) {
 
@@ -1166,9 +1199,6 @@ app.get(
 
                 success:
                     false,
-
-                symbol:
-                    'XAUUSD',
 
                 error:
                     error.message
@@ -1204,7 +1234,9 @@ app.get(
                 'no-store'
             );
 
-            res.json(silver);
+            res.json(
+                silver
+            );
 
         } catch (error) {
 
@@ -1212,9 +1244,6 @@ app.get(
 
                 success:
                     false,
-
-                symbol:
-                    'XAGUSD',
 
                 error:
                     error.message
@@ -1250,7 +1279,14 @@ app.get(
                 'no-store'
             );
 
-            res.json(oil);
+            res.setHeader(
+                'Content-Type',
+                'application/json; charset=utf-8'
+            );
+
+            res.json(
+                oil
+            );
 
         } catch (error) {
 
@@ -1263,9 +1299,6 @@ app.get(
 
                 success:
                     false,
-
-                symbol:
-                    'XTIUSD',
 
                 error:
                     error.message
@@ -1294,6 +1327,7 @@ app.get(
 
                 url:
                     'https://feeds.bbci.co.uk/arabic/rss.xml'
+
             },
 
             {
@@ -1302,6 +1336,7 @@ app.get(
 
                 url:
                     'https://www.alarabiya.net/feed/rss2/ar/aswaq.xml'
+
             },
 
             {
@@ -1310,6 +1345,7 @@ app.get(
 
                 url:
                     'https://www.alarabiya.net/feed/rss2/ar/sport.xml'
+
             },
 
             {
@@ -1318,6 +1354,7 @@ app.get(
 
                 url:
                     'https://www.alarabiya.net/feed/rss2/ar/arab-and-world.xml'
+
             }
 
         ];
@@ -1346,13 +1383,16 @@ app.get(
                             item => ({
 
                                 title:
-                                    item.title || '',
+                                    item.title ||
+                                    '',
 
                                 link:
-                                    item.link || '',
+                                    item.link ||
+                                    '',
 
                                 date:
-                                    item.pubDate || '',
+                                    item.pubDate ||
+                                    '',
 
                                 source:
                                     feed.name
@@ -1378,7 +1418,11 @@ app.get(
 
         const uniqueNews =
             allNews.filter(
-                (item, index, self) =>
+                (
+                    item,
+                    index,
+                    self
+                ) =>
                     index ===
                     self.findIndex(
                         other =>
@@ -1411,7 +1455,10 @@ app.get(
         );
 
         res.json(
-            uniqueNews.slice(0, 30)
+            uniqueNews.slice(
+                0,
+                30
+            )
         );
 
     }
@@ -1482,7 +1529,7 @@ app.listen(
         );
 
         console.log(
-            'Oil API: XTIUSD 🛢️'
+            'Oil API: USOIL 🛢️'
         );
 
     }
