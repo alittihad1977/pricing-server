@@ -1434,7 +1434,85 @@ app.get(
 
     }
 );
+/* =====================================================
+   🧪 اختبار مصدر الأسواق - BiQuote
+   ===================================================== */
 
+app.get(
+    '/test-markets',
+    async (req, res) => {
+
+        try {
+
+            const url =
+                'https://biquote.io/api/latest?symbols=US500,USTEC,US30,XAUUSD,USOIL,EURUSD,BTCUSD';
+
+            console.log(
+                '📈 اختبار BiQuote:',
+                url
+            );
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        headers: {
+                            'Accept':
+                                'application/json'
+                        }
+                    }
+                );
+
+            const text =
+                await response.text();
+
+            console.log(
+                '📈 BiQuote Status:',
+                response.status
+            );
+
+            console.log(
+                '📈 BiQuote Response:',
+                text.substring(0, 2000)
+            );
+
+            res.setHeader(
+                'Access-Control-Allow-Origin',
+                '*'
+            );
+
+            res.setHeader(
+                'Content-Type',
+                'application/json; charset=utf-8'
+            );
+
+            res.status(
+                response.status
+            ).send(
+                text
+            );
+
+        } catch (error) {
+
+            console.error(
+                '❌ BiQuote Test Error:',
+                error
+            );
+
+            res.status(500).json({
+
+                success:
+                    false,
+
+                error:
+                    error.message
+
+            });
+
+        }
+
+    }
+);
 
 /* =====================================================
    الصفحة الرئيسية
