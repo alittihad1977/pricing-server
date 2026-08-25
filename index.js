@@ -59,10 +59,7 @@ const ONLINE_TIMEOUT = 60 * 1000;
 
 app.get('/online', (req, res) => {
 
-    res.setHeader(
-        'Access-Control-Allow-Origin',
-        '*'
-    );
+    res.setHeader('Access-Control-Allow-Origin', '*');
 
     res.setHeader(
         'Cache-Control',
@@ -81,18 +78,11 @@ app.get('/online', (req, res) => {
 
     }
 
-    onlineUsers.set(
-        userId,
-        Date.now()
-    );
+    onlineUsers.set(userId, Date.now());
 
-    const now =
-        Date.now();
+    const now = Date.now();
 
-    for (
-        const [id, lastSeen]
-        of onlineUsers.entries()
-    ) {
+    for (const [id, lastSeen] of onlineUsers.entries()) {
 
         if (
             now - lastSeen >
@@ -114,13 +104,9 @@ app.get('/online', (req, res) => {
 
 setInterval(() => {
 
-    const now =
-        Date.now();
+    const now = Date.now();
 
-    for (
-        const [id, lastSeen]
-        of onlineUsers.entries()
-    ) {
+    for (const [id, lastSeen] of onlineUsers.entries()) {
 
         if (
             now - lastSeen >
@@ -153,16 +139,12 @@ const VAPID_PRIVATE_KEY =
 
 console.log(
     'VAPID_PUBLIC_KEY:',
-    VAPID_PUBLIC_KEY
-        ? 'موجود ✅'
-        : 'غير موجود ❌'
+    VAPID_PUBLIC_KEY ? 'موجود ✅' : 'غير موجود ❌'
 );
 
 console.log(
     'VAPID_PRIVATE_KEY:',
-    VAPID_PRIVATE_KEY
-        ? 'موجود ✅'
-        : 'غير موجود ❌'
+    VAPID_PRIVATE_KEY ? 'موجود ✅' : 'غير موجود ❌'
 );
 
 if (
@@ -252,18 +234,14 @@ async function sendPushNotification(message) {
             false,
 
         data: {
-
             url:
                 PRICING_PAGE
-
         }
 
     };
 
     const payload =
-        JSON.stringify(
-            notificationData
-        );
+        JSON.stringify(notificationData);
 
     const activeSubscriptions = [];
 
@@ -338,9 +316,7 @@ bot.on(
         if (
             message === lastMessage
         ) {
-
             return;
-
         }
 
         lastMessage =
@@ -363,30 +339,25 @@ bot.on(
    API الرسالة
    ===================================================== */
 
-app.get(
-    '/msg',
-    (req, res) => {
+app.get('/msg', (req, res) => {
 
-        res.setHeader(
-            'Access-Control-Allow-Origin',
-            '*'
-        );
+    res.setHeader(
+        'Access-Control-Allow-Origin',
+        '*'
+    );
 
-        res.setHeader(
-            'Cache-Control',
-            'no-store, no-cache, must-revalidate'
-        );
+    res.setHeader(
+        'Cache-Control',
+        'no-store, no-cache, must-revalidate'
+    );
 
-        res.type(
-            'text/plain; charset=utf-8'
-        );
+    res.type(
+        'text/plain; charset=utf-8'
+    );
 
-        res.send(
-            lastMessage
-        );
+    res.send(lastMessage);
 
-    }
-);
+});
 
 /* =====================================================
    VAPID PUBLIC KEY
@@ -414,22 +385,16 @@ app.get(
         if (!VAPID_PUBLIC_KEY) {
 
             return res.status(500).json({
-
-                publicKey:
-                    null,
-
+                publicKey: null,
                 error:
                     'VAPID_PUBLIC_KEY is missing'
-
             });
 
         }
 
         res.json({
-
             publicKey:
                 VAPID_PUBLIC_KEY
-
         });
 
     }
@@ -454,13 +419,9 @@ app.post(
             ) {
 
                 return res.status(400).json({
-
-                    success:
-                        false,
-
+                    success: false,
                     error:
                         'Invalid subscription'
-
                 });
 
             }
@@ -491,13 +452,9 @@ app.post(
             }
 
             res.json({
-
-                success:
-                    true,
-
+                success: true,
                 devices:
                     subscriptions.length
-
             });
 
         } catch (error) {
@@ -508,13 +465,9 @@ app.post(
             );
 
             res.status(500).json({
-
-                success:
-                    false,
-
+                success: false,
                 error:
                     'Subscribe failed'
-
             });
 
         }
@@ -538,196 +491,81 @@ function getWeatherInfo(symbolCode) {
         String(symbolCode || '')
             .toLowerCase();
 
-    if (
-        code.includes(
-            'clearsky_day'
-        )
-    ) {
-
+    if (code.includes('clearsky_day'))
         return {
-
-            icon:
-                '☀️',
-
-            description:
-                'صافٍ'
-
+            icon: '☀️',
+            description: 'صافٍ'
         };
 
-    }
-
-    if (
-        code.includes(
-            'clearsky_night'
-        )
-    ) {
-
+    if (code.includes('clearsky_night'))
         return {
-
-            icon:
-                '🌙',
-
-            description:
-                'سماء صافية'
-
+            icon: '🌙',
+            description: 'سماء صافية'
         };
-
-    }
 
     if (
         code.includes('fair_day') ||
         code.includes('partlycloudy_day')
-    ) {
-
+    )
         return {
-
-            icon:
-                '🌤️',
-
-            description:
-                'غائم جزئياً'
-
+            icon: '🌤️',
+            description: 'غائم جزئياً'
         };
-
-    }
 
     if (
         code.includes('fair_night') ||
         code.includes('partlycloudy_night')
-    ) {
-
+    )
         return {
-
-            icon:
-                '☁️',
-
-            description:
-                'غائم جزئياً'
-
+            icon: '☁️',
+            description: 'غائم جزئياً'
         };
 
-    }
-
-    if (
-        code.includes('cloudy')
-    ) {
-
+    if (code.includes('cloudy'))
         return {
-
-            icon:
-                '☁️',
-
-            description:
-                'غائم'
-
+            icon: '☁️',
+            description: 'غائم'
         };
 
-    }
-
-    if (
-        code.includes('fog')
-    ) {
-
+    if (code.includes('fog'))
         return {
-
-            icon:
-                '🌫️',
-
-            description:
-                'ضباب'
-
+            icon: '🌫️',
+            description: 'ضباب'
         };
 
-    }
-
-    if (
-        code.includes('lightrain')
-    ) {
-
+    if (code.includes('lightrain'))
         return {
-
-            icon:
-                '🌦️',
-
-            description:
-                'مطر خفيف'
-
+            icon: '🌦️',
+            description: 'مطر خفيف'
         };
 
-    }
-
-    if (
-        code.includes('heavyrain')
-    ) {
-
+    if (code.includes('heavyrain'))
         return {
-
-            icon:
-                '🌧️',
-
-            description:
-                'مطر غزير'
-
+            icon: '🌧️',
+            description: 'مطر غزير'
         };
 
-    }
-
-    if (
-        code.includes('rain')
-    ) {
-
+    if (code.includes('rain'))
         return {
-
-            icon:
-                '🌧️',
-
-            description:
-                'مطر'
-
+            icon: '🌧️',
+            description: 'مطر'
         };
 
-    }
-
-    if (
-        code.includes('snow')
-    ) {
-
+    if (code.includes('snow'))
         return {
-
-            icon:
-                '❄️',
-
-            description:
-                'ثلوج'
-
+            icon: '❄️',
+            description: 'ثلوج'
         };
 
-    }
-
-    if (
-        code.includes('thunder')
-    ) {
-
+    if (code.includes('thunder'))
         return {
-
-            icon:
-                '⛈️',
-
-            description:
-                'عاصفة رعدية'
-
+            icon: '⛈️',
+            description: 'عاصفة رعدية'
         };
-
-    }
 
     return {
-
-        icon:
-            '🌤️',
-
-        description:
-            'غير محدد'
-
+        icon: '🌤️',
+        description: 'غير محدد'
     };
 
 }
@@ -746,13 +584,10 @@ async function fetchAleppoWeather() {
                 url,
                 {
                     headers: {
-
                         'User-Agent':
                             'Al-Ittihad-Pricing-Server/1.0 contact: admin@pricing-server.com',
-
                         'Accept':
                             'application/json'
-
                     }
                 }
             );
@@ -766,10 +601,7 @@ async function fetchAleppoWeather() {
                 'MET Norway HTTP ' +
                 response.status +
                 ' - ' +
-                text.substring(
-                    0,
-                    500
-                )
+                text.substring(0, 500)
             );
 
         }
@@ -778,15 +610,10 @@ async function fetchAleppoWeather() {
             JSON.parse(text);
 
         const current =
-            data
-                .properties
-                .timeseries[0];
+            data.properties.timeseries[0];
 
         const details =
-            current
-                .data
-                .instant
-                .details;
+            current.data.instant.details;
 
         const temperature =
             Math.round(
@@ -809,17 +636,13 @@ async function fetchAleppoWeather() {
             'clearsky_day';
 
         const weatherInfo =
-            getWeatherInfo(
-                symbolCode
-            );
+            getWeatherInfo(symbolCode);
 
         return {
 
-            city:
-                'حلب',
+            city: 'حلب',
 
-            temperature:
-                temperature,
+            temperature,
 
             icon:
                 weatherInfo.icon,
@@ -828,9 +651,7 @@ async function fetchAleppoWeather() {
                 weatherInfo.description,
 
             isDay:
-                !symbolCode.includes(
-                    '_night'
-                ),
+                !symbolCode.includes('_night'),
 
             updated:
                 current.time || '',
@@ -896,9 +717,7 @@ app.get(
             weatherCacheTime =
                 now;
 
-            res.json(
-                weather
-            );
+            res.json(weather);
 
         } catch (error) {
 
@@ -911,13 +730,10 @@ app.get(
             }
 
             res.status(503).json({
-
                 error:
                     'Weather unavailable',
-
                 details:
                     error.message
-
             });
 
         }
@@ -926,7 +742,8 @@ app.get(
 );
 
 /* =====================================================
-   🥇🥈🛢️ الذهب والفضة والنفط
+   📈 الأسواق
+   الذهب + الفضة + النفط
    ===================================================== */
 
 let marketsCache = null;
@@ -937,7 +754,7 @@ const MARKETS_CACHE_TIME =
 
 
 /* =====================================================
-   جلب سوق من BiQuote
+   جلب أي سوق من BiQuote
    ===================================================== */
 
 async function fetchMarket(
@@ -947,17 +764,21 @@ async function fetchMarket(
 ) {
 
     const url =
-        `https://biquote.io/api/${symbol}`;
+        'https://biquote.io/api/' +
+        encodeURIComponent(symbol);
+
+    console.log(
+        '📊 جلب السوق:',
+        symbol
+    );
 
     const response =
         await fetch(
             url,
             {
                 headers: {
-
                     'Accept':
                         'application/json'
-
                 }
             }
         );
@@ -968,14 +789,50 @@ async function fetchMarket(
     if (!response.ok) {
 
         throw new Error(
-            `BiQuote ${symbol} HTTP ` +
-            response.status
+            symbol +
+            ' BiQuote HTTP ' +
+            response.status +
+            ' - ' +
+            text.substring(0, 300)
         );
 
     }
 
-    const data =
-        JSON.parse(text);
+    let data;
+
+    try {
+
+        data =
+            JSON.parse(text);
+
+    } catch (error) {
+
+        throw new Error(
+            symbol +
+            ' returned invalid JSON'
+        );
+
+    }
+
+    const price =
+        Number(
+            data.mid ||
+            data.price ||
+            data.bid ||
+            0
+        );
+
+    const bid =
+        Number(
+            data.bid ||
+            0
+        );
+
+    const ask =
+        Number(
+            data.ask ||
+            0
+        );
 
     return {
 
@@ -989,21 +846,13 @@ async function fetchMarket(
             icon,
 
         price:
-            Number(
-                data.mid ||
-                data.bid ||
-                0
-            ),
+            price,
 
         bid:
-            Number(
-                data.bid || 0
-            ),
+            bid,
 
         ask:
-            Number(
-                data.ask || 0
-            ),
+            ask,
 
         direction:
             data.direction ||
@@ -1011,17 +860,20 @@ async function fetchMarket(
 
         dayDiffPercent:
             Number(
-                data.dayDiffPercent || 0
+                data.dayDiffPercent ||
+                0
             ),
 
         high:
             Number(
-                data.high || 0
+                data.high ||
+                0
             ),
 
         low:
             Number(
-                data.low || 0
+                data.low ||
+                0
             ),
 
         marketState:
@@ -1029,7 +881,8 @@ async function fetchMarket(
             'unknown',
 
         timestamp:
-            data.timestamp || '',
+            data.timestamp ||
+            '',
 
         source:
             data.source ||
@@ -1086,7 +939,7 @@ async function fetchOil() {
 
 
 /* =====================================================
-   📈 API الأسواق
+   API الأسواق
    ===================================================== */
 
 app.get(
@@ -1128,6 +981,11 @@ app.get(
 
             }
 
+            /*
+             * نطلب الأسواق الثلاثة بشكل مستقل
+             * حتى إذا تعطل سوق واحد لا نخسر الباقي
+             */
+
             const results =
                 await Promise.allSettled([
 
@@ -1141,10 +999,7 @@ app.get(
 
             const markets = [];
 
-
-            /* =========================================
-               🥇 الذهب
-               ========================================= */
+            /* الذهب */
 
             if (
                 results[0].status ===
@@ -1155,21 +1010,20 @@ app.get(
                     results[0].value
                 );
 
+                console.log(
+                    'Gold API: XAUUSD 🥇'
+                );
+
             } else {
 
                 console.error(
                     '❌ Gold Error:',
-                    results[0]
-                        .reason
-                        ?.message
+                    results[0].reason?.message
                 );
 
             }
 
-
-            /* =========================================
-               🥈 الفضة
-               ========================================= */
+            /* الفضة */
 
             if (
                 results[1].status ===
@@ -1180,21 +1034,20 @@ app.get(
                     results[1].value
                 );
 
+                console.log(
+                    'Silver API: XAGUSD 🥈'
+                );
+
             } else {
 
                 console.error(
                     '❌ Silver Error:',
-                    results[1]
-                        .reason
-                        ?.message
+                    results[1].reason?.message
                 );
 
             }
 
-
-            /* =========================================
-               🛢️ النفط
-               ========================================= */
+            /* النفط */
 
             if (
                 results[2].status ===
@@ -1205,17 +1058,18 @@ app.get(
                     results[2].value
                 );
 
+                console.log(
+                    'Oil API: XTIUSD 🛢️'
+                );
+
             } else {
 
                 console.error(
                     '❌ Oil Error:',
-                    results[2]
-                        .reason
-                        ?.message
+                    results[2].reason?.message
                 );
 
             }
-
 
             if (
                 markets.length === 0
@@ -1233,8 +1087,7 @@ app.get(
                     true,
 
                 updated:
-                    new Date()
-                        .toISOString(),
+                    new Date().toISOString(),
 
                 markets:
                     markets
@@ -1283,45 +1136,17 @@ app.get(
 
 
 /* =====================================================
-   🧪 اختبار الأسواق
+   اختبار الذهب
    ===================================================== */
 
 app.get(
-    '/test-markets',
+    '/test-gold',
     async (req, res) => {
 
         try {
 
-            const results =
-                await Promise.allSettled([
-
-                    fetchGold(),
-
-                    fetchSilver(),
-
-                    fetchOil()
-
-                ]);
-
-            const markets = [];
-
-            for (
-                const result
-                of results
-            ) {
-
-                if (
-                    result.status ===
-                    'fulfilled'
-                ) {
-
-                    markets.push(
-                        result.value
-                    );
-
-                }
-
-            }
+            const gold =
+                await fetchGold();
 
             res.setHeader(
                 'Access-Control-Allow-Origin',
@@ -1333,15 +1158,7 @@ app.get(
                 'no-store'
             );
 
-            res.json({
-
-                success:
-                    true,
-
-                markets:
-                    markets
-
-            });
+            res.json(gold);
 
         } catch (error) {
 
@@ -1349,6 +1166,106 @@ app.get(
 
                 success:
                     false,
+
+                symbol:
+                    'XAUUSD',
+
+                error:
+                    error.message
+
+            });
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   اختبار الفضة
+   ===================================================== */
+
+app.get(
+    '/test-silver',
+    async (req, res) => {
+
+        try {
+
+            const silver =
+                await fetchSilver();
+
+            res.setHeader(
+                'Access-Control-Allow-Origin',
+                '*'
+            );
+
+            res.setHeader(
+                'Cache-Control',
+                'no-store'
+            );
+
+            res.json(silver);
+
+        } catch (error) {
+
+            res.status(500).json({
+
+                success:
+                    false,
+
+                symbol:
+                    'XAGUSD',
+
+                error:
+                    error.message
+
+            });
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   اختبار النفط
+   ===================================================== */
+
+app.get(
+    '/test-oil',
+    async (req, res) => {
+
+        try {
+
+            const oil =
+                await fetchOil();
+
+            res.setHeader(
+                'Access-Control-Allow-Origin',
+                '*'
+            );
+
+            res.setHeader(
+                'Cache-Control',
+                'no-store'
+            );
+
+            res.json(oil);
+
+        } catch (error) {
+
+            console.error(
+                '❌ Oil Test Error:',
+                error.message
+            );
+
+            res.status(500).json({
+
+                success:
+                    false,
+
+                symbol:
+                    'XTIUSD',
 
                 error:
                     error.message
@@ -1377,7 +1294,6 @@ app.get(
 
                 url:
                     'https://feeds.bbci.co.uk/arabic/rss.xml'
-
             },
 
             {
@@ -1386,7 +1302,6 @@ app.get(
 
                 url:
                     'https://www.alarabiya.net/feed/rss2/ar/aswaq.xml'
-
             },
 
             {
@@ -1395,7 +1310,6 @@ app.get(
 
                 url:
                     'https://www.alarabiya.net/feed/rss2/ar/sport.xml'
-
             },
 
             {
@@ -1404,7 +1318,6 @@ app.get(
 
                 url:
                     'https://www.alarabiya.net/feed/rss2/ar/arab-and-world.xml'
-
             }
 
         ];
@@ -1498,10 +1411,7 @@ app.get(
         );
 
         res.json(
-            uniqueNews.slice(
-                0,
-                30
-            )
+            uniqueNews.slice(0, 30)
         );
 
     }
@@ -1564,7 +1474,7 @@ app.listen(
         );
 
         console.log(
-            'Gold API: /markets 🥇'
+            'Gold API: XAUUSD 🥇'
         );
 
         console.log(
