@@ -96,10 +96,6 @@ html,body{
     margin-top:5px;
 }
 
-/* =====================================================
-   الطقس
-   ===================================================== */
-
 .weather{
     display:flex;
     align-items:center;
@@ -132,11 +128,11 @@ table{
     width:100%;
     height:auto;
     border-collapse:separate;
-    border-spacing:0 8px;
+    border-spacing:0 6px;
 }
 
 th,td{
-    padding:12px;
+    padding:10px;
     text-align:center;
     border-radius:12px;
 }
@@ -157,15 +153,24 @@ td{
     font-size:3rem;
     border:3px solid gold;
     border-radius:12px;
-    padding:8px;
+    padding:7px;
     background:white;
     color:#0b1b3d;
+}
+
+.gold-price{
+    font-size:3rem;
 }
 
 .flag-svg{
     width:55px;
     height:32px;
     filter:drop-shadow(0 0 7px rgba(255,255,255,0.35));
+}
+
+.gold-icon{
+    font-size:2.3rem;
+    vertical-align:middle;
 }
 
 .up{
@@ -213,7 +218,7 @@ td{
 
 
 /* =====================================================
-   🟢 حالة الاتصال - الطرف اليسار
+   🟢 حالة الاتصال
    ===================================================== */
 
 .connection-status{
@@ -261,7 +266,7 @@ td{
 
 
 /* =====================================================
-   👥 الأجهزة المتصلة - الطرف اليمين
+   👥 الأجهزة المتصلة
    ===================================================== */
 
 .online-devices{
@@ -278,7 +283,6 @@ td{
     color:rgba(255,255,255,0.80);
     z-index:2000;
     direction:rtl;
-    transition:all 0.3s ease;
 }
 
 .online-devices .online-icon{
@@ -326,8 +330,6 @@ td{
     color:gold;
     font-size:0.85rem;
     font-weight:bold;
-    direction:rtl;
-    z-index:2;
 }
 
 .news-content{
@@ -382,7 +384,6 @@ td{
     font-size:0.65rem;
     margin-right:15px;
     margin-left:15px;
-    flex-shrink:0;
 }
 
 
@@ -419,7 +420,7 @@ td{
     }
 
     .header{
-        margin-bottom:15px;
+        margin-bottom:12px;
     }
 
     .header img{
@@ -460,21 +461,29 @@ td{
 
     th{
         font-size:2.4rem;
-        padding:16px;
+        padding:13px;
     }
 
     td{
-        padding:14px;
+        padding:10px;
     }
 
     .price-cell{
         font-size:3.5rem;
-        padding:10px;
+        padding:8px;
+    }
+
+    .gold-price{
+        font-size:3.5rem;
     }
 
     .flag-svg{
         width:65px;
         height:38px;
+    }
+
+    .gold-icon{
+        font-size:2.7rem;
     }
 
     .news-bar{
@@ -485,10 +494,6 @@ td{
     .news-item{
         font-size:1rem;
         line-height:34px;
-    }
-
-    .news-separator{
-        font-size:0.7rem;
     }
 
 }
@@ -523,7 +528,6 @@ td{
 
     .date{
         font-size:0.8rem;
-        margin-top:3px;
     }
 
     .weather{
@@ -545,21 +549,29 @@ td{
 
     th{
         font-size:1.5rem;
-        padding:8px;
+        padding:7px;
     }
 
     td{
-        padding:7px;
+        padding:5px;
     }
 
     .price-cell{
         font-size:2rem;
-        padding:6px;
+        padding:5px;
+    }
+
+    .gold-price{
+        font-size:2rem;
     }
 
     .flag-svg{
         width:45px;
         height:27px;
+    }
+
+    .gold-icon{
+        font-size:1.7rem;
     }
 
     .up,
@@ -608,18 +620,11 @@ td{
         padding:0 8px;
     }
 
-    .news-separator{
-        font-size:0.50rem;
-        margin-left:10px;
-        margin-right:10px;
-    }
-
     #notificationButton{
         bottom:32px;
         left:5px;
         font-size:8px;
         padding:3px 5px;
-        opacity:0.45;
     }
 
 }
@@ -685,17 +690,17 @@ td{
 
 <div class="weather" id="weatherBox">
 
-    <span class="weather-icon" id="weatherIcon">
-        ☀️
-    </span>
+<span class="weather-icon" id="weatherIcon">
+☀️
+</span>
 
-    <span class="weather-temp" id="weatherTemp">
-        --°
-    </span>
+<span class="weather-temp" id="weatherTemp">
+--°
+</span>
 
-    <span class="weather-city" id="weatherCity">
-        حلب
-    </span>
+<span class="weather-city" id="weatherCity">
+حلب
+</span>
 
 </div>
 
@@ -712,6 +717,8 @@ td{
 <th>بيع</th>
 </tr>
 
+
+<!-- الدولار / الليرة السورية -->
 
 <tr>
 
@@ -735,6 +742,8 @@ td{
 </tr>
 
 
+<!-- التركي / السوري -->
+
 <tr>
 
 <td>
@@ -756,6 +765,8 @@ td{
 
 </tr>
 
+
+<!-- اليورو / السوري -->
 
 <tr>
 
@@ -779,6 +790,8 @@ td{
 </tr>
 
 
+<!-- الدولار / التركي -->
+
 <tr>
 
 <td>
@@ -801,6 +814,8 @@ td{
 </tr>
 
 
+<!-- اليورو / الدولار -->
+
 <tr>
 
 <td>
@@ -822,6 +837,34 @@ td{
 
 </tr>
 
+
+<!-- =====================================================
+     🥇 الذهب / الدولار
+     ===================================================== -->
+
+<tr>
+
+<td>
+
+<span class="gold-icon">
+🥇
+</span>
+
+XAU / USD
+
+</td>
+
+<td class="price-cell gold-price" id="goldBuy">
+4641.005
+</td>
+
+<td class="price-cell gold-price" id="goldSell">
+4641.187
+</td>
+
+</tr>
+
+
 </table>
 
 </div>
@@ -830,13 +873,13 @@ td{
 
 <div class="news-bar">
 
-    <div class="news-title">
-        📰 آخر الأخبار
-    </div>
+<div class="news-title">
+📰 آخر الأخبار
+</div>
 
-    <div class="news-content" id="newsContent">
-        <div id="newsTrack"></div>
-    </div>
+<div class="news-content" id="newsContent">
+<div id="newsTrack"></div>
+</div>
 
 </div>
 
@@ -908,10 +951,6 @@ const ONLINE_SERVER =
     "https://pricing-server-yjam.onrender.com";
 
 
-/*
-   إنشاء ID ثابت لهذا الجهاز
-*/
-
 function getDeviceId(){
 
     let deviceId =
@@ -973,7 +1012,6 @@ async function updateOnlineDevices(){
         const data =
             await response.json();
 
-
         if(
             data &&
             data.online !== undefined
@@ -998,16 +1036,7 @@ async function updateOnlineDevices(){
 }
 
 
-/*
-   أول تسجيل مباشرة
-*/
-
 updateOnlineDevices();
-
-
-/*
-   تحديث كل 10 ثواني
-*/
 
 setInterval(
     updateOnlineDevices,
@@ -1021,6 +1050,7 @@ setInterval(
 
 const WEATHER_SERVER =
     "https://pricing-server-yjam.onrender.com";
+
 
 async function loadWeather(){
 
@@ -1105,11 +1135,8 @@ setInterval(
 
 
 /* =====================================================
-   نظام الأسعار
+   🔊 نظام الصوت
    ===================================================== */
-
-let oldPrices = {};
-let direction = {};
 
 let audioCtx =
     new (
@@ -1126,7 +1153,9 @@ document.addEventListener(
 
         audioCtx.resume().then(
             function(){
+
                 unlocked = true;
+
             }
         );
 
@@ -1141,7 +1170,9 @@ document.addEventListener(
 
         audioCtx.resume().then(
             function(){
+
                 unlocked = true;
+
             }
         );
 
@@ -1160,12 +1191,20 @@ function playSound(){
     let g =
         audioCtx.createGain();
 
-    o.type = "sine";
-    o.frequency.value = 880;
-    g.gain.value = 0.15;
+    o.type =
+        "sine";
+
+    o.frequency.value =
+        880;
+
+    g.gain.value =
+        0.15;
 
     o.connect(g);
-    g.connect(audioCtx.destination);
+
+    g.connect(
+        audioCtx.destination
+    );
 
     o.start();
 
@@ -1174,6 +1213,15 @@ function playSound(){
     );
 
 }
+
+
+/* =====================================================
+   نظام أسعار العملات
+   ===================================================== */
+
+let oldPrices = {};
+
+let direction = {};
 
 
 function updateCell(id,value){
@@ -1196,13 +1244,16 @@ function updateCell(id,value){
                 Number(oldPrices[id])
             ){
 
-                direction[id] = "up";
+                direction[id] =
+                    "up";
 
             }else{
 
-                direction[id] = "down";
+                direction[id] =
+                    "down";
 
             }
+
 
             document.body.classList.add(
                 "flash"
@@ -1228,13 +1279,17 @@ function updateCell(id,value){
     }
 
 
-    oldPrices[id] = value;
+    oldPrices[id] =
+        value;
 
 
     let arrow = "";
 
 
-    if(direction[id] === "up"){
+    if(
+        direction[id] ===
+        "up"
+    ){
 
         arrow =
             "<span class='up'>▲</span>";
@@ -1242,7 +1297,10 @@ function updateCell(id,value){
     }
 
 
-    if(direction[id] === "down"){
+    if(
+        direction[id] ===
+        "down"
+    ){
 
         arrow =
             "<span class='down'>▼</span>";
@@ -1256,9 +1314,289 @@ function updateCell(id,value){
 }
 
 
+/* =====================================================
+   أسعار الذهب
+   ===================================================== */
+
+let oldGoldBuy = null;
+
+let oldGoldSell = null;
+
+let goldDirection = "up";
+
+
+function updateGoldCell(
+    id,
+    value
+){
+
+    const el =
+        document.getElementById(
+            id
+        );
+
+    if(!el) return;
+
+
+    let oldValue = null;
+
+
+    if(id === "goldBuy"){
+
+        oldValue =
+            oldGoldBuy;
+
+    }else{
+
+        oldValue =
+            oldGoldSell;
+
+    }
+
+
+    if(oldValue !== null){
+
+        if(
+            Number(value) !==
+            Number(oldValue)
+        ){
+
+            if(
+                Number(value) >
+                Number(oldValue)
+            ){
+
+                goldDirection =
+                    "up";
+
+            }else{
+
+                goldDirection =
+                    "down";
+
+            }
+
+
+            document.body.classList.add(
+                "flash"
+            );
+
+
+            setTimeout(
+                function(){
+
+                    document.body.classList.remove(
+                        "flash"
+                    );
+
+                },
+                300
+            );
+
+
+            playSound();
+
+        }
+
+    }
+
+
+    if(id === "goldBuy"){
+
+        oldGoldBuy =
+            Number(value);
+
+    }else{
+
+        oldGoldSell =
+            Number(value);
+
+    }
+
+
+    let arrow = "";
+
+
+    if(
+        goldDirection ===
+        "up"
+    ){
+
+        arrow =
+            "<span class='up'>▲</span>";
+
+    }
+
+
+    if(
+        goldDirection ===
+        "down"
+    ){
+
+        arrow =
+            "<span class='down'>▼</span>";
+
+    }
+
+
+    el.innerHTML =
+        Number(value).toFixed(3) +
+        arrow;
+
+}
+
+
+/* =====================================================
+   🥇 جلب الذهب من API
+   ===================================================== */
+
+async function loadGold(){
+
+    try{
+
+        const response =
+            await fetch(
+                ONLINE_SERVER +
+                "/test-markets",
+                {
+                    cache:"no-store"
+                }
+            );
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Gold API HTTP " +
+                response.status
+            );
+
+        }
+
+
+        const gold =
+            await response.json();
+
+
+        if(
+            !gold ||
+            gold.symbol !== "XAUUSD"
+        ){
+
+            throw new Error(
+                "Invalid XAUUSD data"
+            );
+
+        }
+
+
+        if(
+            gold.stale === true
+        ){
+
+            console.log(
+                "⚠️ Gold quote is stale"
+            );
+
+            return;
+
+        }
+
+
+        if(
+            gold.bid !== undefined
+        ){
+
+            updateGoldCell(
+                "goldBuy",
+                gold.bid
+            );
+
+        }
+
+
+        if(
+            gold.ask !== undefined
+        ){
+
+            updateGoldCell(
+                "goldSell",
+                gold.ask
+            );
+
+        }
+
+
+        if(
+            gold.direction ===
+            "UP"
+        ){
+
+            goldDirection =
+                "up";
+
+        }
+
+
+        if(
+            gold.direction ===
+            "DOWN"
+        ){
+
+            goldDirection =
+                "down";
+
+        }
+
+
+        console.log(
+            "🥇 Gold:",
+            gold.bid,
+            gold.ask,
+            gold.direction
+        );
+
+
+    }catch(error){
+
+        console.log(
+            "Gold API Error:",
+            error
+        );
+
+    }
+
+}
+
+
+/*
+   تحميل الذهب مباشرة
+*/
+
+loadGold();
+
+
+/*
+   تحديث الذهب كل 5 ثواني
+*/
+
+setInterval(
+    loadGold,
+    5000
+);
+
+
+/* =====================================================
+   تحديث أسعار العملات من localStorage
+   ===================================================== */
+
 function updatePrices(){
 
-    for(let i=1;i<=5;i++){
+    for(
+        let i=1;
+        i<=5;
+        i++
+    ){
 
         let buy =
             localStorage.getItem(
@@ -1271,7 +1609,9 @@ function updatePrices(){
             );
 
 
-        if(buy !== null){
+        if(
+            buy !== null
+        ){
 
             updateCell(
                 "buy"+i,
@@ -1281,7 +1621,9 @@ function updatePrices(){
         }
 
 
-        if(sell !== null){
+        if(
+            sell !== null
+        ){
 
             updateCell(
                 "sell"+i,
@@ -1329,7 +1671,11 @@ function processMessage(){
     ];
 
 
-    for(let i=0;i<5;i++){
+    for(
+        let i=0;
+        i<5;
+        i++
+    ){
 
         if(buys[i]){
 
@@ -1360,6 +1706,7 @@ function processMessage(){
 
 
     updatePrices();
+
 
     document.getElementById(
         "msg"
@@ -1431,7 +1778,9 @@ setInterval(
    حالة الاتصال
    ===================================================== */
 
-function setConnectionStatus(online){
+function setConnectionStatus(
+    online
+){
 
     const status =
         document.getElementById(
@@ -1505,7 +1854,7 @@ setInterval(
 
 
 /* =====================================================
-   نظام الأخبار
+   📰 نظام الأخبار
    ===================================================== */
 
 let newsList = [];
@@ -1575,7 +1924,9 @@ async function loadNews(){
             );
 
 
-        if(newsList.length === 0){
+        if(
+            newsList.length === 0
+        ){
 
             showNewsMessage(
                 "لا توجد أخبار حالياً"
@@ -1610,7 +1961,9 @@ async function loadNews(){
 }
 
 
-function showNewsMessage(message){
+function showNewsMessage(
+    message
+){
 
     const track =
         document.getElementById(
@@ -1701,7 +2054,9 @@ function showNextNews(){
     track.innerHTML = "";
 
 
-    if(newsList.length === 0){
+    if(
+        newsList.length === 0
+    ){
 
         showNewsMessage(
             "لا توجد أخبار حالياً"
@@ -1815,7 +2170,9 @@ const PUSH_SERVER =
     "https://pricing-server-yjam.onrender.com";
 
 
-function urlBase64ToUint8Array(base64String){
+function urlBase64ToUint8Array(
+    base64String
+){
 
     const padding =
         "=".repeat(
@@ -1908,7 +2265,9 @@ async function enableNotifications(){
             await Notification.requestPermission();
 
 
-        if(permission !== "granted"){
+        if(
+            permission !== "granted"
+        ){
 
             throw new Error(
                 "لم يتم السماح بالإشعارات"
@@ -2038,9 +2397,9 @@ document
     );
 
 
-/*
-   إذا كان الجهاز مفعّل مسبقاً
-*/
+/* =====================================================
+   فحص الإشعارات المفعلة مسبقاً
+   ===================================================== */
 
 (async function(){
 
