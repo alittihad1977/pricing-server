@@ -6,7 +6,7 @@
 (function(){
     'use strict';
 
-    const COMPANY_NEWS_DISPLAY_TIME = 7000;
+    const COMPANY_NEWS_DISPLAY_TIME = 15000;
     const COMPANY_NEWS_REFRESH_TIME = 10000;
 
     let companyNewsList = [];
@@ -119,7 +119,7 @@
 
                 renderCombinedNews();
             }, 800);
-        }, COMPANY_NEWS_DISPLAY_TIME);
+        }, itemData.isCompany ? COMPANY_NEWS_DISPLAY_TIME : 7000);
     }
 
     // Replace only the news rotation. Markets continue using the existing function.
