@@ -10,10 +10,9 @@ const parser = new Parser({
   }
 });
 
-// Keep all news sources on the same verified RSS provider for maximum stability.
+// Keep only verified RSS feeds. The problematic "كل الأخبار" feed was removed.
 const feeds = [
   { name: 'الشرق الأوسط - الرئيسية', url: 'https://aawsat.com/feed' },
-  { name: 'الشرق الأوسط - كل الأخبار', url: 'https://aawsat.com/feed/news' },
   { name: 'الشرق الأوسط - العالم العربي', url: 'https://aawsat.com/feed/arab-world' },
   { name: 'الشرق الأوسط - الخليج', url: 'https://aawsat.com/feed/gulf' },
   { name: 'الشرق الأوسط - أوروبا', url: 'https://aawsat.com/feed/europe' },
