@@ -20,15 +20,19 @@ jobs:
           from pathlib import Path
           p = Path('asd.html')
           text = p.read_text(encoding='utf-8')
-          marker = '<script src="./company-news.js?v=1"></script>'
-          if marker not in text:
+          old_marker = '<script src="./company-news.js?v=1"></script>'
+          marker = '<script src="./company-news.js?v=2"></script>'
+          if old_marker in text:
+              text = text.replace(old_marker, marker, 1)
+              p.write_text(text, encoding='utf-8')
+          elif marker in text:
+              print('Company news script already integrated with current version')
+          else:
               needle = '</body>'
               if needle not in text:
                   raise SystemExit('Could not find </body> in asd.html')
               text = text.replace(needle, marker + '\n' + needle, 1)
               p.write_text(text, encoding='utf-8')
-          else:
-              print('Company news script already integrated')
 
       - name: Commit integration if needed
         run: |
@@ -39,5 +43,5 @@ jobs:
             exit 0
           fi
           git add asd.html
-          git commit -m "Integrate company news into pricing board"
+          git commit -m "Refresh company news script version"
           git push
