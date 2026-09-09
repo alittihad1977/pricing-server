@@ -4,7 +4,7 @@
   "description": "Al-Ittihad pricing server with Telegram and push notifications",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node company-news-wrapper.js"
   },
   "dependencies": {
     "cors": "^2.8.6",
