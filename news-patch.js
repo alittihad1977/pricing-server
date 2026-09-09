@@ -11,7 +11,7 @@ const parser = new Parser({
 });
 
 const feeds = [
-  { name: 'الشرق الأوسط - أخبار', url: 'https://aawsat.com/feed/news' },
+  { name: 'الشرق الأوسط - الرئيسية', url: 'https://aawsat.com/feed' },
   { name: 'الشرق الأوسط - العالم العربي', url: 'https://aawsat.com/feed/arab-world' },
   { name: 'الشرق الأوسط - الاقتصاد', url: 'https://aawsat.com/feed/economy' },
   { name: 'الشرق الأوسط - الرياضة', url: 'https://aawsat.com/feed/sport' }
