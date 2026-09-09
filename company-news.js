@@ -59,7 +59,6 @@
         if(typeof bottomMode === 'undefined' || bottomMode !== 'news') return;
 
         clearCompanyTimer();
-
         combinedNewsList = getCombinedNews();
 
         if(!combinedNewsList.length){
@@ -179,8 +178,22 @@
             companyNewsList = items;
             lastCompanyNewsSignature = newSignature;
 
+            // عند إضافة/تعديل خبر: لا نعيد الدورة من البداية ولا نختصرها.
+            // نعيد بناء القائمة مع الحفاظ على موقعنا الحالي، فيدخل الخبر الجديد
+            // بالدورة الطبيعية حسب ترتيب order.
             if(changed && typeof bottomMode !== 'undefined' && bottomMode === 'news'){
-                companyNewsIndex = 0;
+                const oldIndex = companyNewsIndex;
+                const oldLength = combinedNewsList.length;
+                combinedNewsList = getCombinedNews();
+
+                if(oldLength === 0){
+                    companyNewsIndex = 0;
+                }else if(oldIndex >= combinedNewsList.length){
+                    companyNewsIndex = 0;
+                }else{
+                    companyNewsIndex = oldIndex;
+                }
+
                 renderCombinedNews();
             }
         }catch(error){
