@@ -10,11 +10,21 @@ const parser = new Parser({
   }
 });
 
+// Keep all news sources on the same verified RSS provider for maximum stability.
 const feeds = [
   { name: 'الشرق الأوسط - الرئيسية', url: 'https://aawsat.com/feed' },
+  { name: 'الشرق الأوسط - كل الأخبار', url: 'https://aawsat.com/feed/news' },
   { name: 'الشرق الأوسط - العالم العربي', url: 'https://aawsat.com/feed/arab-world' },
+  { name: 'الشرق الأوسط - الخليج', url: 'https://aawsat.com/feed/gulf' },
+  { name: 'الشرق الأوسط - أوروبا', url: 'https://aawsat.com/feed/europe' },
+  { name: 'الشرق الأوسط - الأميركيتين', url: 'https://aawsat.com/feed/america' },
+  { name: 'الشرق الأوسط - آسيا', url: 'https://aawsat.com/feed/asia' },
+  { name: 'الشرق الأوسط - أفريقيا', url: 'https://aawsat.com/feed/africa' },
   { name: 'الشرق الأوسط - الاقتصاد', url: 'https://aawsat.com/feed/economy' },
-  { name: 'الشرق الأوسط - الرياضة', url: 'https://aawsat.com/feed/sport' }
+  { name: 'الشرق الأوسط - الرياضة', url: 'https://aawsat.com/feed/sport' },
+  { name: 'الشرق الأوسط - التقنية', url: 'https://aawsat.com/feed/information-technology' },
+  { name: 'الشرق الأوسط - العلوم', url: 'https://aawsat.com/feed/science' },
+  { name: 'الشرق الأوسط - الثقافة', url: 'https://aawsat.com/feed/culture' }
 ];
 
 function clean(item, source) {
@@ -28,16 +38,26 @@ function clean(item, source) {
 
 async function loadNews() {
   const all = [];
-  for (const feed of feeds) {
-    try {
+
+  // One failed feed must never stop the other feeds from working.
+  const results = await Promise.allSettled(
+    feeds.map(async (feed) => {
       const result = await parser.parseURL(feed.url);
-      for (const item of (result.items || []).slice(0, 12)) {
+      return { feed, items: result.items || [] };
+    })
+  );
+
+  for (const result of results) {
+    if (result.status === 'fulfilled') {
+      const { feed, items } = result.value;
+      for (const item of items.slice(0, 12)) {
         const n = clean(item, feed.name);
         if (n.title) all.push(n);
       }
       console.log('✅ News source OK:', feed.name);
-    } catch (error) {
-      console.error('❌ News source failed:', feed.name, error.message);
+    } else {
+      const message = result.reason && result.reason.message ? result.reason.message : String(result.reason);
+      console.error('❌ News source failed:', message);
     }
   }
 
@@ -55,7 +75,7 @@ async function loadNews() {
 const originalGet = express.application.get;
 express.application.get = function(path, ...handlers) {
   if (path === '/news') {
-    console.log('📰 News patch active: Asharq Al-Awsat RSS');
+    console.log('📰 News patch active: Expanded Asharq Al-Awsat RSS');
     return originalGet.call(this, path, async (req, res) => {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
