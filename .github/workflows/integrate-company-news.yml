@@ -1,0 +1,43 @@
+name: Integrate company news
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inject company news script
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('asd.html')
+          text = p.read_text(encoding='utf-8')
+          marker = '<script src="./company-news.js?v=1"></script>'
+          if marker not in text:
+              needle = '</body>'
+              if needle not in text:
+                  raise SystemExit('Could not find </body> in asd.html')
+              text = text.replace(needle, marker + '\n' + needle, 1)
+              p.write_text(text, encoding='utf-8')
+          else:
+              print('Company news script already integrated')
+
+      - name: Commit integration if needed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "No integration changes needed"
+            exit 0
+          fi
+          git add asd.html
+          git commit -m "Integrate company news into pricing board"
+          git push
