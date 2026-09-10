@@ -14,25 +14,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Inject company news script
+      - name: Inject board helper scripts
         shell: python
         run: |
           from pathlib import Path
           p = Path('asd.html')
           text = p.read_text(encoding='utf-8')
-          old_marker = '<script src="./company-news.js?v=1"></script>'
-          marker = '<script src="./company-news.js?v=2"></script>'
-          if old_marker in text:
-              text = text.replace(old_marker, marker, 1)
-              p.write_text(text, encoding='utf-8')
-          elif marker in text:
-              print('Company news script already integrated with current version')
-          else:
+
+          news_old = '<script src="./company-news.js?v=1"></script>'
+          news_new = '<script src="./company-news.js?v=2"></script>'
+          pwa_marker = '<script src="./pwa-install.js?v=1"></script>'
+
+          if news_old in text:
+              text = text.replace(news_old, news_new, 1)
+          elif news_new not in text and '</body>' in text:
+              text = text.replace('</body>', news_new + '\n</body>', 1)
+
+          if pwa_marker not in text:
               needle = '</body>'
               if needle not in text:
                   raise SystemExit('Could not find </body> in asd.html')
-              text = text.replace(needle, marker + '\n' + needle, 1)
-              p.write_text(text, encoding='utf-8')
+              text = text.replace(needle, pwa_marker + '\n' + needle, 1)
+
+          p.write_text(text, encoding='utf-8')
 
       - name: Commit integration if needed
         run: |
@@ -43,5 +47,5 @@ jobs:
             exit 0
           fi
           git add asd.html
-          git commit -m "Refresh company news script version"
+          git commit -m "Add PWA install and price notifications"
           git push
