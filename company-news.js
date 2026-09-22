@@ -9,6 +9,7 @@
     const COMPANY_NEWS_DISPLAY_TIME = 15000;
     const COMPANY_NEWS_REFRESH_TIME = 10000;
     const QR_ROTATION_TIME = 15000;
+    const TELEGRAM_QR_IMAGE = 'https://quickchart.io/qr?text=https%3A%2F%2Ft.me%2FALITEHAD_ALEPPO&size=220&margin=2';
     const WHATSAPP_QR_IMAGE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAADwAQAAAAAWLtQ/AAAEL0lEQVR42u2ZzY7jVBCFv2obbhAjOTtmAbIfAYkNq3HDC7BkyyOwRqjttBDiMYYnGUfzAKxngXBLI8EskG4WI91obnxYOEm3nY5hfpVG40UWLpVv1a2fc6piYuo54734tkcegComvuwSqcaprgIAua610+mPx9cyLX0F7XRw9saAuKqrG9qlpBYAC0BMKWucpPC6Z791sdkM0shSMyBdz5dnsLSz8a3Vic8FWX0Slu+v0lYzLNIuYPXof1VEzpeVWUEka7q771gKCK5gnXvEVfFjLyjF+tQdW5pZAbCs0lUBrM7PWJvZ7FA7r3H+jnTk7WPyVPK5FCht9/a0saQEqBSyxqS2knypANjJW87WciBRi8nTo6DrLTdJNa738EZWTX28mD67fUeOJZ6qt9xt4TBeO7bzJ2t6GkAmEjXVHagSi+S1JPXwDqWCa/YROw3L09tCsg3AdUMqt1jSM66LXaAuEkkkakg8DHkLwKfjE85uyb+j4vNJsdX/zvbqw5A4SfJlJklXASpJ9ZBKAvP9z61nFwCzo+JzruZP06PimmL0Zuj35tCxlZE8s/psPYenrm35JdPCzBSTdqTdfjkvBuEdpUOz+aw4fvZyfPFD8c+TIdH9cVQH4q4gedwOtTN1m09UK9PDSAHchw4n++AgmTROmJFjfjKZHuz62QDHopNwUohOUsjU4VQfoEEAVIyxZBGhwkk+OnV5gK4n830y1YnvM9GYYThPnXiq7sC0s/l0AfvJPLfwqmPLsZloudcWPzwV6zls5ix2vOUC8joJAOXvQ6gZnDjj8/nFBNTUMzrCFNTUE9rNh6N8GGlbEwc4hnzZJWqxQBlKyetPX0qe6lb099M99WqQTgeN6+sJ7SuA5qj4Yb1JDzKVRKolPQ5ALrIeVHa5to94AL7T8bPLcVMciJOmzeiOiWf3yP0waw6h5q+R5Q24luj0m9TPuyU3q6SKUO2b7a/ykKihc+0tH68nE1nTZdAdLYPiEvjpqPamXt8Ckl9Y5KOqO8/WFtwfDcD3iRos5EK+tEguhUwWyNWzN0njiJ0gR7YIROd7bFTIROJzxQFviW9yY/KSRHT67BRYpKuCzYwFm3mxSLfiDqd6Z1pFz2SaExq4jjpmLlwpbuZlR7asE3kuWZtOjgTf6GpxNCpeJL4n9SY11QHjOrXpPdyAfhogon0L6cd4s/rFvayx59+2VdzML3kxA1P7xpZ3b7TGRpMkZE1P88lqi67ZzcD7rWRJ4rf0Igl3YlNkuCfA6lzp372CbKu517aepuWKzlf7Wz5xx/rIfezni+fZE8M9+4YkLh8ZeftS6ZBOi+NbcyzTJeuiUgA9t8qGVfIuL7X9L0jUb4pcW5H4vgIUGG6KpLC7MKe6308cYMnJ7e735W+BsgqufWD9BmYM71uy9dVdWRTb+3/X7pj4H2sIPLrYqfIwAAAAAElFTkSuQmCC';
 
     let companyNewsList = [];
@@ -268,15 +269,22 @@
         whatsappCard.innerHTML = '<div class="qr-label">امسح للواتساب</div><img src="' + WHATSAPP_QR_IMAGE + '" alt="QR قناة واتساب">';
         document.body.appendChild(whatsappCard);
 
-        let showWhatsappQr = false;
+        const telegramCard = document.createElement('div');
+        telegramCard.id = 'telegramQrCode';
+        telegramCard.innerHTML = '<div class="qr-label">امسح للتيلجرام</div><img src="' + TELEGRAM_QR_IMAGE + '" alt="QR قناة التيلجرام">';
+        document.body.appendChild(telegramCard);
+
+        let qrIndex = 0;
         setInterval(function(){
             const board = document.getElementById('boardQrCode');
             const whatsapp = document.getElementById('whatsappQrCode');
-            if(!board || !whatsapp) return;
+            const telegram = document.getElementById('telegramQrCode');
+            if(!board || !whatsapp || !telegram) return;
 
-            showWhatsappQr = !showWhatsappQr;
-            board.style.display = showWhatsappQr ? 'none' : 'block';
-            whatsapp.style.display = showWhatsappQr ? 'block' : 'none';
+            qrIndex = (qrIndex + 1) % 3;
+            board.style.display = qrIndex === 0 ? 'block' : 'none';
+            whatsapp.style.display = qrIndex === 1 ? 'block' : 'none';
+            telegram.style.display = qrIndex === 2 ? 'block' : 'none';
         }, QR_ROTATION_TIME);
     }
 
@@ -324,7 +332,7 @@
             margin-bottom:4px;
             white-space:nowrap;
         }
-        #whatsappQrCode img{
+        #whatsappQrCode img,\n        #telegramQrCode img{
             display:block;
             width:124px;
             height:124px;
@@ -358,7 +366,7 @@
                 line-height:10px;
                 margin-bottom:2px;
             }
-            #whatsappQrCode img{
+            #whatsappQrCode img,\n            #telegramQrCode img{
                 width:84px;
                 height:84px;
             }
