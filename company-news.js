@@ -305,7 +305,8 @@
             color:#f4c430 !important;
         }
         #boardQrCode,
-        #whatsappQrCode{
+        #whatsappQrCode,
+        #telegramQrCode{
             position:fixed;
             left:12px;
             bottom:45px;
@@ -318,10 +319,12 @@
             box-shadow:0 0 14px rgba(244,196,48,0.28);
             direction:rtl;
         }
-        #whatsappQrCode{
+        #whatsappQrCode,
+        #telegramQrCode{
             display:none;
         }
         #whatsappQrCode .qr-label,
+        #telegramQrCode .qr-label,
         #boardQrCode .qr-label{
             color:#0b1b3d;
             background:#fff;
@@ -332,7 +335,8 @@
             margin-bottom:4px;
             white-space:nowrap;
         }
-        #whatsappQrCode img,\n        #telegramQrCode img{
+        #whatsappQrCode img,
+        #telegramQrCode img{
             display:block;
             width:124px;
             height:124px;
@@ -352,7 +356,8 @@
         #boardQrCode .qr-white{background:#fff;}
         @media screen and (max-width:900px){
             #boardQrCode,
-            #whatsappQrCode{
+            #whatsappQrCode,
+            #telegramQrCode{
                 left:6px;
                 bottom:32px;
                 width:94px;
@@ -361,12 +366,14 @@
                 border-radius:7px;
             }
             #whatsappQrCode .qr-label,
+            #telegramQrCode .qr-label,
             #boardQrCode .qr-label{
                 font-size:7px;
                 line-height:10px;
                 margin-bottom:2px;
             }
-            #whatsappQrCode img,\n            #telegramQrCode img{
+            #whatsappQrCode img,
+            #telegramQrCode img{
                 width:84px;
                 height:84px;
             }
