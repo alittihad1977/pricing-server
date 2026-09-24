@@ -363,6 +363,48 @@ bot.on(
 
 
 /* =====================================================
+   🔐 استقبال آخر رسالة أسعار من Cloudzy
+   ===================================================== */
+
+app.post('/push-price', (req, res) => {
+
+    const apiKey = String(req.headers['x-api-key'] || '');
+    const expectedKey = String(process.env.RENDER_PUSH_KEY || '');
+
+    if (!expectedKey || apiKey !== expectedKey) {
+        return res.status(401).json({
+            success: false,
+            error: 'unauthorized'
+        });
+    }
+
+    const message = typeof req.body === 'string'
+        ? req.body
+        : String(req.body?.message || '');
+
+    if (!message.trim()) {
+        return res.status(400).json({
+            success: false,
+            error: 'message is required'
+        });
+    }
+
+    lastMessage = message;
+
+    console.log('تم استقبال رسالة أسعار من Cloudzy');
+
+    sendPushNotification(message).catch(error => {
+        console.error('Push Error:', error.message);
+    });
+
+    res.json({
+        success: true
+    });
+
+});
+
+
+/* =====================================================
    API الرسالة
    ===================================================== */
 
