@@ -1009,7 +1009,9 @@ function updateDateTime(){
                 year:"numeric",
                 timeZone:"Asia/Damascus"
             }
-        ).format(now) + " هـ";
+        ).format(now)
+            .replace("ربيع الآخر", "ربيع الثاني")
+            .replace("جمادى الآخرة", "جمادى الثانية") + " هـ";
 }
 
 updateDateTime();
