@@ -96,6 +96,58 @@ html,body{
     margin-top:5px;
 }
 
+.hijri-date{
+    color:#f4c430;
+    font-size:0.9rem;
+    font-weight:bold;
+    margin-top:3px;
+    white-space:nowrap;
+}
+
+.prayer-countdown{
+    min-width:112px;
+    padding:8px 10px;
+    border:1px solid rgba(244,196,48,0.55);
+    border-radius:12px;
+    background:linear-gradient(145deg,rgba(244,196,48,0.12),rgba(255,255,255,0.035));
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:3px;
+    text-align:center;
+    box-shadow:0 0 12px rgba(244,196,48,0.08);
+}
+
+.prayer-caption{
+    color:#f4c430;
+    font-size:0.72rem;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.prayer-name{
+    color:white;
+    font-size:0.95rem;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.prayer-remaining{
+    color:#f4c430;
+    font-size:1.05rem;
+    font-weight:bold;
+    direction:ltr;
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap;
+}
+
+.prayer-source{
+    color:rgba(255,255,255,0.62);
+    font-size:0.55rem;
+    white-space:nowrap;
+}
+
 .weather{
     display:flex;
     align-items:center;
@@ -499,6 +551,27 @@ td{
         font-size:1.3rem;
     }
 
+    .hijri-date{
+        font-size:1rem;
+    }
+
+    .prayer-countdown{
+        min-width:130px;
+        padding:10px 12px;
+    }
+
+    .prayer-caption{
+        font-size:0.8rem;
+    }
+
+    .prayer-name{
+        font-size:1.05rem;
+    }
+
+    .prayer-remaining{
+        font-size:1.2rem;
+    }
+
     th{
         font-size:2.4rem;
         padding:16px;
@@ -563,6 +636,37 @@ td{
 
     .date{
         font-size:0.8rem;
+    }
+
+    .hijri-date{
+        font-size:0.68rem;
+    }
+
+    .prayer-countdown{
+        min-width:82px;
+        padding:5px 5px;
+        gap:2px;
+        border-radius:9px;
+    }
+
+    .prayer-caption{
+        font-size:0.55rem;
+    }
+
+    .prayer-name{
+        font-size:0.72rem;
+    }
+
+    .prayer-remaining{
+        font-size:0.76rem;
+    }
+
+    .prayer-source{
+        font-size:0.43rem;
+    }
+
+    .header{
+        gap:10px;
     }
 
     .weather{
@@ -676,6 +780,13 @@ td{
 
 <img src="https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png">
 
+<div class="prayer-countdown" aria-live="polite">
+    <div class="prayer-caption">الأذان القادم</div>
+    <div class="prayer-name" id="nextPrayerName">جاري التحميل</div>
+    <div class="prayer-remaining" id="prayerRemaining">--:--:--</div>
+    <div class="prayer-source">حلب · رابطة العالم الإسلامي</div>
+</div>
+
 <h1>شركة الاتحاد</h1>
 
 <div class="date-time">
@@ -683,6 +794,7 @@ td{
 <div class="time" id="liveTime">00:00:00</div>
 
 <div class="date" id="liveDate">التاريخ</div>
+<div class="hijri-date" id="liveHijriDate">التاريخ الهجري</div>
 
 <div class="weather" id="weatherBox">
 
@@ -873,14 +985,136 @@ function updateDateTime(){
                 weekday:"long",
                 year:"numeric",
                 month:"long",
-                day:"numeric"
+                day:"numeric",
+                timeZone:"Asia/Damascus"
             }
         );
+
+    document.getElementById("liveHijriDate").textContent =
+        new Intl.DateTimeFormat(
+            "ar-SY-u-ca-islamic",
+            {
+                day:"numeric",
+                month:"long",
+                year:"numeric",
+                timeZone:"Asia/Damascus"
+            }
+        ).format(now) + " هـ";
 }
 
 updateDateTime();
 
 setInterval(updateDateTime,1000);
+
+
+/* =====================================================
+   عدّاد الأذان القادم - حلب
+   الحساب: رابطة العالم الإسلامي (MWL)
+===================================================== */
+
+const PRAYER_NAMES = [
+    ["Fajr","الفجر"],
+    ["Dhuhr","الظهر"],
+    ["Asr","العصر"],
+    ["Maghrib","المغرب"],
+    ["Isha","العشاء"]
+];
+
+let prayerSchedule = [];
+let prayerScheduleLoadedAt = 0;
+
+function getDamascusDate(offsetDays){
+    const now = new Date(Date.now() + offsetDays * 86400000);
+    const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone:"Asia/Damascus",
+        day:"2-digit",
+        month:"2-digit",
+        year:"numeric"
+    }).formatToParts(now);
+    const values = {};
+    parts.forEach(part => { values[part.type] = part.value; });
+    return {
+        apiDate: values.day + "-" + values.month + "-" + values.year,
+        isoDate: values.year + "-" + values.month + "-" + values.day
+    };
+}
+
+function prayerTimestamp(isoDate, timeText){
+    const match = String(timeText || "").match(/(\d{1,2}):(\d{2})/);
+    if(!match) return null;
+    return new Date(
+        isoDate + "T" +
+        match[1].padStart(2,"0") + ":" + match[2] +
+        ":00+03:00"
+    ).getTime();
+}
+
+async function loadPrayerSchedule(){
+    try{
+        const days = [getDamascusDate(0), getDamascusDate(1)];
+        const schedules = await Promise.all(days.map(async day => {
+            const url = "https://api.aladhan.com/v1/timings/" +
+                day.apiDate +
+                "?latitude=36.2021&longitude=37.1343&method=3&school=0";
+            const response = await fetch(url, {cache:"no-store"});
+            if(!response.ok) throw new Error("Prayer API HTTP " + response.status);
+            const payload = await response.json();
+            if(payload.code !== 200 || !payload.data || !payload.data.timings){
+                throw new Error("Invalid prayer timetable");
+            }
+            return {
+                isoDate: day.isoDate,
+                timings: payload.data.timings
+            };
+        }));
+
+        prayerSchedule = [];
+        schedules.forEach(day => {
+            PRAYER_NAMES.forEach(([key, label]) => {
+                const timestamp = prayerTimestamp(day.isoDate, day.timings[key]);
+                if(timestamp !== null){
+                    prayerSchedule.push({label, timestamp});
+                }
+            });
+        });
+        prayerSchedule.sort((a,b) => a.timestamp - b.timestamp);
+        prayerScheduleLoadedAt = Date.now();
+        updatePrayerCountdown();
+    }catch(error){
+        console.warn("Prayer timetable unavailable:", error);
+        document.getElementById("nextPrayerName").textContent = "غير متاح";
+        document.getElementById("prayerRemaining").textContent = "--:--:--";
+    }
+}
+
+function updatePrayerCountdown(){
+    if(!prayerSchedule.length) return;
+    const now = Date.now();
+    let nextPrayer = prayerSchedule.find(prayer => prayer.timestamp > now);
+
+    if(!nextPrayer){
+        document.getElementById("nextPrayerName").textContent = "جاري التحديث";
+        document.getElementById("prayerRemaining").textContent = "--:--:--";
+        if(Date.now() - prayerScheduleLoadedAt > 30000) loadPrayerSchedule();
+        return;
+    }
+
+    const remaining = Math.max(0, Math.floor((nextPrayer.timestamp - now) / 1000));
+    const hours = String(Math.floor(remaining / 3600)).padStart(2,"0");
+    const minutes = String(Math.floor((remaining % 3600) / 60)).padStart(2,"0");
+    const seconds = String(remaining % 60).padStart(2,"0");
+
+    document.getElementById("nextPrayerName").textContent = nextPrayer.label;
+    document.getElementById("prayerRemaining").textContent =
+        hours + ":" + minutes + ":" + seconds;
+
+    if(Date.now() - prayerScheduleLoadedAt > 6 * 60 * 60 * 1000){
+        loadPrayerSchedule();
+    }
+}
+
+loadPrayerSchedule();
+setInterval(updatePrayerCountdown,1000);
 
 
 /* =====================================================
