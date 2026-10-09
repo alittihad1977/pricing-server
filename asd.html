@@ -992,7 +992,7 @@ function updateDateTime(){
 
     document.getElementById("liveHijriDate").textContent =
         new Intl.DateTimeFormat(
-            "ar-SY-u-ca-islamic",
+            "ar-SY-u-ca-islamic-umalqura",
             {
                 day:"numeric",
                 month:"long",
@@ -1022,6 +1022,8 @@ const PRAYER_NAMES = [
 
 let prayerSchedule = [];
 let prayerScheduleLoadedAt = 0;
+let prayerLastAttempt = 0;
+let prayerLoadInProgress = false;
 
 function getDamascusDate(offsetDays){
     const now = new Date(Date.now() + offsetDays * 86400000);
@@ -1050,6 +1052,9 @@ function prayerTimestamp(isoDate, timeText){
 }
 
 async function loadPrayerSchedule(){
+    if(prayerLoadInProgress) return;
+    prayerLoadInProgress = true;
+    prayerLastAttempt = Date.now();
     try{
         const days = [getDamascusDate(0), getDamascusDate(1)];
         const schedules = await Promise.all(days.map(async day => {
@@ -1084,11 +1089,18 @@ async function loadPrayerSchedule(){
         console.warn("Prayer timetable unavailable:", error);
         document.getElementById("nextPrayerName").textContent = "غير متاح";
         document.getElementById("prayerRemaining").textContent = "--:--:--";
+    }finally{
+        prayerLoadInProgress = false;
     }
 }
 
 function updatePrayerCountdown(){
-    if(!prayerSchedule.length) return;
+    if(!prayerSchedule.length){
+        if(!prayerLoadInProgress && Date.now() - prayerLastAttempt > 5 * 60 * 1000){
+            loadPrayerSchedule();
+        }
+        return;
+    }
     const now = Date.now();
     let nextPrayer = prayerSchedule.find(prayer => prayer.timestamp > now);
 
@@ -1108,7 +1120,9 @@ function updatePrayerCountdown(){
     document.getElementById("prayerRemaining").textContent =
         hours + ":" + minutes + ":" + seconds;
 
-    if(Date.now() - prayerScheduleLoadedAt > 6 * 60 * 60 * 1000){
+    if(Date.now() - prayerScheduleLoadedAt > 6 * 60 * 60 * 1000 &&
+       !prayerLoadInProgress &&
+       Date.now() - prayerLastAttempt > 5 * 60 * 1000){
         loadPrayerSchedule();
     }
 }
