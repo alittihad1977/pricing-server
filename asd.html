@@ -55,21 +55,24 @@ html,body{
     display:flex;
     justify-content:center;
     align-items:center;
-    gap:20px;
+    gap:16px;
     margin-bottom:12px;
 }
 
 .header img{
-    height:90px;
-    max-height:15vh;
+    height:78px;
+    max-height:13vh;
     width:auto;
-    filter:drop-shadow(0 0 20px #f4c430);
+    filter:drop-shadow(0 0 14px rgba(244,196,48,0.75));
+    flex:0 0 auto;
 }
 
 .header h1{
-    font-size:3.5rem;
+    font-size:2.8rem;
     color:gold;
     margin:0;
+    white-space:nowrap;
+    line-height:1.1;
 }
 
 .date-time{
@@ -77,12 +80,13 @@ html,body{
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    margin-right:15px;
-    min-width:180px;
+    margin-right:0;
+    min-width:205px;
+    flex:0 0 auto;
 }
 
 .time{
-    font-size:2rem;
+    font-size:1.85rem;
     font-weight:bold;
     color:gold;
     direction:ltr;
@@ -90,7 +94,7 @@ html,body{
 }
 
 .date{
-    font-size:1.1rem;
+    font-size:0.98rem;
     color:white;
     font-weight:bold;
     margin-top:5px;
@@ -98,15 +102,15 @@ html,body{
 
 .hijri-date{
     color:#f4c430;
-    font-size:0.9rem;
+    font-size:0.82rem;
     font-weight:bold;
     margin-top:3px;
     white-space:nowrap;
 }
 
 .prayer-countdown{
-    min-width:112px;
-    padding:8px 10px;
+    min-width:124px;
+    padding:7px 10px;
     border:1px solid rgba(244,196,48,0.55);
     border-radius:12px;
     background:linear-gradient(145deg,rgba(244,196,48,0.12),rgba(255,255,255,0.035));
@@ -121,21 +125,21 @@ html,body{
 
 .prayer-caption{
     color:#f4c430;
-    font-size:0.72rem;
+    font-size:0.68rem;
     font-weight:bold;
     white-space:nowrap;
 }
 
 .prayer-name{
     color:white;
-    font-size:0.95rem;
+    font-size:0.88rem;
     font-weight:bold;
     white-space:nowrap;
 }
 
 .prayer-remaining{
     color:#f4c430;
-    font-size:1.05rem;
+    font-size:0.98rem;
     font-weight:bold;
     direction:ltr;
     font-variant-numeric:tabular-nums;
@@ -529,47 +533,48 @@ td{
 
     .header{
         margin-bottom:15px;
+        gap:20px;
     }
 
     .header img{
-        height:110px;
+        height:92px;
     }
 
     .header h1{
-        font-size:4rem;
+        font-size:3.25rem;
     }
 
     .date-time{
-        min-width:220px;
+        min-width:235px;
     }
 
     .time{
-        font-size:2.5rem;
+        font-size:2.2rem;
     }
 
     .date{
-        font-size:1.3rem;
+        font-size:1.12rem;
     }
 
     .hijri-date{
-        font-size:1rem;
+        font-size:0.92rem;
     }
 
     .prayer-countdown{
-        min-width:130px;
-        padding:10px 12px;
+        min-width:140px;
+        padding:9px 12px;
     }
 
     .prayer-caption{
-        font-size:0.8rem;
+        font-size:0.76rem;
     }
 
     .prayer-name{
-        font-size:1.05rem;
+        font-size:0.98rem;
     }
 
     .prayer-remaining{
-        font-size:1.2rem;
+        font-size:1.08rem;
     }
 
     th{
@@ -618,55 +623,60 @@ td{
     }
 
     .header img{
-        height:70px;
+        height:54px;
+        max-height:12vh;
+        filter:drop-shadow(0 0 9px rgba(244,196,48,0.7));
     }
 
     .header h1{
-        font-size:2.5rem;
+        font-size:1.7rem;
     }
 
     .date-time{
-        min-width:120px;
-        margin-right:5px;
+        min-width:108px;
+        margin-right:0;
     }
 
     .time{
-        font-size:1.4rem;
+        font-size:1.12rem;
     }
 
     .date{
-        font-size:0.8rem;
+        font-size:0.66rem;
+        margin-top:3px;
     }
 
     .hijri-date{
-        font-size:0.68rem;
+        font-size:0.59rem;
+        margin-top:2px;
     }
 
     .prayer-countdown{
-        min-width:82px;
-        padding:5px 5px;
+        min-width:76px;
+        padding:5px 4px;
         gap:2px;
         border-radius:9px;
     }
 
     .prayer-caption{
-        font-size:0.55rem;
+        font-size:0.51rem;
     }
 
     .prayer-name{
-        font-size:0.72rem;
+        font-size:0.66rem;
     }
 
     .prayer-remaining{
-        font-size:0.76rem;
+        font-size:0.69rem;
     }
 
     .prayer-source{
-        font-size:0.43rem;
+        font-size:0.39rem;
     }
 
     .header{
-        gap:10px;
+        gap:7px;
+        margin-bottom:8px;
     }
 
     .weather{
