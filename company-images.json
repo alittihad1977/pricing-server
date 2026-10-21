@@ -20,16 +20,6 @@
       "enabled": true,
       "order": 2,
       "createdAt": "2026-10-21T08:29:25.210Z"
-    },
-    {
-      "id": "1792585517424-l3emve",
-      "name": "1000112404.jpg",
-      "path": "company-images/1792585515329-1000112404.jpg",
-      "url": "https://raw.githubusercontent.com/alittihad1977/pricing-server/company-media/company-images/1792585515329-1000112404.jpg",
-      "mime": "image/jpeg",
-      "enabled": true,
-      "order": 3,
-      "createdAt": "2026-10-21T12:25:17.424Z"
     }
   ]
 }
