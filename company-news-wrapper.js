@@ -75,7 +75,7 @@ async function readImageFile() {
         'GET',
         `/repos/${REPO}/contents/${IMAGE_META_PATH}?ref=${MEDIA_BRANCH}`
     );
-    const decoded = Buffer.from(data.content.replace(/\\n/g, ''), 'base64').toString('utf8');
+    const decoded = Buffer.from(data.content.replace(/\n/g, ''), 'base64').toString('utf8');
     let parsed;
     try { parsed = JSON.parse(decoded); } catch (_) { parsed = { version: 1, items: [] }; }
     if (!parsed || !Array.isArray(parsed.items)) parsed = { version: 1, items: [] };
@@ -83,7 +83,7 @@ async function readImageFile() {
 }
 
 async function writeImageFile(parsed, sha) {
-    const content = Buffer.from(JSON.stringify({ version: 1, items: parsed.items }, null, 2) + '\\n', 'utf8').toString('base64');
+    const content = Buffer.from(JSON.stringify({ version: 1, items: parsed.items }, null, 2) + '\n', 'utf8').toString('base64');
     return githubRequest('PUT', `/repos/${REPO}/contents/${IMAGE_META_PATH}`, {
         message: 'Update company image gallery',
         content,
@@ -272,15 +272,15 @@ express.application.listen = function(...args) {
         if (!checkPassword(req)) return res.status(401).json({ success: false, error: 'Unauthorized' });
 
         const dataUrl = String(req.body && req.body.imageData || '');
-        const match = dataUrl.match(/^data:(image\\/(?:jpeg|png|webp|gif));base64,([A-Za-z0-9+/=\\r\\n]+)$/i);
+        const match = dataUrl.match(/^data:(image\/(?:jpeg|png|webp|gif));base64,([A-Za-z0-9+/=\r\n]+)$/i);
         if (!match) return res.status(400).json({ success: false, error: 'يرجى اختيار صورة بصيغة JPG أو PNG أو WEBP أو GIF' });
 
         try {
             const mime = match[1].toLowerCase();
             const ext = ({ 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' })[mime];
-            const raw = Buffer.from(match[2].replace(/\\s/g, ''), 'base64');
+            const raw = Buffer.from(match[2].replace(/\s/g, ''), 'base64');
             const safeName = String(req.body && req.body.name || 'company-image')
-                .replace(/\\.[^.]+$/, '')
+                .replace(/\.[^.]+$/, '')
                 .replace(/[^a-zA-Z0-9_-]+/g, '-')
                 .replace(/^-+|-+$/g, '')
                 .slice(0, 70) || 'company-image';
