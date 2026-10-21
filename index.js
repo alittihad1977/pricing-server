@@ -12,7 +12,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type']
 }));
 
-app.use(express.json({ limit: '100mb' }));
+app.use(express.json({ limit: '150mb' }));
 app.use(express.text({ type: '*/*' }));
 
 /* =====================================================
