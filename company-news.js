@@ -222,6 +222,7 @@
     function showPricingTable(){
         const table = document.getElementById('pricingTable');
         const stage = document.getElementById('companyImageStage');
+        document.body.classList.remove('company-image-fullscreen');
         if(table) table.style.display = '';
         if(stage) stage.style.display = 'none';
         imagePassActive = false;
@@ -248,6 +249,9 @@
         imagePassActive = true;
         companyImageIndex = 0;
         table.style.display = 'none';
+        // Move the image stage outside the pricing layout so it can cover the entire screen.
+        if(stage.parentElement !== document.body) document.body.appendChild(stage);
+        document.body.classList.add('company-image-fullscreen');
         stage.style.display = 'flex';
         showCompanyImage();
     }
