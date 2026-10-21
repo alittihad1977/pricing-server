@@ -66,6 +66,38 @@ async function writeNewsFile(parsed, sha) {
     );
 }
 
+
+const MEDIA_BRANCH = 'company-media';
+const IMAGE_META_PATH = 'company-images.json';
+
+async function readImageFile() {
+    const data = await githubRequest(
+        'GET',
+        `/repos/${REPO}/contents/${IMAGE_META_PATH}?ref=${MEDIA_BRANCH}`
+    );
+    const decoded = Buffer.from(data.content.replace(/\\n/g, ''), 'base64').toString('utf8');
+    let parsed;
+    try { parsed = JSON.parse(decoded); } catch (_) { parsed = { version: 1, items: [] }; }
+    if (!parsed || !Array.isArray(parsed.items)) parsed = { version: 1, items: [] };
+    return { data, parsed };
+}
+
+async function writeImageFile(parsed, sha) {
+    const content = Buffer.from(JSON.stringify({ version: 1, items: parsed.items }, null, 2) + '\\n', 'utf8').toString('base64');
+    return githubRequest('PUT', `/repos/${REPO}/contents/${IMAGE_META_PATH}`, {
+        message: 'Update company image gallery',
+        content,
+        sha,
+        branch: MEDIA_BRANCH
+    });
+}
+
+function publicImages(parsed) {
+    return parsed.items
+        .filter(item => item && item.enabled !== false && item.url)
+        .sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+}
+
 function cleanText(value, max) {
     return String(value || '').trim().slice(0, max);
 }
@@ -204,6 +236,105 @@ express.application.listen = function(...args) {
             res.json({ success: true });
         } catch (error) {
             console.error('Company news delete error:', error.message);
+            res.status(503).json({ success: false, error: error.message });
+        }
+    });
+
+
+    // Public image feed for the pricing board. Media is stored on a separate GitHub branch
+    // so adding/removing photos does not redeploy the Render service.
+    app.get('/company-images', async (req, res) => {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+        try {
+            const { parsed } = await readImageFile();
+            res.json(publicImages(parsed));
+        } catch (error) {
+            console.error('Company images GET error:', error.message);
+            res.status(503).json({ success: false, error: 'Company images unavailable' });
+        }
+    });
+
+    app.post('/company-images/admin-list', async (req, res) => {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        if (!checkPassword(req)) return res.status(401).json({ success: false, error: 'Unauthorized' });
+        try {
+            const { parsed } = await readImageFile();
+            res.json({ success: true, items: [...parsed.items].sort((a, b) => Number(a.order || 0) - Number(b.order || 0)) });
+        } catch (error) {
+            console.error('Company images admin-list error:', error.message);
+            res.status(503).json({ success: false, error: error.message });
+        }
+    });
+
+    app.post('/company-images/upload', async (req, res) => {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        if (!checkPassword(req)) return res.status(401).json({ success: false, error: 'Unauthorized' });
+
+        const dataUrl = String(req.body && req.body.imageData || '');
+        const match = dataUrl.match(/^data:(image\\/(?:jpeg|png|webp|gif));base64,([A-Za-z0-9+/=\\r\\n]+)$/i);
+        if (!match) return res.status(400).json({ success: false, error: 'يرجى اختيار صورة بصيغة JPG أو PNG أو WEBP أو GIF' });
+
+        try {
+            const mime = match[1].toLowerCase();
+            const ext = ({ 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' })[mime];
+            const raw = Buffer.from(match[2].replace(/\\s/g, ''), 'base64');
+            const safeName = String(req.body && req.body.name || 'company-image')
+                .replace(/\\.[^.]+$/, '')
+                .replace(/[^a-zA-Z0-9_-]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .slice(0, 70) || 'company-image';
+            const filename = `${Date.now()}-${safeName}.${ext}`;
+            const imagePath = `company-images/${filename}`;
+
+            await githubRequest('PUT', `/repos/${REPO}/contents/${imagePath}`, {
+                message: 'Upload company image',
+                content: raw.toString('base64'),
+                branch: MEDIA_BRANCH
+            });
+
+            const { data, parsed } = await readImageFile();
+            const item = {
+                id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+                name: String(req.body && req.body.name || filename).slice(0, 180),
+                path: imagePath,
+                url: `https://raw.githubusercontent.com/${REPO}/${MEDIA_BRANCH}/${imagePath}`,
+                mime,
+                enabled: true,
+                order: parsed.items.length + 1,
+                createdAt: new Date().toISOString()
+            };
+            parsed.items.push(item);
+            await writeImageFile(parsed, data.sha);
+            res.json({ success: true, item });
+        } catch (error) {
+            console.error('Company image upload error:', error.message);
+            res.status(503).json({ success: false, error: error.message });
+        }
+    });
+
+    app.post('/company-images/delete', async (req, res) => {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        if (!checkPassword(req)) return res.status(401).json({ success: false, error: 'Unauthorized' });
+        const id = cleanText(req.body && req.body.id, 120);
+        if (!id) return res.status(400).json({ success: false, error: 'ID is required' });
+
+        try {
+            const { data, parsed } = await readImageFile();
+            const item = parsed.items.find(x => x.id === id);
+            if (!item) return res.status(404).json({ success: false, error: 'Image not found' });
+
+            const file = await githubRequest('GET', `/repos/${REPO}/contents/${item.path}?ref=${MEDIA_BRANCH}`);
+            await githubRequest('DELETE', `/repos/${REPO}/contents/${item.path}`, {
+                message: 'Delete company image',
+                sha: file.sha,
+                branch: MEDIA_BRANCH
+            });
+            parsed.items = parsed.items.filter(x => x.id !== id);
+            await writeImageFile(parsed, data.sha);
+            res.json({ success: true });
+        } catch (error) {
+            console.error('Company image delete error:', error.message);
             res.status(503).json({ success: false, error: error.message });
         }
     });
