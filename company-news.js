@@ -204,6 +204,100 @@
         }
     }
 
+
+    // Large company-image carousel on the pricing board. Prices return after
+    // each pass through the gallery; this does not alter price values or news data.
+    const COMPANY_IMAGES_REFRESH_TIME = 30000;
+    const COMPANY_IMAGE_DISPLAY_TIME = 12000;
+    const PRICING_TABLE_DISPLAY_TIME = 45000;
+    let companyImages = [];
+    let companyImageIndex = 0;
+    let imageCycleTimer = null;
+    let imagePassActive = false;
+
+    function getCompanyImagesEndpoint(){
+        return (typeof SERVER !== 'undefined' ? SERVER : '') + '/company-images';
+    }
+
+    function showPricingTable(){
+        const table = document.getElementById('pricingTable');
+        const stage = document.getElementById('companyImageStage');
+        if(table) table.style.display = '';
+        if(stage) stage.style.display = 'none';
+        imagePassActive = false;
+        scheduleImageCycle(PRICING_TABLE_DISPLAY_TIME);
+    }
+
+    function scheduleImageCycle(delay){
+        if(imageCycleTimer) clearTimeout(imageCycleTimer);
+        imageCycleTimer = setTimeout(startImagePass, delay);
+    }
+
+    function startImagePass(){
+        if(!companyImages.length){
+            showPricingTable();
+            return;
+        }
+        const table = document.getElementById('pricingTable');
+        const stage = document.getElementById('companyImageStage');
+        const image = document.getElementById('companyImageDisplay');
+        if(!table || !stage || !image){
+            scheduleImageCycle(PRICING_TABLE_DISPLAY_TIME);
+            return;
+        }
+        imagePassActive = true;
+        companyImageIndex = 0;
+        table.style.display = 'none';
+        stage.style.display = 'flex';
+        showCompanyImage();
+    }
+
+    function showCompanyImage(){
+        if(!imagePassActive) return;
+        if(!companyImages.length){
+            showPricingTable();
+            return;
+        }
+        if(companyImageIndex >= companyImages.length){
+            showPricingTable();
+            return;
+        }
+        const item = companyImages[companyImageIndex];
+        const image = document.getElementById('companyImageDisplay');
+        if(!image){
+            showPricingTable();
+            return;
+        }
+        image.alt = item.name || 'صورة شركة الاتحاد';
+        image.src = item.url;
+        if(imageCycleTimer) clearTimeout(imageCycleTimer);
+        imageCycleTimer = setTimeout(function(){
+            companyImageIndex++;
+            showCompanyImage();
+        }, COMPANY_IMAGE_DISPLAY_TIME);
+    }
+
+    async function loadCompanyImages(){
+        try{
+            const response = await fetch(getCompanyImagesEndpoint(), {cache:'no-store'});
+            if(!response.ok) throw new Error('Company images server error');
+            const data = await response.json();
+            if(!Array.isArray(data)) return;
+            companyImages = data.filter(function(item){
+                return item && typeof item.url === 'string' && item.url.trim() !== '';
+            });
+            if(!companyImages.length && imagePassActive){
+                showPricingTable();
+            }
+        }catch(error){
+            console.log('Company Images Error:', error);
+        }
+    }
+
+    loadCompanyImages();
+    setInterval(loadCompanyImages, COMPANY_IMAGES_REFRESH_TIME);
+    scheduleImageCycle(PRICING_TABLE_DISPLAY_TIME);
+
     function addQrCode(){
         if(document.getElementById('boardQrCode')) return;
 
