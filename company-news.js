@@ -247,7 +247,8 @@
             return;
         }
         imagePassActive = true;
-        companyImageIndex = 0;
+        // Show one image per turn, then return to the pricing board before the next image.
+        if(companyImageIndex >= companyImages.length) companyImageIndex = 0;
         table.style.display = 'none';
         // Move the image stage outside the pricing layout so it can cover the entire screen.
         if(stage.parentElement !== document.body) document.body.appendChild(stage);
@@ -276,8 +277,8 @@
         image.src = item.url;
         if(imageCycleTimer) clearTimeout(imageCycleTimer);
         imageCycleTimer = setTimeout(function(){
-            companyImageIndex++;
-            showCompanyImage();
+            companyImageIndex = (companyImageIndex + 1) % companyImages.length;
+            showPricingTable();
         }, COMPANY_IMAGE_DISPLAY_TIME);
     }
 
