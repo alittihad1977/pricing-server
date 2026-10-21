@@ -25,6 +25,11 @@ button{border:0;border-radius:9px;padding:10px 16px;cursor:pointer;font-weight:b
 .news h3{margin:0 0 8px;color:#f4c430}
 .meta{font-size:.85rem;opacity:.8;margin-top:8px;line-height:1.7}
 .hidden{display:none}
+.image-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:14px}
+.image-card{border:1px solid rgba(244,196,48,.3);border-radius:12px;padding:10px;min-width:0}
+.image-card img{width:100%;height:180px;object-fit:contain;background:#07132b;border-radius:8px}
+.image-name{font-size:.85rem;overflow-wrap:anywhere;margin:8px 0;line-height:1.5}
+.image-card .row{margin-top:8px}
 @media(max-width:650px){.grid{grid-template-columns:1fr}body{padding:12px}}
 </style>
 </head>
@@ -62,6 +67,16 @@ button{border:0;border-radius:9px;padding:10px 16px;cursor:pointer;font-weight:b
 </div>
 </div>
 
+
+<div class="card" id="imagesCard">
+<h2>🖼️ إدارة صور لوحة التسعير</h2>
+<p>اختر صورة أو عدة صور من الهاتف، وستُعرض الصور المنشورة تلقائياً على لوحة التسعير.</p>
+<label>اختيار الصور</label>
+<input id="imageFiles" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
+<div class="row"><button class="primary" onclick="uploadImages()">رفع الصور المختارة</button><button class="secondary" onclick="refreshImages()">تحديث الصور</button></div>
+<div id="imageList" class="image-grid"><p>جاري تحميل الصور...</p></div>
+</div>
+
 <div class="card">
 <h2>الأخبار الحالية</h2>
 <div id="list">جاري التحميل...</div>
@@ -97,6 +112,7 @@ async function login(){
         document.getElementById('loginCard').classList.add('hidden');
         document.getElementById('app').classList.remove('hidden');
         renderList(data.items||[]);
+        await refreshImages();
         setStatus('تم الدخول بنجاح');
     }catch(error){alert('فشل الدخول: '+error.message);}
 }
@@ -105,6 +121,7 @@ async function refresh(){
     try{
         const data=await api('/company-news/admin-list',{password});
         renderList(data.items||[]);
+        await refreshImages();
         setStatus('تم تحديث القائمة');
     }catch(error){setStatus('خطأ: '+error.message);}
 }
@@ -180,6 +197,71 @@ async function deleteNews(id){
         await refresh();
         alert('تم حذف الخبر');
     }catch(error){alert('تعذر الحذف: '+error.message);}
+}
+
+
+async function refreshImages(){
+    try{
+        const data=await api('/company-images/admin-list',{password});
+        renderImages(data.items||[]);
+    }catch(error){
+        const list=document.getElementById('imageList');
+        if(list) list.textContent='تعذر تحميل الصور: '+error.message;
+    }
+}
+
+function renderImages(items){
+    const list=document.getElementById('imageList');
+    if(!list) return;
+    list.innerHTML='';
+    if(!items.length){list.textContent='لا توجد صور مرفوعة حالياً.';return;}
+    items.forEach(item=>{
+        const card=document.createElement('div');card.className='image-card';
+        const img=document.createElement('img');img.src=item.url;img.alt=item.name||'صورة الشركة';img.loading='lazy';
+        const name=document.createElement('div');name.className='image-name';name.textContent=item.name||'صورة';
+        const row=document.createElement('div');row.className='row';
+        const del=document.createElement('button');del.className='danger';del.textContent='حذف الصورة';del.onclick=()=>deleteImage(item.id);
+        row.appendChild(del);card.append(img,name,row);list.appendChild(card);
+    });
+}
+
+function readFileAsDataUrl(file){
+    return new Promise((resolve,reject)=>{
+        const reader=new FileReader();
+        reader.onload=()=>resolve(reader.result);
+        reader.onerror=()=>reject(new Error('تعذر قراءة الصورة '+file.name));
+        reader.readAsDataURL(file);
+    });
+}
+
+async function uploadImages(){
+    const input=document.getElementById('imageFiles');
+    const files=Array.from(input.files||[]);
+    if(!files.length){alert('اختر صورة واحدة على الأقل');return;}
+    try{
+        for(let i=0;i<files.length;i++){
+            const file=files[i];
+            setStatus('جارٍ رفع الصورة '+(i+1)+' من '+files.length+': '+file.name);
+            const imageData=await readFileAsDataUrl(file);
+            await api('/company-images/upload',{password,name:file.name,imageData});
+        }
+        input.value='';
+        await refreshImages();
+        setStatus('تم رفع الصور بنجاح');
+        alert('تم رفع الصور بنجاح، وستظهر تلقائياً على لوحة التسعير.');
+    }catch(error){
+        setStatus('تعذر رفع الصور');
+        alert('تعذر رفع الصورة: '+error.message);
+    }
+}
+
+async function deleteImage(id){
+    if(!confirm('متأكد من حذف هذه الصورة من لوحة التسعير؟')) return;
+    try{
+        await api('/company-images/delete',{password,id});
+        await refreshImages();
+        setStatus('تم حذف الصورة');
+    }catch(error){alert('تعذر حذف الصورة: '+error.message);}
 }
 
 document.getElementById('password').addEventListener('keydown',e=>{if(e.key==='Enter')login();});
