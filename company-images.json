@@ -20,6 +20,16 @@
       "enabled": true,
       "order": 2,
       "createdAt": "2026-10-21T08:29:25.210Z"
+    },
+    {
+      "id": "1792656145858-cx6isq",
+      "name": "1000112520.gif",
+      "path": "company-images/1792656137055-1000112520.gif",
+      "url": "https://raw.githubusercontent.com/alittihad1977/pricing-server/company-media/company-images/1792656137055-1000112520.gif",
+      "mime": "image/gif",
+      "enabled": true,
+      "order": 3,
+      "createdAt": "2026-10-22T08:02:25.858Z"
     }
   ]
 }
