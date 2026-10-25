@@ -224,6 +224,7 @@
         if(video){
             video.onended = null;
             video.onerror = null;
+            video.oncanplay = null;
             video.pause();
             video.removeAttribute('src');
             video.load();
@@ -290,27 +291,53 @@
             image.style.display = 'none';
             video.style.display = 'block';
             video.muted = true;
+            video.defaultMuted = true;
             video.playsInline = true;
-            video.onended = function(){
-                if(!imagePassActive) return;
+            video.setAttribute('playsinline', '');
+            video.setAttribute('muted', '');
+
+            let videoFinished = false;
+            function finishVideo(){
+                if(videoFinished || !imagePassActive) return;
+                videoFinished = true;
+                if(imageCycleTimer) clearTimeout(imageCycleTimer);
                 companyImageIndex = (companyImageIndex + 1) % companyImages.length;
                 showPricingTable();
-            };
+            }
+
+            video.onended = finishVideo;
             video.onerror = function(){
                 if(!imagePassActive) return;
-                companyImageIndex = (companyImageIndex + 1) % companyImages.length;
-                showPricingTable();
+                console.log('Company video failed to load; moving back to pricing table.', video.error ? video.error.code : 'unknown');
+                finishVideo();
             };
+
+            // Wait for the browser to buffer enough video before trying playback.
+            // A slow start or a rejected play promise must not instantly hide the video.
+            video.oncanplay = function(){
+                if(!imagePassActive || videoFinished) return;
+                const playAttempt = video.play();
+                if(playAttempt && typeof playAttempt.catch === 'function'){
+                    playAttempt.catch(function(error){
+                        console.log('Company video playback will remain visible while retrying:', error && error.name ? error.name : error);
+                        if(!imagePassActive || videoFinished) return;
+                        setTimeout(function(){
+                            if(!imagePassActive || videoFinished || !video.paused) return;
+                            const retry = video.play();
+                            if(retry && typeof retry.catch === 'function'){
+                                retry.catch(function(retryError){
+                                    console.log('Company video retry did not start:', retryError && retryError.name ? retryError.name : retryError);
+                                });
+                            }
+                        }, 1500);
+                    });
+                }
+            };
+
+            // Safety fallback: allow slow networks time to buffer, but don't stall the slideshow forever.
+            imageCycleTimer = setTimeout(finishVideo, 90000);
             video.src = item.url;
             video.load();
-            const playAttempt = video.play();
-            if(playAttempt && typeof playAttempt.catch === 'function'){
-                playAttempt.catch(function(){
-                    if(!imagePassActive) return;
-                    companyImageIndex = (companyImageIndex + 1) % companyImages.length;
-                    showPricingTable();
-                });
-            }
             return;
         }
         stopCompanyVideo();
