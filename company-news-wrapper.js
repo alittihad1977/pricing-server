@@ -271,24 +271,28 @@ express.application.listen = function(...args) {
         res.setHeader('Access-Control-Allow-Origin', '*');
         if (!checkPassword(req)) return res.status(401).json({ success: false, error: 'Unauthorized' });
 
-        const dataUrl = String(req.body && req.body.imageData || '');
-        const match = dataUrl.match(/^data:(image\/(?:jpeg|png|webp|gif));base64,([A-Za-z0-9+/=\r\n]+)$/i);
-        if (!match) return res.status(400).json({ success: false, error: 'يرجى اختيار صورة بصيغة JPG أو PNG أو WEBP أو GIF' });
+        const dataUrl = String(req.body && (req.body.videoData || req.body.imageData) || '');
+        const match = dataUrl.match(/^data:((?:image\/(?:jpeg|png|webp|gif))|(?:video\/(?:mp4|webm|ogg|quicktime)));base64,([A-Za-z0-9+/=\r\n]+)$/i);
+        if (!match) return res.status(400).json({ success: false, error: 'الصيغ المدعومة: JPG وPNG وWEBP وGIF وMP4 وWEBM وOGG وMOV' });
 
         try {
             const mime = match[1].toLowerCase();
-            const ext = ({ 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' })[mime];
+            const isVideo = mime.startsWith('video/');
+            const ext = ({
+                'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif',
+                'video/mp4':'mp4','video/webm':'webm','video/ogg':'ogv','video/quicktime':'mov'
+            })[mime];
             const raw = Buffer.from(match[2].replace(/\s/g, ''), 'base64');
-            const safeName = String(req.body && req.body.name || 'company-image')
+            const safeName = String(req.body && req.body.name || (isVideo?'company-video':'company-image'))
                 .replace(/\.[^.]+$/, '')
                 .replace(/[^a-zA-Z0-9_-]+/g, '-')
                 .replace(/^-+|-+$/g, '')
-                .slice(0, 70) || 'company-image';
+                .slice(0, 70) || (isVideo?'company-video':'company-image');
             const filename = `${Date.now()}-${safeName}.${ext}`;
-            const imagePath = `company-images/${filename}`;
+            const imagePath = `${isVideo?'company-videos':'company-images'}/${filename}`;
 
             await githubRequest('PUT', `/repos/${REPO}/contents/${imagePath}`, {
-                message: 'Upload company image',
+                message: isVideo ? 'Upload company video' : 'Upload company image',
                 content: raw.toString('base64'),
                 branch: MEDIA_BRANCH
             });
@@ -300,6 +304,7 @@ express.application.listen = function(...args) {
                 path: imagePath,
                 url: `https://raw.githubusercontent.com/${REPO}/${MEDIA_BRANCH}/${imagePath}`,
                 mime,
+                type: isVideo ? 'video' : 'image',
                 enabled: true,
                 order: parsed.items.length + 1,
                 createdAt: new Date().toISOString()
