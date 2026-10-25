@@ -69,12 +69,12 @@ button{border:0;border-radius:9px;padding:10px 16px;cursor:pointer;font-weight:b
 
 
 <div class="card" id="imagesCard">
-<h2>🖼️ إدارة صور لوحة التسعير</h2>
-<p>اختر صورة أو عدة صور من الهاتف، وستُعرض الصور المنشورة تلقائياً على لوحة التسعير.</p>
-<label>اختيار الصور</label>
-<input id="imageFiles" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
-<div class="row"><button class="primary" onclick="uploadImages()">رفع الصور المختارة</button><button class="secondary" onclick="refreshImages()">تحديث الصور</button></div>
-<div id="imageList" class="image-grid"><p>جاري تحميل الصور...</p></div>
+<h2>🖼️🎬 إدارة الصور والفيديوهات للوحة التسعير</h2>
+<p>ارفع صوراً أو فيديوهات من الهاتف. تظهر الصور 12 ثانية، أما الفيديو فيُعرض كاملاً حتى نهايته ثم تعود لوحة التسعير.</p>
+<label>اختيار الصور والفيديوهات</label>
+<input id="imageFiles" type="file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/ogg,video/quicktime" multiple>
+<div class="row"><button class="primary" onclick="uploadImages()">رفع الملفات المختارة</button><button class="secondary" onclick="refreshImages()">تحديث الملفات</button></div>
+<div id="imageList" class="image-grid"><p>جاري تحميل الصور والفيديوهات...</p></div>
 </div>
 
 <div class="card">
@@ -214,14 +214,20 @@ function renderImages(items){
     const list=document.getElementById('imageList');
     if(!list) return;
     list.innerHTML='';
-    if(!items.length){list.textContent='لا توجد صور مرفوعة حالياً.';return;}
+    if(!items.length){list.textContent='لا توجد صور أو فيديوهات مرفوعة حالياً.';return;}
     items.forEach(item=>{
         const card=document.createElement('div');card.className='image-card';
-        const img=document.createElement('img');img.src=item.url;img.alt=item.name||'صورة الشركة';img.loading='lazy';
-        const name=document.createElement('div');name.className='image-name';name.textContent=item.name||'صورة';
+        let preview;
+        if(item.type==='video'||String(item.mime||'').startsWith('video/')){
+            preview=document.createElement('video');preview.src=item.url;preview.controls=true;preview.preload='metadata';preview.playsInline=true;
+            preview.style.width='100%';preview.style.height='180px';preview.style.objectFit='contain';preview.style.background='#07132b';preview.style.borderRadius='8px';
+        }else{
+            preview=document.createElement('img');preview.src=item.url;preview.alt=item.name||'صورة الشركة';preview.loading='lazy';
+        }
+        const name=document.createElement('div');name.className='image-name';name.textContent=(item.type==='video'?'🎬 ':'🖼️ ')+(item.name||'ملف');
         const row=document.createElement('div');row.className='row';
-        const del=document.createElement('button');del.className='danger';del.textContent='حذف الصورة';del.onclick=()=>deleteImage(item.id);
-        row.appendChild(del);card.append(img,name,row);list.appendChild(card);
+        const del=document.createElement('button');del.className='danger';del.textContent='حذف الملف';del.onclick=()=>deleteImage(item.id);
+        row.appendChild(del);card.append(preview,name,row);list.appendChild(card);
     });
 }
 
@@ -237,21 +243,24 @@ function readFileAsDataUrl(file){
 async function uploadImages(){
     const input=document.getElementById('imageFiles');
     const files=Array.from(input.files||[]);
-    if(!files.length){alert('اختر صورة واحدة على الأقل');return;}
+    if(!files.length){alert('اختر صورة أو فيديو واحداً على الأقل');return;}
     try{
         for(let i=0;i<files.length;i++){
             const file=files[i];
-            setStatus('جارٍ رفع الصورة '+(i+1)+' من '+files.length+': '+file.name);
-            const imageData=await readFileAsDataUrl(file);
-            await api('/company-images/upload',{password,name:file.name,imageData});
+            const isVideo=file.type.startsWith('video/');
+            setStatus('جارٍ رفع '+(isVideo?'الفيديو':'الصورة')+' '+(i+1)+' من '+files.length+': '+file.name);
+            const dataUrl=await readFileAsDataUrl(file);
+            const payload={password,name:file.name};
+            payload[isVideo?'videoData':'imageData']=dataUrl;
+            await api('/company-images/upload',payload);
         }
         input.value='';
         await refreshImages();
-        setStatus('تم رفع الصور بنجاح');
-        alert('تم رفع الصور بنجاح، وستظهر تلقائياً على لوحة التسعير.');
+        setStatus('تم رفع الملفات بنجاح');
+        alert('تم رفع الملفات بنجاح، وستظهر تلقائياً على لوحة التسعير.');
     }catch(error){
-        setStatus('تعذر رفع الصور');
-        alert('تعذر رفع الصورة: '+error.message);
+        setStatus('تعذر رفع الملف');
+        alert('تعذر رفع الملف: '+error.message);
     }
 }
 
