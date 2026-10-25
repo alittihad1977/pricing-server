@@ -219,9 +219,24 @@
         return (typeof SERVER !== 'undefined' ? SERVER : '') + '/company-images';
     }
 
+    function stopCompanyVideo(){
+        const video = document.getElementById('companyVideoDisplay');
+        if(video){
+            video.onended = null;
+            video.onerror = null;
+            video.pause();
+            video.removeAttribute('src');
+            video.load();
+            video.style.display = 'none';
+        }
+    }
+
     function showPricingTable(){
         const table = document.getElementById('pricingTable');
         const stage = document.getElementById('companyImageStage');
+        const image = document.getElementById('companyImageDisplay');
+        stopCompanyVideo();
+        if(image) image.style.display = 'none';
         document.body.classList.remove('company-image-fullscreen');
         if(table) table.style.display = '';
         if(stage) stage.style.display = 'none';
@@ -242,41 +257,69 @@
         const table = document.getElementById('pricingTable');
         const stage = document.getElementById('companyImageStage');
         const image = document.getElementById('companyImageDisplay');
-        if(!table || !stage || !image){
+        const video = document.getElementById('companyVideoDisplay');
+        if(!table || !stage || !image || !video){
             scheduleImageCycle(PRICING_TABLE_DISPLAY_TIME);
             return;
         }
         imagePassActive = true;
-        // Show one image per turn, then return to the pricing board before the next image.
         if(companyImageIndex >= companyImages.length) companyImageIndex = 0;
         table.style.display = 'none';
-        // Move the image stage outside the pricing layout so it can cover the entire screen.
         if(stage.parentElement !== document.body) document.body.appendChild(stage);
         document.body.classList.add('company-image-fullscreen');
         stage.style.display = 'flex';
-        showCompanyImage();
+        showCompanyMedia();
     }
 
-    function showCompanyImage(){
+    function showCompanyMedia(){
         if(!imagePassActive) return;
-        if(!companyImages.length){
-            showPricingTable();
-            return;
-        }
-        if(companyImageIndex >= companyImages.length){
+        if(!companyImages.length || companyImageIndex >= companyImages.length){
             showPricingTable();
             return;
         }
         const item = companyImages[companyImageIndex];
         const image = document.getElementById('companyImageDisplay');
-        if(!image){
+        const video = document.getElementById('companyVideoDisplay');
+        if(!image || !video){
             showPricingTable();
             return;
         }
+        if(imageCycleTimer) clearTimeout(imageCycleTimer);
+        const isVideo = item.type === 'video' || String(item.mime || '').startsWith('video/');
+        if(isVideo){
+            image.style.display = 'none';
+            video.style.display = 'block';
+            video.muted = true;
+            video.playsInline = true;
+            video.onended = function(){
+                if(!imagePassActive) return;
+                companyImageIndex = (companyImageIndex + 1) % companyImages.length;
+                showPricingTable();
+            };
+            video.onerror = function(){
+                if(!imagePassActive) return;
+                companyImageIndex = (companyImageIndex + 1) % companyImages.length;
+                showPricingTable();
+            };
+            video.src = item.url;
+            video.load();
+            const playAttempt = video.play();
+            if(playAttempt && typeof playAttempt.catch === 'function'){
+                playAttempt.catch(function(){
+                    if(!imagePassActive) return;
+                    companyImageIndex = (companyImageIndex + 1) % companyImages.length;
+                    showPricingTable();
+                });
+            }
+            return;
+        }
+        stopCompanyVideo();
+        video.style.display = 'none';
+        image.style.display = 'block';
         image.alt = item.name || 'صورة شركة الاتحاد';
         image.src = item.url;
-        if(imageCycleTimer) clearTimeout(imageCycleTimer);
         imageCycleTimer = setTimeout(function(){
+            if(!imagePassActive) return;
             companyImageIndex = (companyImageIndex + 1) % companyImages.length;
             showPricingTable();
         }, COMPANY_IMAGE_DISPLAY_TIME);
@@ -289,7 +332,9 @@
             const data = await response.json();
             if(!Array.isArray(data)) return;
             companyImages = data.filter(function(item){
-                return item && typeof item.url === 'string' && item.url.trim() !== '';
+                return item && typeof item.url === 'string' && item.url.trim() !== ''
+                    && (item.type === 'video' || String(item.mime || '').startsWith('video/')
+                        || String(item.mime || '').startsWith('image/') || !item.mime);
             });
             if(!companyImages.length && imagePassActive){
                 showPricingTable();
