@@ -783,7 +783,8 @@ td{
     border:0;
     border-radius:0;
 }
-#companyImageStage img{
+#companyImageStage img,
+#companyImageStage video{
     display:block;
     width:100%;
     height:100%;
@@ -793,6 +794,7 @@ td{
     border-radius:0;
     filter:none;
 }
+#companyImageStage video{background:#0b1b3d;}
 body.company-image-fullscreen .screen,
 body.company-image-fullscreen .bottom-bar,
 body.company-image-fullscreen #connectionStatus,
@@ -972,8 +974,9 @@ body.company-image-fullscreen{
 
 </table>
 
-<div id="companyImageStage" aria-label="صور شركة الاتحاد">
+<div id="companyImageStage" aria-label="صور وفيديوهات شركة الاتحاد">
     <img id="companyImageDisplay" alt="صورة شركة الاتحاد">
+    <video id="companyVideoDisplay" muted playsinline preload="auto"></video>
 </div>
 
 </div>
