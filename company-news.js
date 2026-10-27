@@ -209,7 +209,7 @@
     // each pass through the gallery; this does not alter price values or news data.
     const COMPANY_IMAGES_REFRESH_TIME = 30000;
     const COMPANY_IMAGE_DISPLAY_TIME = 12000;
-    const PRICING_TABLE_DISPLAY_TIME = 45000;
+    const PRICING_TABLE_DISPLAY_TIME = 60000;
     let companyImages = [];
     let companyImageIndex = 0;
     let imageCycleTimer = null;
