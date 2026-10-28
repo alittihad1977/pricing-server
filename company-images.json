@@ -31,17 +31,6 @@
       "enabled": true,
       "order": 3,
       "createdAt": "2026-10-25T08:50:38.333Z"
-    },
-    {
-      "id": "1792921688033-w1nde6",
-      "name": "1000113097.mp4",
-      "path": "company-videos/1792921685410-1000113097.mp4",
-      "url": "https://raw.githubusercontent.com/alittihad1977/pricing-server/company-media/company-videos/1792921685410-1000113097.mp4",
-      "mime": "video/mp4",
-      "type": "video",
-      "enabled": true,
-      "order": 4,
-      "createdAt": "2026-10-25T09:48:08.033Z"
     }
   ]
 }
