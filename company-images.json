@@ -42,17 +42,6 @@
       "enabled": true,
       "order": 4,
       "createdAt": "2026-10-25T09:48:08.033Z"
-    },
-    {
-      "id": "1793098105669-h59x1t",
-      "name": "1000113540.jpg",
-      "path": "company-images/1793098103838-1000113540.jpg",
-      "url": "https://raw.githubusercontent.com/alittihad1977/pricing-server/company-media/company-images/1793098103838-1000113540.jpg",
-      "mime": "image/jpeg",
-      "type": "image",
-      "enabled": true,
-      "order": 5,
-      "createdAt": "2026-10-27T10:48:25.669Z"
     }
   ]
 }
