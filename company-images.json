@@ -20,17 +20,6 @@
       "enabled": true,
       "order": 2,
       "createdAt": "2026-10-22T13:50:52.568Z"
-    },
-    {
-      "id": "1792918238333-el6sa6",
-      "name": "شعار أرض الخيال العلمي Preview 118978025.mp4",
-      "path": "company-videos/1792918235533-Preview-118978025.mp4",
-      "url": "https://raw.githubusercontent.com/alittihad1977/pricing-server/company-media/company-videos/1792918235533-Preview-118978025.mp4",
-      "mime": "video/mp4",
-      "type": "video",
-      "enabled": true,
-      "order": 3,
-      "createdAt": "2026-10-25T08:50:38.333Z"
     }
   ]
 }
