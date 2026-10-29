@@ -2,17 +2,6 @@
   "version": 1,
   "items": [
     {
-      "id": "1793185797712-zvxjxx",
-      "name": "1000113540.jpg",
-      "path": "company-images/1793185796040-1000113540.jpg",
-      "url": "https://raw.githubusercontent.com/alittihad1977/pricing-server/company-media/company-images/1793185796040-1000113540.jpg",
-      "mime": "image/jpeg",
-      "type": "image",
-      "enabled": true,
-      "order": 1,
-      "createdAt": "2026-10-28T11:09:57.712Z"
-    },
-    {
       "id": "1793185838006-9r8cna",
       "name": "شعار أرض الخيال العلمي Preview 118978025.mp4",
       "path": "company-videos/1793185835390-Preview-118978025.mp4",
