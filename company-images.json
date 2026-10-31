@@ -11,6 +11,17 @@
       "enabled": true,
       "order": 2,
       "createdAt": "2026-10-28T11:10:38.006Z"
+    },
+    {
+      "id": "1793430385989-ns2f3g",
+      "name": "Minimal Outlines Intro   مقدمة موجزة Preview 119063588.mp4",
+      "path": "company-videos/1793430383494-Minimal-Outlines-Intro-Preview-119063588.mp4",
+      "url": "https://raw.githubusercontent.com/alittihad1977/pricing-server/company-media/company-videos/1793430383494-Minimal-Outlines-Intro-Preview-119063588.mp4",
+      "mime": "video/mp4",
+      "type": "video",
+      "enabled": true,
+      "order": 2,
+      "createdAt": "2026-10-31T07:06:25.989Z"
     }
   ]
 }
