@@ -287,7 +287,7 @@ if (
    الأجهزة المسجلة
    ===================================================== */
 
-const PUSH_STORE_URL = (process.env.PUSH_STORE_URL || '').replace(/\/+$/, '');
+const PUSH_STORE_URL = (process.env.PUSH_STORE_URL || '').replace(/\\/+$/, '');
 const PUSH_STORE_TOKEN = process.env.PUSH_STORE_TOKEN || '';
 
 let subscriptions = [];
@@ -295,10 +295,7 @@ let subscriptionsLoaded = false;
 let subscriptionsLoadPromise = null;
 
 async function pushStoreRequest(path, method = 'GET', body) {
-    if (!PUSH_STORE_URL || !PUSH_STORE_TOKEN) {
-        throw new Error('Push storage is not configured');
-    }
-
+    if (!PUSH_STORE_URL || !PUSH_STORE_TOKEN) throw new Error('Push storage is not configured');
     const response = await fetch(PUSH_STORE_URL + path, {
         method,
         headers: {
@@ -307,33 +304,24 @@ async function pushStoreRequest(path, method = 'GET', body) {
         },
         body: body ? JSON.stringify(body) : undefined
     });
-
     const raw = await response.text();
     let data = {};
     try { data = raw ? JSON.parse(raw) : {}; } catch (_) {}
-
     if (!response.ok) {
         const error = new Error(data.error || `Push storage HTTP ${response.status}`);
         error.status = response.status;
         throw error;
     }
-
     return data;
 }
 
 async function loadPersistedSubscriptions() {
     try {
         const data = await pushStoreRequest('/subscriptions');
-        subscriptions = Array.isArray(data.subscriptions)
-            ? data.subscriptions.filter(item =>
-                item &&
-                typeof item.endpoint === 'string' &&
-                item.endpoint.startsWith('https://') &&
-                item.keys &&
-                typeof item.keys.p256dh === 'string' &&
-                typeof item.keys.auth === 'string'
-            )
-            : [];
+        subscriptions = Array.isArray(data.subscriptions) ? data.subscriptions.filter(item =>
+            item && typeof item.endpoint === 'string' && item.endpoint.startsWith('https://') &&
+            item.keys && typeof item.keys.p256dh === 'string' && typeof item.keys.auth === 'string'
+        ) : [];
         subscriptionsLoaded = true;
         console.log('تم تحميل اشتراكات الإشعارات من التخزين الدائم:', subscriptions.length);
     } catch (error) {
@@ -360,21 +348,16 @@ async function removePersistedSubscription(subscription) {
 /* =====================================================
    إرسال الإشعار
    ===================================================== */
-
 async function sendPushNotification(message) {
-
     if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
         console.error('لا يمكن إرسال الإشعار: مفاتيح VAPID غير موجودة');
         return;
     }
-
     await ensureSubscriptionsLoaded();
-
     if (subscriptions.length === 0) {
         console.log('لا توجد أجهزة مسجلة للإشعارات');
         return;
     }
-
     const notificationData = {
         title: 'شركة الاتحاد 💰',
         body: 'تم تحديث أسعار الصرف 🔔',
@@ -385,16 +368,13 @@ async function sendPushNotification(message) {
         requireInteraction: false,
         data: { url: PRICING_PAGE }
     };
-
     const payload = JSON.stringify(notificationData);
-
     for (const subscription of [...subscriptions]) {
         try {
             await webpush.sendNotification(subscription, payload);
             console.log('تم إرسال الإشعار بنجاح 🔔');
         } catch (error) {
             console.error('Push Error:', error.statusCode, error.message);
-
             if (error.statusCode === 404 || error.statusCode === 410) {
                 subscriptions = subscriptions.filter(item => item.endpoint !== subscription.endpoint);
                 try {
@@ -406,10 +386,8 @@ async function sendPushNotification(message) {
             }
         }
     }
-
     console.log('عدد الأجهزة المسجلة حالياً:', subscriptions.length);
 }
-
 
 /* =====================================================
    استقبال Telegram
@@ -539,28 +517,14 @@ app.get(
 app.post('/subscribe', async (req, res) => {
     try {
         const subscription = req.body;
-
-        if (
-            !subscription ||
-            typeof subscription.endpoint !== 'string' ||
-            !subscription.endpoint.startsWith('https://') ||
-            !subscription.keys ||
-            typeof subscription.keys.p256dh !== 'string' ||
-            typeof subscription.keys.auth !== 'string'
-        ) {
-            return res.status(400).json({
-                success: false,
-                error: 'Invalid subscription'
-            });
+        if (!subscription || typeof subscription.endpoint !== 'string' ||
+            !subscription.endpoint.startsWith('https://') || !subscription.keys ||
+            typeof subscription.keys.p256dh !== 'string' || typeof subscription.keys.auth !== 'string') {
+            return res.status(400).json({ success: false, error: 'Invalid subscription' });
         }
-
         await ensureSubscriptionsLoaded();
         await pushStoreRequest('/subscriptions', 'POST', subscription);
-
-        const existingIndex = subscriptions.findIndex(
-            item => item.endpoint === subscription.endpoint
-        );
-
+        const existingIndex = subscriptions.findIndex(item => item.endpoint === subscription.endpoint);
         if (existingIndex >= 0) {
             subscriptions[existingIndex] = subscription;
             console.log('📱 تم تحديث تسجيل جهاز موجود');
@@ -568,20 +532,12 @@ app.post('/subscribe', async (req, res) => {
             subscriptions.push(subscription);
             console.log('📱 تم تسجيل جهاز جديد وحفظه بشكل دائم');
         }
-
-        return res.json({
-            success: true,
-            devices: subscriptions.length
-        });
+        return res.json({ success: true, devices: subscriptions.length });
     } catch (error) {
         console.error('Subscribe Error:', error.message);
-        return res.status(503).json({
-            success: false,
-            error: 'Subscription storage unavailable'
-        });
+        return res.status(503).json({ success: false, error: 'Subscription storage unavailable' });
     }
 });
-
 
 /* =====================================================
    🌤️ الطقس
