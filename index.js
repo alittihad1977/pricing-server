@@ -1546,6 +1546,8 @@ app.get(
 const PORT =
     process.env.PORT || 3000;
 
+ensureSubscriptionsLoaded();
+
 app.listen(
     PORT,
     () => {
