@@ -348,7 +348,7 @@ async function removePersistedSubscription(subscription) {
 /* =====================================================
    إرسال الإشعار
    ===================================================== */
-async function sendPushNotification(message) {
+async function sendPushNotification(message, testMode = false) {
     if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
         console.error('لا يمكن إرسال الإشعار: مفاتيح VAPID غير موجودة');
         return;
@@ -359,11 +359,11 @@ async function sendPushNotification(message) {
         return;
     }
     const notificationData = {
-        title: 'شركة الاتحاد 💰',
-        body: 'تم تحديث أسعار الصرف 🔔',
+        title: testMode ? 'اختبار إشعارات شركة الاتحاد' : 'شركة الاتحاد 💰',
+        body: testMode ? 'إذا وصلك هذا الإشعار فالنظام يعمل بنجاح 🔔' : 'تم تحديث أسعار الصرف 🔔',
         icon: 'https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png',
         badge: 'https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png',
-        tag: 'al-ittihad-prices',
+        tag: testMode ? 'al-ittihad-push-test' : 'al-ittihad-prices',
         renotify: true,
         requireInteraction: false,
         data: { url: PRICING_PAGE }
@@ -513,6 +513,23 @@ app.get(
 /* =====================================================
    تسجيل جهاز للإشعارات
    ===================================================== */
+
+app.post('/test-push', async (req, res) => {
+    const apiKey = String(req.headers['x-api-key'] || '');
+    const expectedKey = String(process.env.RENDER_PUSH_KEY || '');
+
+    if (!expectedKey || apiKey !== expectedKey) {
+        return res.status(401).json({ success: false, error: 'unauthorized' });
+    }
+
+    try {
+        await sendPushNotification('', true);
+        return res.json({ success: true, message: 'تم تنفيذ إرسال إشعار الاختبار؛ راجع سجلات الإرسال للتأكيد.' });
+    } catch (error) {
+        console.error('تعذر إرسال إشعار الاختبار:', error.message);
+        return res.status(503).json({ success: false, error: 'push test failed' });
+    }
+});
 
 app.post('/subscribe', async (req, res) => {
     try {
