@@ -170,6 +170,12 @@
             if(isStandalone()){
                 showNotificationPrompt();
             }
+
+            if('Notification' in window && Notification.permission === 'granted'){
+                enablePriceNotifications().catch(function(error){
+                    console.error('Price notification resync error:', error);
+                });
+            }
         }, 1200);
     });
 })();
