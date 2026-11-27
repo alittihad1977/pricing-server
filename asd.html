@@ -259,6 +259,16 @@ td{
     100%{background:transparent;}
 }
 
+#priceUpdatedAt{
+    width:100%;
+    min-height:22px;
+    margin-top:1px;
+    text-align:center;
+    color:#f4c430;
+    font-size:0.82rem;
+    font-weight:bold;
+    line-height:1.4;
+}
 #updateSystem{
     display:none;
 }
@@ -696,6 +706,11 @@ td{
         font-size:0.65rem;
     }
 
+    #priceUpdatedAt{
+        font-size:0.60rem;
+        min-height:17px;
+    }
+
     th{
         font-size:1.5rem;
         padding:8px;
@@ -887,8 +902,8 @@ body.company-image-fullscreen{
 
 </td>
 
-<td class="price-cell" id="buy1">11800</td>
-<td class="price-cell" id="sell1">11900</td>
+<td class="price-cell" id="buy1">—</td>
+<td class="price-cell" id="sell1">—</td>
 
 </tr>
 
@@ -907,8 +922,8 @@ body.company-image-fullscreen{
 
 </td>
 
-<td class="price-cell" id="buy2">268</td>
-<td class="price-cell" id="sell2">272</td>
+<td class="price-cell" id="buy2">—</td>
+<td class="price-cell" id="sell2">—</td>
 
 </tr>
 
@@ -927,8 +942,8 @@ body.company-image-fullscreen{
 
 </td>
 
-<td class="price-cell" id="buy3">13450</td>
-<td class="price-cell" id="sell3">13600</td>
+<td class="price-cell" id="buy3">—</td>
+<td class="price-cell" id="sell3">—</td>
 
 </tr>
 
@@ -947,8 +962,8 @@ body.company-image-fullscreen{
 
 </td>
 
-<td class="price-cell" id="buy4">43.7</td>
-<td class="price-cell" id="sell4">44</td>
+<td class="price-cell" id="buy4">—</td>
+<td class="price-cell" id="sell4">—</td>
 
 </tr>
 
@@ -967,12 +982,14 @@ body.company-image-fullscreen{
 
 </td>
 
-<td class="price-cell" id="buy5">1.14</td>
-<td class="price-cell" id="sell5">1.16</td>
+<td class="price-cell" id="buy5">—</td>
+<td class="price-cell" id="sell5">—</td>
 
 </tr>
 
 </table>
+
+<div id="priceUpdatedAt" aria-live="polite">بانتظار تحديث أسعار جديدة</div>
 
 <div id="companyImageStage" aria-label="صور وفيديوهات شركة الاتحاد">
     <img id="companyImageDisplay" alt="صورة شركة الاتحاد">
@@ -1696,33 +1713,13 @@ function updateCell(id,value){
 
 
 function updatePrices(){
-
     for(let i=1;i<=5;i++){
-
-        const buy =
-            localStorage.getItem(
-                "buy"+i
-            );
-
-        const sell =
-            localStorage.getItem(
-                "sell"+i
-            );
-
-        if(buy !== null){
-
-            updateCell(
-                "buy"+i,
-                buy
-            );
-        }
-
-        if(sell !== null){
-
-            updateCell(
-                "sell"+i,
-                sell
-            );
+        for(const side of ["buy","sell"]){
+            const id = side + i;
+            const el = document.getElementById(id);
+            if(el) el.textContent = "—";
+            delete oldPrices[id];
+            direction[id] = "";
         }
     }
 }
@@ -1738,90 +1735,56 @@ let lastProcessed = "";
 
 
 function processMessage(){
+    const textarea = document.getElementById("msg");
+    const text = textarea.value;
+    if(!text.trim()) return false;
 
-    const textarea =
-        document.getElementById("msg");
+    const buys = [...text.matchAll(/الشراء\s*[:：]?\s*([0-9]+(?:\.[0-9]+)?)/g)];
+    const sells = [...text.matchAll(/المبيع\s*[:：]?\s*([0-9]+(?:\.[0-9]+)?)/g)];
 
-    const text =
-        textarea.value;
-
-    if(!text.trim())
-        return;
-
-    const buys =
-        [
-            ...text.matchAll(
-                /الشراء\s*[:：]?\s*([0-9]+(?:\.[0-9]+)?)/g
-            )
-        ];
-
-    const sells =
-        [
-            ...text.matchAll(
-                /المبيع\s*[:：]?\s*([0-9]+(?:\.[0-9]+)?)/g
-            )
-        ];
+    if(buys.length < 5 || sells.length < 5) return false;
 
     for(let i=0;i<5;i++){
-
-        if(buys[i]){
-
-            localStorage.setItem(
-                "buy"+(i+1),
-                buys[i][1]
-            );
-        }
-
-        if(sells[i]){
-
-            localStorage.setItem(
-                "sell"+(i+1),
-                sells[i][1]
-            );
-        }
+        updateCell("buy"+(i+1), buys[i][1]);
+        updateCell("sell"+(i+1), sells[i][1]);
     }
 
-    updatePrices();
-
     textarea.value = "";
+    return true;
 }
 
 
 async function fetchMessage(){
-
     try{
+        const response = await fetch(SERVER + "/msg", { cache:"no-store" });
+        if(!response.ok) throw new Error("HTTP " + response.status);
 
-        const response =
-            await fetch(
-                SERVER + "/msg",
-                {
-                    cache:"no-store"
-                }
-            );
+        const data = await response.text();
+        const updatedAt = response.headers.get("X-Prices-Updated-At");
+        const status = document.getElementById("priceUpdatedAt");
 
-        const data =
-            await response.text();
-
-        if(
-            data.trim() !== "" &&
-            data !== lastProcessed
-        ){
-
-            document.getElementById(
-                "msg"
-            ).value = data;
-
-            processMessage();
-
-            lastProcessed = data;
+        if(!data.trim()){
+            lastProcessed = "";
+            updatePrices();
+            if(status) status.textContent = "بانتظار تحديث أسعار جديدة";
+            return;
         }
 
-    }catch(error){
+        if(data !== lastProcessed){
+            document.getElementById("msg").value = data;
+            const valid = processMessage();
+            lastProcessed = data;
+            if(!valid && status) status.textContent = "وصلت رسالة أسعار غير مكتملة";
+        }
 
-        console.log(
-            "Message Error",
-            error
-        );
+        if(updatedAt && status){
+            const date = new Date(updatedAt);
+            status.textContent = Number.isNaN(date.getTime())
+                ? "آخر تحديث للأسعار محفوظ على السيرفر"
+                : "آخر تحديث للأسعار: " + date.toLocaleString("ar-SY");
+        }
+    }catch(error){
+        console.log("Message Error", error);
     }
 }
 

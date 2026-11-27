@@ -40,7 +40,94 @@ const parser = new Parser();
    آخر رسالة أسعار
    ===================================================== */
 
+const PRICE_STORE_REPO = 'alittihad1977/pricing-server';
+const PRICE_STORE_BRANCH = 'pricing-data';
+const PRICE_STORE_PATH = 'latest-prices.json';
+const PRICE_STORE_TOKEN = process.env.GITHUB_TOKEN || '';
+
 let lastMessage = '';
+let lastMessageUpdatedAt = null;
+let priceWriteQueue = Promise.resolve();
+
+async function priceStoreRequest(method, body) {
+    if (!PRICE_STORE_TOKEN) throw new Error('GITHUB_TOKEN is missing for price persistence');
+    const url = `https://api.github.com/repos/${PRICE_STORE_REPO}/contents/${PRICE_STORE_PATH}?ref=${PRICE_STORE_BRANCH}`;
+    const response = await fetch(url, {
+        method,
+        headers: {
+            Authorization: `Bearer ${PRICE_STORE_TOKEN}`,
+            Accept: 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
+            'User-Agent': 'Al-Ittihad-Pricing-Server'
+        },
+        body: body ? JSON.stringify(body) : undefined
+    });
+    const raw = await response.text();
+    let data = {};
+    try { data = raw ? JSON.parse(raw) : {}; } catch (_) {}
+    if (!response.ok) {
+        const error = new Error(data.message || `GitHub HTTP ${response.status}`);
+        error.status = response.status;
+        throw error;
+    }
+    return data;
+}
+
+async function loadPersistedPrices() {
+    try {
+        const data = await priceStoreRequest('GET');
+        const decoded = Buffer.from(String(data.content || '').replace(/\s/g, ''), 'base64').toString('utf8');
+        const saved = JSON.parse(decoded);
+        if (saved && typeof saved.message === 'string' && saved.message.trim()) {
+            lastMessage = saved.message;
+            const parsedDate = new Date(saved.updatedAt);
+            lastMessageUpdatedAt = Number.isNaN(parsedDate.getTime()) ? null : parsedDate.toISOString();
+            console.log('تم تحميل آخر أسعار محفوظة من التخزين الدائم');
+        } else {
+            console.log('لا توجد أسعار محفوظة حالياً؛ اللوحة ستنتظر رسالة أسعار جديدة');
+        }
+    } catch (error) {
+        console.error('تعذر تحميل الأسعار المحفوظة:', error.message);
+    }
+}
+
+const priceStoreReady = loadPersistedPrices();
+
+function persistPriceMessage(message, updatedAt) {
+    const write = async () => {
+        for (let attempt = 1; attempt <= 3; attempt++) {
+            try {
+                const current = await priceStoreRequest('GET');
+                const content = Buffer.from(JSON.stringify({
+                    version: 1,
+                    message,
+                    updatedAt
+                }, null, 2), 'utf8').toString('base64');
+                await priceStoreRequest('PUT', {
+                    message: 'Save latest exchange prices',
+                    content,
+                    sha: current.sha,
+                    branch: PRICE_STORE_BRANCH
+                });
+                return;
+            } catch (error) {
+                if ((error.status === 409 || error.status === 422) && attempt < 3) continue;
+                throw error;
+            }
+        }
+    };
+    priceWriteQueue = priceWriteQueue.then(write, write);
+    return priceWriteQueue;
+}
+
+async function acceptPriceMessage(message) {
+    await priceStoreReady;
+    const updatedAt = new Date().toISOString();
+    lastMessage = message;
+    lastMessageUpdatedAt = updatedAt;
+    await persistPriceMessage(message, updatedAt);
+    return updatedAt;
+}
 
 /* =====================================================
    رابط لوحة الأسعار
@@ -328,54 +415,32 @@ async function sendPushNotification(message) {
    استقبال Telegram
    ===================================================== */
 
-bot.on(
-    'channel_post',
-    async (msg) => {
+bot.on('channel_post', async (msg) => {
+    const message = msg.text || '';
+    if (!message) return;
 
-        const message =
-            msg.text || '';
-
-        if (!message) {
-            return;
-        }
-
-        if (
-            message === lastMessage
-        ) {
-            return;
-        }
-
-        lastMessage =
-            message;
-
-        console.log(
-            'تم استقبال رسالة جديدة'
-        );
-
-        console.log(message);
-
-        await sendPushNotification(
-            message
-        );
-
+    try {
+        await priceStoreReady;
+        if (message === lastMessage) return;
+        await acceptPriceMessage(message);
+        console.log('تم استقبال رسالة جديدة وحفظها بشكل دائم');
+        await sendPushNotification(message);
+    } catch (error) {
+        console.error('تعذر حفظ رسالة Telegram للأسعار:', error.message);
     }
-);
+});
 
 
 /* =====================================================
    🔐 استقبال آخر رسالة أسعار من Cloudzy
    ===================================================== */
 
-app.post('/push-price', (req, res) => {
-
+app.post('/push-price', async (req, res) => {
     const apiKey = String(req.headers['x-api-key'] || '');
     const expectedKey = String(process.env.RENDER_PUSH_KEY || '');
 
     if (!expectedKey || apiKey !== expectedKey) {
-        return res.status(401).json({
-            success: false,
-            error: 'unauthorized'
-        });
+        return res.status(401).json({ success: false, error: 'unauthorized' });
     }
 
     const message = typeof req.body === 'string'
@@ -383,24 +448,20 @@ app.post('/push-price', (req, res) => {
         : String(req.body?.message || '');
 
     if (!message.trim()) {
-        return res.status(400).json({
-            success: false,
-            error: 'message is required'
-        });
+        return res.status(400).json({ success: false, error: 'message is required' });
     }
 
-    lastMessage = message;
-
-    console.log('تم استقبال رسالة أسعار من Cloudzy');
-
-    sendPushNotification(message).catch(error => {
-        console.error('Push Error:', error.message);
-    });
-
-    res.json({
-        success: true
-    });
-
+    try {
+        await acceptPriceMessage(message);
+        console.log('تم استقبال رسالة أسعار من Cloudzy وحفظها بشكل دائم');
+        sendPushNotification(message).catch(error => {
+            console.error('Push Error:', error.message);
+        });
+        return res.json({ success: true });
+    } catch (error) {
+        console.error('تعذر حفظ أسعار Cloudzy:', error.message);
+        return res.status(503).json({ success: false, error: 'price persistence unavailable' });
+    }
 });
 
 
@@ -408,26 +469,18 @@ app.post('/push-price', (req, res) => {
    API الرسالة
    ===================================================== */
 
-app.get('/msg', (req, res) => {
+app.get('/msg', async (req, res) => {
+    await priceStoreReady;
 
-    res.setHeader(
-        'Access-Control-Allow-Origin',
-        '*'
-    );
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Expose-Headers', 'X-Prices-Updated-At');
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
+    if (lastMessageUpdatedAt) {
+        res.setHeader('X-Prices-Updated-At', lastMessageUpdatedAt);
+    }
 
-    res.setHeader(
-        'Cache-Control',
-        'no-store, no-cache, must-revalidate'
-    );
-
-    res.type(
-        'text/plain; charset=utf-8'
-    );
-
-    res.send(
-        lastMessage
-    );
-
+    res.type('text/plain; charset=utf-8');
+    res.send(lastMessage);
 });
 
 
