@@ -76,7 +76,7 @@ async function priceStoreRequest(method, body) {
 async function loadPersistedPrices() {
     try {
         const data = await priceStoreRequest('GET');
-        const decoded = Buffer.from(String(data.content || '').replace(/\\s/g, ''), 'base64').toString('utf8');
+        const decoded = Buffer.from(String(data.content || '').replace(/\s/g, ''), 'base64').toString('utf8');
         const saved = JSON.parse(decoded);
         if (saved && typeof saved.message === 'string' && saved.message.trim()) {
             lastMessage = saved.message;
