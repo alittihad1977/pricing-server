@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <title>لوحة التسعير - الاتحاد</title>
 
@@ -822,6 +823,190 @@ body.company-image-fullscreen #telegramQrCode{
 }
 body.company-image-fullscreen{
     background:#0b1b3d;
+}
+
+
+/* Mobile-only layout: preserve the desktop display exactly as it is. */
+@media screen and (max-width:600px){
+  html,body{
+    width:100%;
+    min-height:100%;
+    height:auto;
+    overflow-x:hidden;
+    overflow-y:auto;
+    -webkit-text-size-adjust:100%;
+  }
+  body{min-height:100svh;}
+  .screen{
+    width:100%;
+    height:auto;
+    min-height:100svh;
+    overflow:visible;
+    align-items:flex-start;
+  }
+  .container{
+    width:100%;
+    height:auto;
+    min-height:100svh;
+    justify-content:flex-start;
+    padding:34px 10px 48px;
+    gap:0;
+  }
+  .header{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    grid-template-rows:auto auto;
+    align-items:center;
+    justify-items:center;
+    width:100%;
+    gap:8px 6px;
+    margin:0 0 10px;
+  }
+  .header img{
+    grid-column:1;
+    grid-row:1;
+    height:43px;
+    max-height:none;
+    width:auto;
+    max-width:100%;
+  }
+  .header h1{
+    grid-column:2;
+    grid-row:1;
+    font-size:clamp(1.15rem,5.4vw,1.55rem);
+    white-space:normal;
+    text-align:center;
+  }
+  .prayer-countdown{
+    grid-column:1;
+    grid-row:2;
+    width:100%;
+    min-width:0;
+    padding:6px 4px;
+    gap:3px;
+  }
+  .prayer-caption{font-size:.65rem;}
+  .prayer-name{font-size:.82rem;}
+  .prayer-remaining{font-size:.9rem;}
+  .prayer-source{font-size:.48rem;}
+  .date-time{
+    grid-column:2;
+    grid-row:2;
+    width:100%;
+    min-width:0;
+    margin:0;
+  }
+  .time{font-size:1.12rem;}
+  .date{font-size:.68rem;margin-top:3px;text-align:center;}
+  .hijri-date{font-size:.61rem;white-space:normal;text-align:center;}
+  .weather{margin-top:4px;gap:4px;}
+  .weather-icon{font-size:1rem;}
+  .weather-temp{font-size:.83rem;}
+  .weather-city{font-size:.68rem;}
+  #pricingTable{
+    width:100%;
+    table-layout:fixed;
+    border-spacing:0 5px;
+    margin:0;
+  }
+  #pricingTable th,
+  #pricingTable td{
+    padding:5px 2px;
+    border-radius:8px;
+    vertical-align:middle;
+  }
+  #pricingTable th{
+    font-size:clamp(.82rem,3.8vw,1.05rem);
+    line-height:1.15;
+    padding:8px 2px;
+  }
+  #pricingTable td:first-child{
+    width:31%;
+    white-space:nowrap;
+  }
+  .flag-svg{
+    width:clamp(23px,7vw,31px);
+    height:auto;
+    aspect-ratio:70/40;
+    vertical-align:middle;
+    filter:none;
+  }
+  .price-cell{
+    font-size:clamp(1rem,4.6vw,1.42rem);
+    line-height:1.15;
+    padding:7px 2px;
+    border:2px solid gold;
+    border-radius:8px;
+    white-space:nowrap;
+    font-variant-numeric:tabular-nums;
+    direction:ltr;
+  }
+  .up,.down{
+    font-size:1rem;
+    margin-left:3px;
+    animation:none;
+  }
+  #priceUpdatedAt{
+    font-size:.68rem;
+    min-height:18px;
+    margin-top:3px;
+    padding:0 2px;
+  }
+  .connection-status,.online-devices{
+    top:5px;
+    padding:3px 6px;
+    font-size:.58rem;
+  }
+  .connection-status{left:5px;}
+  .online-devices{right:5px;}
+  .bottom-bar{
+    position:fixed;
+    bottom:3px;
+    left:2%;
+    width:96%;
+    height:29px;
+    border-radius:8px;
+  }
+  .bottom-title{font-size:.68rem;padding:0 7px;}
+  .news-item{font-size:.7rem;line-height:29px;padding:0 6px;}
+  .market-item{font-size:.68rem;gap:3px;}
+  #notificationButton{
+    bottom:38px;
+    left:5px;
+    font-size:8px;
+    padding:3px 5px;
+  }
+}
+@media screen and (max-width:360px){
+  .container{padding-left:7px;padding-right:7px;}
+  #pricingTable td:first-child{width:29%;}
+  .flag-svg{width:22px;}
+  .price-cell{font-size:1rem;padding:6px 1px;}
+  #pricingTable th{font-size:.8rem;}
+  .header{gap:6px 3px;}
+  .header h1{font-size:1.12rem;}
+}
+@media screen and (max-width:600px) and (orientation:landscape){
+  .container{padding-top:35px;padding-bottom:46px;}
+  .header{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:auto;margin-bottom:6px;}
+  .header img,.header h1,.prayer-countdown,.date-time{
+    grid-row:1;grid-column:auto;
+  }
+  .header img{height:35px;}
+  .header h1{font-size:1rem;}
+  .prayer-countdown{padding:4px 2px;}
+  .prayer-caption{font-size:.52rem;}
+  .prayer-name{font-size:.62rem;}
+  .prayer-remaining{font-size:.68rem;}
+  .prayer-source{font-size:.4rem;}
+  .time{font-size:.88rem;}
+  .date{font-size:.54rem;}
+  .hijri-date{font-size:.5rem;}
+  .weather{display:none;}
+  #pricingTable{border-spacing:0 3px;}
+  #pricingTable th{padding:5px 2px;}
+  .price-cell{padding:4px 1px;font-size:1rem;}
+  .flag-svg{width:22px;}
 }
 
 </style>
