@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const Parser = require('rss-parser');
 const webpush = require('web-push');
+const crypto = require('crypto');
 
 const app = express();
 
@@ -286,8 +287,75 @@ if (
    الأجهزة المسجلة
    ===================================================== */
 
-let subscriptions = [];
+const PUSH_STORE_URL = (process.env.PUSH_STORE_URL || '').replace(/\/+$/, '');
+const PUSH_STORE_TOKEN = process.env.PUSH_STORE_TOKEN || '';
 
+let subscriptions = [];
+let subscriptionsLoaded = false;
+let subscriptionsLoadPromise = null;
+
+async function pushStoreRequest(path, method = 'GET', body) {
+    if (!PUSH_STORE_URL || !PUSH_STORE_TOKEN) {
+        throw new Error('Push storage is not configured');
+    }
+
+    const response = await fetch(PUSH_STORE_URL + path, {
+        method,
+        headers: {
+            Authorization: `Bearer ${PUSH_STORE_TOKEN}`,
+            ...(body ? { 'Content-Type': 'application/json' } : {})
+        },
+        body: body ? JSON.stringify(body) : undefined
+    });
+
+    const raw = await response.text();
+    let data = {};
+    try { data = raw ? JSON.parse(raw) : {}; } catch (_) {}
+
+    if (!response.ok) {
+        const error = new Error(data.error || `Push storage HTTP ${response.status}`);
+        error.status = response.status;
+        throw error;
+    }
+
+    return data;
+}
+
+async function loadPersistedSubscriptions() {
+    try {
+        const data = await pushStoreRequest('/subscriptions');
+        subscriptions = Array.isArray(data.subscriptions)
+            ? data.subscriptions.filter(item =>
+                item &&
+                typeof item.endpoint === 'string' &&
+                item.endpoint.startsWith('https://') &&
+                item.keys &&
+                typeof item.keys.p256dh === 'string' &&
+                typeof item.keys.auth === 'string'
+            )
+            : [];
+        subscriptionsLoaded = true;
+        console.log('تم تحميل اشتراكات الإشعارات من التخزين الدائم:', subscriptions.length);
+    } catch (error) {
+        console.error('تعذر تحميل اشتراكات الإشعارات:', error.message);
+    }
+}
+
+async function ensureSubscriptionsLoaded() {
+    if (subscriptionsLoaded) return;
+    if (!subscriptionsLoadPromise) {
+        subscriptionsLoadPromise = loadPersistedSubscriptions().finally(() => {
+            subscriptionsLoadPromise = null;
+        });
+    }
+    await subscriptionsLoadPromise;
+}
+
+async function removePersistedSubscription(subscription) {
+    if (!subscription || !subscription.endpoint) return;
+    const id = crypto.createHash('sha256').update(subscription.endpoint).digest('hex');
+    await pushStoreRequest('/subscriptions/' + id, 'DELETE');
+}
 
 /* =====================================================
    إرسال الإشعار
@@ -295,119 +363,51 @@ let subscriptions = [];
 
 async function sendPushNotification(message) {
 
-    if (
-        !VAPID_PUBLIC_KEY ||
-        !VAPID_PRIVATE_KEY
-    ) {
-
-        console.error(
-            'لا يمكن إرسال الإشعار: مفاتيح VAPID غير موجودة'
-        );
-
+    if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
+        console.error('لا يمكن إرسال الإشعار: مفاتيح VAPID غير موجودة');
         return;
     }
 
-    if (
-        subscriptions.length === 0
-    ) {
+    await ensureSubscriptionsLoaded();
 
-        console.log(
-            'لا توجد أجهزة مسجلة للإشعارات'
-        );
-
+    if (subscriptions.length === 0) {
+        console.log('لا توجد أجهزة مسجلة للإشعارات');
         return;
     }
 
     const notificationData = {
-
-        title:
-            'شركة الاتحاد 💰',
-
-        body:
-            'تم تحديث أسعار الصرف 🔔',
-
-        icon:
-            'https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png',
-
-        badge:
-            'https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png',
-
-        tag:
-            'al-ittihad-prices',
-
-        renotify:
-            true,
-
-        requireInteraction:
-            false,
-
-        data: {
-
-            url:
-                PRICING_PAGE
-
-        }
-
+        title: 'شركة الاتحاد 💰',
+        body: 'تم تحديث أسعار الصرف 🔔',
+        icon: 'https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png',
+        badge: 'https://i.postimg.cc/wvrQMV5X/IMG-20250610-WA0000.png',
+        tag: 'al-ittihad-prices',
+        renotify: true,
+        requireInteraction: false,
+        data: { url: PRICING_PAGE }
     };
 
-    const payload =
-        JSON.stringify(
-            notificationData
-        );
+    const payload = JSON.stringify(notificationData);
 
-    const activeSubscriptions = [];
-
-    for (
-        const subscription
-        of subscriptions
-    ) {
-
+    for (const subscription of [...subscriptions]) {
         try {
-
-            await webpush.sendNotification(
-                subscription,
-                payload
-            );
-
-            console.log(
-                'تم إرسال الإشعار بنجاح 🔔'
-            );
-
-            activeSubscriptions.push(
-                subscription
-            );
-
+            await webpush.sendNotification(subscription, payload);
+            console.log('تم إرسال الإشعار بنجاح 🔔');
         } catch (error) {
+            console.error('Push Error:', error.statusCode, error.message);
 
-            console.error(
-                'Push Error:',
-                error.statusCode,
-                error.message
-            );
-
-            if (
-                error.statusCode !== 404 &&
-                error.statusCode !== 410
-            ) {
-
-                activeSubscriptions.push(
-                    subscription
-                );
-
+            if (error.statusCode === 404 || error.statusCode === 410) {
+                subscriptions = subscriptions.filter(item => item.endpoint !== subscription.endpoint);
+                try {
+                    await removePersistedSubscription(subscription);
+                    console.log('تم حذف اشتراك جهاز منتهي أو غير صالح');
+                } catch (storageError) {
+                    console.error('تعذر حذف الاشتراك المنتهي من التخزين:', storageError.message);
+                }
             }
-
         }
-
     }
 
-    subscriptions =
-        activeSubscriptions;
-
-    console.log(
-        'عدد الأجهزة المسجلة حالياً:',
-        subscriptions.length
-    );
-
+    console.log('عدد الأجهزة المسجلة حالياً:', subscriptions.length);
 }
 
 
@@ -536,88 +536,51 @@ app.get(
    تسجيل جهاز للإشعارات
    ===================================================== */
 
-app.post(
-    '/subscribe',
-    (req, res) => {
+app.post('/subscribe', async (req, res) => {
+    try {
+        const subscription = req.body;
 
-        try {
-
-            const subscription =
-                req.body;
-
-            if (
-                !subscription ||
-                !subscription.endpoint
-            ) {
-
-                return res.status(400).json({
-
-                    success:
-                        false,
-
-                    error:
-                        'Invalid subscription'
-
-                });
-
-            }
-
-            const exists =
-                subscriptions.some(
-                    item =>
-                        item.endpoint ===
-                        subscription.endpoint
-                );
-
-            if (!exists) {
-
-                subscriptions.push(
-                    subscription
-                );
-
-                console.log(
-                    '📱 تم تسجيل جهاز جديد'
-                );
-
-            } else {
-
-                console.log(
-                    '📱 الجهاز مسجل مسبقاً'
-                );
-
-            }
-
-            res.json({
-
-                success:
-                    true,
-
-                devices:
-                    subscriptions.length
-
+        if (
+            !subscription ||
+            typeof subscription.endpoint !== 'string' ||
+            !subscription.endpoint.startsWith('https://') ||
+            !subscription.keys ||
+            typeof subscription.keys.p256dh !== 'string' ||
+            typeof subscription.keys.auth !== 'string'
+        ) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid subscription'
             });
-
-        } catch (error) {
-
-            console.error(
-                'Subscribe Error:',
-                error
-            );
-
-            res.status(500).json({
-
-                success:
-                    false,
-
-                error:
-                    'Subscribe failed'
-
-            });
-
         }
 
+        await ensureSubscriptionsLoaded();
+        await pushStoreRequest('/subscriptions', 'POST', subscription);
+
+        const existingIndex = subscriptions.findIndex(
+            item => item.endpoint === subscription.endpoint
+        );
+
+        if (existingIndex >= 0) {
+            subscriptions[existingIndex] = subscription;
+            console.log('📱 تم تحديث تسجيل جهاز موجود');
+        } else {
+            subscriptions.push(subscription);
+            console.log('📱 تم تسجيل جهاز جديد وحفظه بشكل دائم');
+        }
+
+        return res.json({
+            success: true,
+            devices: subscriptions.length
+        });
+    } catch (error) {
+        console.error('Subscribe Error:', error.message);
+        return res.status(503).json({
+            success: false,
+            error: 'Subscription storage unavailable'
+        });
     }
-);
+});
 
 
 /* =====================================================
