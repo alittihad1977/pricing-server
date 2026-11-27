@@ -2580,13 +2580,19 @@ document
             subscription &&
             Notification.permission === "granted"
         ){
+            const syncResponse = await fetch(
+                PUSH_SERVER + "/subscribe",
+                {
+                    method:"POST",
+                    headers:{ "Content-Type":"application/json" },
+                    body:JSON.stringify(subscription)
+                }
+            );
 
             document.getElementById(
                 "notificationButton"
-            ).style.display =
-                "none";
+            ).style.display = syncResponse.ok ? "none" : "block";
         }
-
     }catch(error){
 
         console.log(
@@ -2622,7 +2628,7 @@ setTimeout(
 </script>
 
 <script src="./company-news.js?v=9"></script>
-<script src="./pwa-install.js?v=1"></script>
+<script src="./pwa-install.js?v=2"></script>
 
 
 <script src="./company-news.js?v=3"></script>
