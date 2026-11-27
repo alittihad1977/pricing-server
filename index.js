@@ -287,7 +287,7 @@ if (
    الأجهزة المسجلة
    ===================================================== */
 
-const PUSH_STORE_URL = (process.env.PUSH_STORE_URL || '').replace(/\\/+$/, '');
+const PUSH_STORE_URL = (process.env.PUSH_STORE_URL || '').replace(/\/+$/, '');
 const PUSH_STORE_TOKEN = process.env.PUSH_STORE_TOKEN || '';
 
 let subscriptions = [];
