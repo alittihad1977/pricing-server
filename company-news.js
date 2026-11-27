@@ -422,6 +422,8 @@
             '00000000000000000000000000000000000000000'
         ];
 
+        const qrHost = document.querySelector('.container') || document.body;
+
         const card = document.createElement('div');
         card.id = 'boardQrCode';
         card.innerHTML = '<div class="qr-label">امسح للوصول للوحة</div><div class="qr-grid" aria-label="رمز QR للوحة التسعير"></div>';
@@ -433,17 +435,17 @@
             grid.appendChild(cell);
         });
 
-        document.body.appendChild(card);
+        qrHost.appendChild(card);
 
         const whatsappCard = document.createElement('div');
         whatsappCard.id = 'whatsappQrCode';
         whatsappCard.innerHTML = '<div class="qr-label">امسح للواتساب</div><img src="' + WHATSAPP_QR_IMAGE + '" alt="QR قناة واتساب">';
-        document.body.appendChild(whatsappCard);
+        qrHost.appendChild(whatsappCard);
 
         const telegramCard = document.createElement('div');
         telegramCard.id = 'telegramQrCode';
         telegramCard.innerHTML = '<div class="qr-label">امسح للتيلجرام</div><img src="' + TELEGRAM_QR_IMAGE + '" alt="QR قناة التيلجرام">';
-        document.body.appendChild(telegramCard);
+        qrHost.appendChild(telegramCard);
 
         let qrIndex = 0;
         setInterval(function(){
@@ -525,6 +527,16 @@
         #boardQrCode .qr-grid span{display:block;}
         #boardQrCode .qr-black{background:#000;}
         #boardQrCode .qr-white{background:#fff;}
+        @media screen and (max-width:600px){
+            #boardQrCode,
+            #whatsappQrCode,
+            #telegramQrCode{
+                position:static;
+                align-self:center;
+                margin:12px auto 58px;
+                width:100px;
+            }
+        }
         @media screen and (max-width:900px){
             #boardQrCode,
             #whatsappQrCode,
