@@ -1739,8 +1739,8 @@ function processMessage(){
     const text = textarea.value;
     if(!text.trim()) return false;
 
-    const buys = [...text.matchAll(/الشراء\s*[:：]?\s*([0-9]+(?:\\.[0-9]+)?)/g)];
-    const sells = [...text.matchAll(/المبيع\s*[:：]?\s*([0-9]+(?:\\.[0-9]+)?)/g)];
+    const buys = [...text.matchAll(/الشراء\s*[:：]?\s*([0-9]+(?:\.[0-9]+)?)/g)];
+    const sells = [...text.matchAll(/المبيع\s*[:：]?\s*([0-9]+(?:\.[0-9]+)?)/g)];
 
     if(buys.length < 5 || sells.length < 5) return false;
 
