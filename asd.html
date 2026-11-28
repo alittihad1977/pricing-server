@@ -2664,20 +2664,37 @@ setTimeout(
   const label=document.getElementById('priceUpdatedAt');
   const title=document.querySelector('.header h1');
   if(!label||!title)return;
+  const canvas=document.createElement('canvas');
+  const context=canvas.getContext('2d');
   function alignPriceUpdateLabel(){
-    if(window.innerWidth<901){label.style.top='';label.style.left='';label.style.fontSize='';return;}
+    if(window.innerWidth<901){
+      label.style.top='';
+      label.style.left='';
+      label.style.fontSize='';
+      label.style.width='';
+      return;
+    }
     const rect=title.getBoundingClientRect();
     const style=getComputedStyle(title);
-    label.style.top=Math.round(rect.bottom+2)+'px';
-    label.style.left=Math.round(rect.left+rect.width/2)+'px';
-    label.style.fontSize=style.fontSize;
-    label.style.fontWeight=style.fontWeight;
+    const baseSize=parseFloat(style.fontSize)||32;
+    label.style.fontWeight='bold';
     label.style.fontFamily=style.fontFamily;
     label.style.color=style.color;
+    label.style.textAlign='center';
+    label.style.whiteSpace='nowrap';
     label.style.transform='translateX(-50%)';
+    label.style.top=Math.round(rect.bottom+2)+'px';
+    label.style.left=Math.round(rect.left+rect.width/2)+'px';
+    context.font='bold '+baseSize+'px '+style.fontFamily;
+    const textWidth=context.measureText(label.textContent||'').width;
+    const targetWidth=rect.width*0.96;
+    const balancedSize=textWidth>0 ? baseSize*(targetWidth/textWidth) : baseSize;
+    label.style.fontSize=Math.max(12,Math.min(baseSize,balancedSize))+'px';
+    label.style.width='max-content';
   }
   alignPriceUpdateLabel();
   window.addEventListener('resize',alignPriceUpdateLabel,{passive:true});
+  new MutationObserver(alignPriceUpdateLabel).observe(label,{childList:true,characterData:true,subtree:true});
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(alignPriceUpdateLabel);
 })();
 </script>
