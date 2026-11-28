@@ -1010,7 +1010,7 @@ body.company-image-fullscreen{
 }
 
 
-/* Desktop-only: pin the timestamp just below the live header; JS measures header position. */
+/* Desktop-only: align the update text directly under the company name, without affecting layout. */
 @media screen and (min-width:901px){
   #priceUpdatedAt{
     position:fixed;
@@ -1021,14 +1021,15 @@ body.company-image-fullscreen{
     max-width:90vw;
     min-height:0;
     margin:0;
-    padding:3px 12px;
-    border:1px solid rgba(244,196,48,.38);
-    border-radius:8px;
-    background:rgba(11,27,61,.88);
-    box-shadow:0 2px 8px rgba(0,0,0,.16);
+    padding:0 2px;
+    border:0;
+    border-radius:0;
+    background:transparent;
+    box-shadow:none;
     z-index:2500;
     white-space:nowrap;
     pointer-events:none;
+    line-height:1.08;
   }
   body.company-image-fullscreen #priceUpdatedAt{
     display:none !important;
@@ -2661,17 +2662,22 @@ setTimeout(
 <script>
 (function(){
   const label=document.getElementById('priceUpdatedAt');
-  const header=document.querySelector('.header');
-  if(!label||!header)return;
+  const title=document.querySelector('.header h1');
+  if(!label||!title)return;
   function alignPriceUpdateLabel(){
-    if(window.innerWidth<901){label.style.top='';return;}
-    const rect=header.getBoundingClientRect();
-    label.style.top=Math.max(0,Math.round(rect.bottom+3))+'px';
+    if(window.innerWidth<901){label.style.top='';label.style.left='';label.style.fontSize='';return;}
+    const rect=title.getBoundingClientRect();
+    const style=getComputedStyle(title);
+    label.style.top=Math.round(rect.bottom+2)+'px';
+    label.style.left=Math.round(rect.left+rect.width/2)+'px';
+    label.style.fontSize=style.fontSize;
+    label.style.fontWeight=style.fontWeight;
+    label.style.fontFamily=style.fontFamily;
+    label.style.color=style.color;
+    label.style.transform='translateX(-50%)';
   }
   alignPriceUpdateLabel();
   window.addEventListener('resize',alignPriceUpdateLabel,{passive:true});
-  const logo=header.querySelector('img');
-  if(logo)logo.addEventListener('load',alignPriceUpdateLabel,{once:true});
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(alignPriceUpdateLabel);
 })();
 </script>
