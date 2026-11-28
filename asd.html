@@ -1010,25 +1010,28 @@ body.company-image-fullscreen{
 }
 
 
-/* Desktop-only: keep the price-update timestamp in its own row above the news ticker. */
+/* Desktop-only: show the price-update timestamp directly below the header, before the price table.
+   Flex ordering changes only the desktop presentation; mobile keeps its original placement. */
 @media screen and (min-width:901px){
   #priceUpdatedAt{
-    position:fixed;
-    left:50%;
-    bottom:45px;
-    transform:translateX(-50%);
+    order:1;
+    position:relative;
+    left:auto;
+    bottom:auto;
+    transform:none;
     width:max-content;
-    max-width:90vw;
+    max-width:90%;
     min-height:0;
-    margin:0;
-    padding:3px 14px;
-    border:1px solid rgba(244,196,48,.35);
+    margin:0 0 8px;
+    padding:4px 16px;
+    border:1px solid rgba(244,196,48,.38);
     border-radius:9px;
-    background:rgba(11,27,61,.94);
-    box-shadow:0 2px 10px rgba(0,0,0,.22);
-    z-index:2500;
+    background:rgba(11,27,61,.72);
+    box-shadow:0 2px 8px rgba(0,0,0,.16);
+    z-index:1;
     white-space:nowrap;
   }
+  #pricingTable{order:2;}
   body.company-image-fullscreen #priceUpdatedAt{
     display:none !important;
   }
