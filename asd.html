@@ -1010,13 +1010,11 @@ body.company-image-fullscreen{
 }
 
 
-/* Desktop-only: float the update label below the header without changing table layout. */
+/* Desktop-only: pin the timestamp just below the live header; JS measures header position. */
 @media screen and (min-width:901px){
-  .container{position:relative;}
-  .header{position:relative;}
   #priceUpdatedAt{
-    position:absolute;
-    top:calc(100% + 2px);
+    position:fixed;
+    top:0;
     left:50%;
     transform:translateX(-50%);
     width:max-content;
@@ -1028,7 +1026,7 @@ body.company-image-fullscreen{
     border-radius:8px;
     background:rgba(11,27,61,.88);
     box-shadow:0 2px 8px rgba(0,0,0,.16);
-    z-index:20;
+    z-index:2500;
     white-space:nowrap;
     pointer-events:none;
   }
@@ -2659,6 +2657,24 @@ setTimeout(
 <script src="./pwa-install.js?v=2"></script>
 
 
+
+<script>
+(function(){
+  const label=document.getElementById('priceUpdatedAt');
+  const header=document.querySelector('.header');
+  if(!label||!header)return;
+  function alignPriceUpdateLabel(){
+    if(window.innerWidth<901){label.style.top='';return;}
+    const rect=header.getBoundingClientRect();
+    label.style.top=Math.max(0,Math.round(rect.bottom+3))+'px';
+  }
+  alignPriceUpdateLabel();
+  window.addEventListener('resize',alignPriceUpdateLabel,{passive:true});
+  const logo=header.querySelector('img');
+  if(logo)logo.addEventListener('load',alignPriceUpdateLabel,{once:true});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(alignPriceUpdateLabel);
+})();
+</script>
 <script src="./company-news.js?v=3"></script>
 <script src="./company-news.js?v=2"></script>
 <script src="./pwa-install.js?v=1"></script>
