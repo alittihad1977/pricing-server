@@ -1010,28 +1010,28 @@ body.company-image-fullscreen{
 }
 
 
-/* Desktop-only: show the price-update timestamp directly below the header, before the price table.
-   Flex ordering changes only the desktop presentation; mobile keeps its original placement. */
+/* Desktop-only: float the update label below the header without changing table layout. */
 @media screen and (min-width:901px){
+  .container{position:relative;}
+  .header{position:relative;}
   #priceUpdatedAt{
-    order:1;
-    position:relative;
-    left:auto;
-    bottom:auto;
-    transform:none;
+    position:absolute;
+    top:calc(100% + 2px);
+    left:50%;
+    transform:translateX(-50%);
     width:max-content;
-    max-width:90%;
+    max-width:90vw;
     min-height:0;
-    margin:0 0 8px;
-    padding:4px 16px;
+    margin:0;
+    padding:3px 12px;
     border:1px solid rgba(244,196,48,.38);
-    border-radius:9px;
-    background:rgba(11,27,61,.72);
+    border-radius:8px;
+    background:rgba(11,27,61,.88);
     box-shadow:0 2px 8px rgba(0,0,0,.16);
-    z-index:1;
+    z-index:20;
     white-space:nowrap;
+    pointer-events:none;
   }
-  #pricingTable{order:2;}
   body.company-image-fullscreen #priceUpdatedAt{
     display:none !important;
   }
