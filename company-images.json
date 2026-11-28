@@ -22,6 +22,17 @@
       "enabled": true,
       "order": 3,
       "createdAt": "2026-10-31T08:53:22.167Z"
+    },
+    {
+      "id": "1795849367813-6x07jy",
+      "name": "WhatsApp Image 2026-11-28 at 9.02.00 AM.jpeg",
+      "path": "company-images/1795849366087-WhatsApp-Image-2026-11-28-at-9-02-00-AM.jpg",
+      "url": "https://raw.githubusercontent.com/alittihad1977/pricing-server/company-media/company-images/1795849366087-WhatsApp-Image-2026-11-28-at-9-02-00-AM.jpg",
+      "mime": "image/jpeg",
+      "type": "image",
+      "enabled": true,
+      "order": 3,
+      "createdAt": "2026-11-28T07:02:47.813Z"
     }
   ]
 }
